@@ -23,7 +23,7 @@ namespace Lambix
 		spdlog::set_pattern("[%T] %^[%l]%$: %v");
 
 		// 设置logger的名称和等级
-		s_Logger = spdlog::stdout_color_mt("GLToolBox");
+		s_Logger = spdlog::stdout_color_mt("Lambix");
 		s_Logger->set_level(spdlog::level::trace);
 	}
 } // Lambix
