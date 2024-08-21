@@ -9,8 +9,8 @@
  */
 //
 
-#include "Window/lbWindow.h"
-#include "Debug/lbLog.h"
+#include "Core/lbWindow.h"
+#include "Core/lbLog.h"
 #include "GLFW/glfw3.h"
 
 namespace Lambix

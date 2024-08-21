@@ -1,4 +1,4 @@
-#include "lbcore.h"
+#include "lbEngine.h"
 #include "lbEnterPoint.h"
 
 class SandboxApp : public Lambix::lbApplication

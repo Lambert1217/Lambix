@@ -9,9 +9,9 @@
  */
 //
 
-#include "Application/lbApplication.h"
-#include "Debug/lbLog.h"
-#include "Window/lbWindow.h"
+#include "Core/lbApplication.h"
+#include "Core/lbLog.h"
+#include "Core/lbWindow.h"
 
 namespace Lambix
 {

@@ -3,5 +3,5 @@ project(Lambix)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_subdirectory(Core)
+add_subdirectory(Engine)
 add_subdirectory(Sandbox)

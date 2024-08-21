@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "Debug/lbLog.h"
-#include "Window/lbWindow.h"
-#include "Application/lbApplication.h"
+#include "Core/lbLog.h"
+#include "Core/lbWindow.h"
+#include "Core/lbApplication.h"
 
