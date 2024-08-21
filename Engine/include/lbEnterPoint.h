@@ -23,7 +23,5 @@ int main(int argc, char **argv)
 	// 窗口运行
 	app->run();
 
-	// 程序退出
-	app->quit();
 	return 0;
 }
