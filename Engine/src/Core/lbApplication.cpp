@@ -14,6 +14,7 @@
 #include "Core/lbWindow.h"
 #include "Core/lbCore.h"
 #include "Core/lbInput.h"
+#include "GLFW/glfw3.h"
 
 namespace Lambix
 {
@@ -33,18 +34,17 @@ namespace Lambix
 	{
 		while (isRunning)
 		{
+			float CurrentTime = (float)glfwGetTime();
+			lbTimestep timestep = CurrentTime - LastFrameTime;
+			LastFrameTime = CurrentTime;
+
+			// 遍历各层级 执行更新
+			for (lbLayer* layer : m_LayerStack)
+			{
+				layer->OnUpdate(timestep);
+			}
+
 			WINDOW->pollEvents();
-
-			if(lbInput::IsKeyPressed(LB_KEY_W))
-			{
-				LOG_TRACE("W");
-			}
-			if(lbInput::IsMouseButtonPressed(LB_MOUSE_BUTTON_1))
-			{
-				LOG_TRACE("MouseButton 1");
-			}
-			//LOG_TRACE("MousePosition : ({0}, {1})", lbInput::GetMousePosition().first, lbInput::GetMousePosition().second);
-
 			WINDOW->swapBuffer();
 		}
 
@@ -61,12 +61,12 @@ namespace Lambix
 		dispatcher.Dispatch<WindowCloseEvent>(LB_BIND_EVENT_FN(lbApplication::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(LB_BIND_EVENT_FN(lbApplication::OnWindowResize));
 
-//		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
-//		{
-//			(*--it)->OnEvent(e);
-//			if (e.GetHandled())
-//				break;
-//		}
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+		{
+			(*--it)->OnEvent(e);
+			if (e.GetHandled())
+				break;
+		}
 	}
 	bool lbApplication::OnWindowClose(WindowCloseEvent& e)
 	{
@@ -78,5 +78,15 @@ namespace Lambix
 	{
 		LOG_TRACE("OnResize : ({0},{1})",e.GetWidth(), e.GetHeight());
 		return false;
+	}
+	void lbApplication::PushLayer(lbLayer* layer)
+	{
+		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
+	}
+	void lbApplication::PushOverlay(lbLayer* overlay)
+	{
+		m_LayerStack.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 } // Lambix

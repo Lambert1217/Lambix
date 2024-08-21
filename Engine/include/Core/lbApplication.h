@@ -12,6 +12,7 @@
 #pragma once
 
 #include "Core/Events/ApplicationEvent.h"
+#include "lbLayerStack.h"
 
 namespace Lambix
 {
@@ -43,6 +44,18 @@ namespace Lambix
 		 * @param e
 		 */
 		void OnEvent(Event& e);
+
+		/**
+		 * 普通层入栈
+		 * @param layer
+		 */
+		void PushLayer(lbLayer* layer);
+
+		/**
+		 * 覆盖层入栈
+		 * @param overlay
+		 */
+		void PushOverlay(lbLayer* overlay);
 	 private:
 		bool OnWindowClose(WindowCloseEvent& e); // 窗口关闭事件处理函数
 		bool OnWindowResize(WindowResizeEvent& e); // 窗口关闭事件处理函数
@@ -50,6 +63,8 @@ namespace Lambix
 	 private:
 		static lbApplication* s_lbApplication; // 应用类单例
 		bool isRunning{true};
+		lbLayerStack m_LayerStack;
+		float LastFrameTime{ 0.0f };
 	};
 
 	/**

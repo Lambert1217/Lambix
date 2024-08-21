@@ -34,7 +34,7 @@ namespace Lambix
 		m_Data.Width = width;
 		m_Data.Height = height;
 		m_Data.Title = windowTitle;
-		m_Window = glfwCreateWindow(m_Data.Width, m_Data.Height,m_Data.Title.c_str(), nullptr, nullptr);
+		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height,m_Data.Title.c_str(), nullptr, nullptr);
 		if(!m_Window){
 			LOG_ERROR("GLFWwindow creation failed!");
 			return false;
@@ -95,7 +95,7 @@ namespace Lambix
 		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
 		{
 		  WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-		  KeyTypedEvent event(keycode);
+		  KeyTypedEvent event((int)keycode);
 
 		  data.EventCallback(event);
 		});
