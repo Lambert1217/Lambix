@@ -11,8 +11,6 @@
 
 #pragma once
 
-#include "string"
-
 #define WINDOW Lambix::lbWindow::GetInstance()
 class GLFWwindow;
 
