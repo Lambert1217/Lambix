@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include "Core/Events/ApplicationEvent.h"
+
 namespace Lambix
 {
 
@@ -36,8 +38,18 @@ namespace Lambix
 		 */
 		inline static lbApplication& GetInstance() { return *s_lbApplication; }
 
+		/**
+		 * @brief 事件处理
+		 * @param e
+		 */
+		void OnEvent(Event& e);
+	 private:
+		bool OnWindowClose(WindowCloseEvent& e); // 窗口关闭事件处理函数
+		bool OnWindowResize(WindowResizeEvent& e); // 窗口关闭事件处理函数
+
 	 private:
 		static lbApplication* s_lbApplication; // 应用类单例
+		bool isRunning{true};
 	};
 
 	/**

@@ -22,7 +22,7 @@ target_include_directories(lb_engine
         ${Vulkan_INCLUDE_DIRS}
 )
 # 添加预编译头文件
-target_precompile_headers(lb_engine PRIVATE lbpch.h)
+target_precompile_headers(lb_engine PUBLIC lbpch.h)
 # 链接第三方库
 target_link_libraries(lb_engine
         PUBLIC

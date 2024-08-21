@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include "Core/Events/Event.h"
+
 #define WINDOW Lambix::lbWindow::GetInstance()
 class GLFWwindow;
 
@@ -24,6 +26,16 @@ namespace Lambix
 		lbWindow &operator=(const lbWindow&) = delete;
 		~lbWindow() = default;
 
+		using EventCallbackFn = std::function<void(Event &)>;
+
+		/**
+		 * @brief 设置事件回调
+		 * @param callback
+		 */
+		void SetEventCallback(const EventCallbackFn &callback){
+			m_Data.EventCallback = callback;
+		}
+
 		/**
 		 * @brief 获取窗口单例
 		 * @return
@@ -36,17 +48,21 @@ namespace Lambix
 
 		/**
 		 *
+		 * @return
+		 */
+		inline GLFWwindow* GetNativeWindow()
+		{
+			return m_Window;
+		}
+
+		/**
+		 *
 		 * @param width
 		 * @param height
 		 * @param windowTitle
 		 * @return 初始化成功返回true，反之返回false
 		 */
 		bool init(uint32_t width, uint32_t height,const std::string& windowTitle);
-		/**
-		 *
-		 * @return 窗口应该关闭时返回true，反之返回false
-		 */
-		bool shouldClose();
 
 		/**
 		 * @brief 事件轮询
@@ -65,11 +81,14 @@ namespace Lambix
 	 private:
 		lbWindow();
 	 private:
-		uint32_t m_Width;
-		uint32_t m_Height;
-		std::string m_WindowTitle;
 		GLFWwindow* m_Window;
-		static lbWindow* s_lbWindow;
+		// 内部结构体 记录窗口属性
+		struct WindowData
+		{
+			std::string Title;
+			uint32_t Width{0}, Height{0};
+			EventCallbackFn EventCallback;
+		}m_Data;
 	};
 
 } // Lambix
