@@ -17,15 +17,6 @@ namespace Lambix
 {
 	lbWindow* lbWindow::s_lbWindow = nullptr;
 
-	lbWindow* lbWindow::GetInstance()
-	{
-		if(s_lbWindow == nullptr)
-		{
-			s_lbWindow = new lbWindow();
-		}
-		return s_lbWindow;
-	}
-
 	lbWindow::lbWindow():m_Width(0), m_Height(0),m_Window(nullptr),m_WindowTitle()
 	{
 	}
@@ -34,7 +25,7 @@ namespace Lambix
 	{
 		// glfw 初始化
 		if(!glfwInit()){
-			LOG_ERROR("glfw 初始化失败！");
+			LOG_ERROR("GLFW initialization failed!");
 			return false;
 		}
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -44,13 +35,13 @@ namespace Lambix
 		m_WindowTitle = windowTitle;
 		m_Window = glfwCreateWindow(m_Width, m_Height,m_WindowTitle.c_str(), nullptr, nullptr);
 		if(!m_Window){
-			LOG_ERROR("窗口创建失败！");
+			LOG_ERROR("GLFWwindow creation failed!");
 			return false;
 		}
 		// 设置上下文
 		glfwMakeContextCurrent(m_Window);
 
-		LOG_INFO("窗口初始化：({0},{1},{2})",m_Width, m_Height, m_WindowTitle);
+		LOG_INFO("Window initialization：({0},{1},{2})",m_Width, m_Height, m_WindowTitle);
 		return true;
 	}
 
@@ -73,7 +64,7 @@ namespace Lambix
 	{
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
-		LOG_INFO("窗口销毁");
+		LOG_INFO("Window Destruction");
 	}
 
 } // Lambix

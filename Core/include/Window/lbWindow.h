@@ -28,7 +28,11 @@ namespace Lambix
 		 * @brief 获取窗口单例
 		 * @return
 		 */
-		static lbWindow* GetInstance();
+		inline static lbWindow* GetInstance()
+		{
+			static std::unique_ptr<lbWindow> instance(new lbWindow());
+			return instance.get();
+		}
 
 		/**
 		 *
