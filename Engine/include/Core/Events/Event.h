@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "lbCore.h"
+#include "Core/lbCore.h"
 
 namespace Lambix
 {
