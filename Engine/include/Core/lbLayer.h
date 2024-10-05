@@ -77,7 +77,7 @@ namespace Lambix
 		 * @brief 获取层的名称。
 		 * @return 层的名称。
 		 */
-		inline const std::string& GetName() const { return m_DebugName; }
+		[[nodiscard]] inline const std::string& GetName() const { return m_DebugName; }
 
 	 protected:
 		std::string m_DebugName; ///< 层的名称，用于调试。

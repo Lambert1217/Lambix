@@ -10,6 +10,7 @@
 //
 #pragma once
 
+#ifdef LAMBIX_OS_WINDOWS
 extern Lambix::lbApplication *Lambix::CreateApplication();
 
 // 程序的入口
@@ -25,3 +26,4 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+#endif

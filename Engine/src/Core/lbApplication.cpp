@@ -13,28 +13,27 @@
 #include "Core/lbLog.h"
 #include "Core/lbWindow.h"
 #include "Core/lbCore.h"
-#include "Core/lbInput.h"
 #include "GLFW/glfw3.h"
 
 namespace Lambix
 {
 	lbApplication* lbApplication::s_lbApplication = nullptr;
 
-	lbApplication::lbApplication()
+	lbApplication::lbApplication() : m_Window(nullptr)
 	{
 		LOG_ASSERT(!s_lbApplication, "lbApplication already exists");
 		s_lbApplication = this;
 
 		// 窗口初始化
-		WINDOW->init(1280, 720, "Lambix");
-		WINDOW->SetEventCallback(LB_BIND_EVENT_FN(lbApplication::OnEvent));
+		m_Window = lbWindow::Create();
+		m_Window->SetEventCallback([this](auto && PH1) { OnEvent(std::forward<decltype(PH1)>(PH1)); });
 	}
 
 	void lbApplication::run()
 	{
 		while (isRunning)
 		{
-			float CurrentTime = (float)glfwGetTime();
+			auto CurrentTime = (float)glfwGetTime();
 			lbTimestep timestep = CurrentTime - LastFrameTime;
 			LastFrameTime = CurrentTime;
 
@@ -44,14 +43,14 @@ namespace Lambix
 				layer->OnUpdate(timestep);
 			}
 
-			WINDOW->pollEvents();
-			WINDOW->swapBuffer();
+			m_Window->pollEvents();
+			m_Window->swapBuffer();
 		}
 
 	}
 	void lbApplication::quit()
 	{
-		WINDOW->destroy();
+		m_Window->destroy();
 		LOG_INFO("Program Quit");
 	}
 

@@ -12,6 +12,7 @@
 #pragma once
 
 #include "Core/Events/ApplicationEvent.h"
+#include "Core/lbWindow.h"
 #include "lbLayerStack.h"
 
 namespace Lambix
@@ -56,12 +57,15 @@ namespace Lambix
 		 * @param overlay
 		 */
 		void PushOverlay(lbLayer* overlay);
+
+		[[nodiscard]] inline lbWindow* GetWindow() const { return m_Window; }
 	 private:
 		bool OnWindowClose(WindowCloseEvent& e); // 窗口关闭事件处理函数
 		bool OnWindowResize(WindowResizeEvent& e); // 窗口关闭事件处理函数
 
 	 private:
 		static lbApplication* s_lbApplication; // 应用类单例
+		lbWindow* m_Window;
 		bool isRunning{true};
 		lbLayerStack m_LayerStack;
 		float LastFrameTime{ 0.0f };

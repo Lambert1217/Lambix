@@ -20,7 +20,7 @@ namespace Lambix
 	void lbLog::init()
 	{
 		// 设置日志输出格式
-		spdlog::set_pattern("[%n][%T] %^[%l]%$: %v");
+		spdlog::set_pattern("[%n][%T]%^[%l]%$: %v");
 
 		// 设置logger的名称和等级
 		s_Logger = spdlog::stdout_color_mt("Lambix");

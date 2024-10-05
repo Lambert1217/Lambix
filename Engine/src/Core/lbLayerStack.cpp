@@ -14,9 +14,7 @@
 namespace Lambix
 {
 	
-	lbLayerStack::lbLayerStack()
-	{
-	}
+	lbLayerStack::lbLayerStack() = default;
 
 	lbLayerStack::~lbLayerStack()
 	{

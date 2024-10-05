@@ -2,7 +2,7 @@
  ***************************************************************
  * @file            : lbWindow.h
  * @author          : Lambert
- * @brief           : 基于glfw的窗口
+ * @brief           : 窗口基类
  * @attention       : None
  * @data            : 2024/8/20
  ***************************************************************
@@ -13,17 +13,11 @@
 
 #include "Core/Events/Event.h"
 
-#define WINDOW Lambix::lbWindow::GetInstance()
-class GLFWwindow;
-
 namespace Lambix
 {
-
 	class lbWindow
 	{
 	 public:
-		lbWindow(const lbWindow&) = delete;
-		lbWindow &operator=(const lbWindow&) = delete;
 		~lbWindow() = default;
 
 		using EventCallbackFn = std::function<void(Event &)>;
@@ -32,28 +26,19 @@ namespace Lambix
 		 * @brief 设置事件回调
 		 * @param callback
 		 */
-		void SetEventCallback(const EventCallbackFn &callback){
-			m_Data.EventCallback = callback;
-		}
+		virtual void SetEventCallback(const EventCallbackFn &callback) = 0;
 
 		/**
-		 * @brief 获取窗口单例
-		 * @return
+		 * @brief 设置垂直同步
+		 * @param enabled
 		 */
-		inline static lbWindow* GetInstance()
-		{
-			static std::unique_ptr<lbWindow> instance(new lbWindow());
-			return instance.get();
-		}
+		virtual void SetVSync(bool enabled) = 0;
 
 		/**
-		 *
+		 * @brief 返回是否开启垂直同步
 		 * @return
 		 */
-		inline GLFWwindow* GetNativeWindow()
-		{
-			return m_Window;
-		}
+		[[nodiscard]] virtual bool IsVSync() const = 0;
 
 		/**
 		 *
@@ -62,33 +47,34 @@ namespace Lambix
 		 * @param windowTitle
 		 * @return 初始化成功返回true，反之返回false
 		 */
-		bool init(uint32_t width, uint32_t height,const std::string& windowTitle);
+		virtual bool init(uint32_t width, uint32_t height,const std::string& windowTitle) = 0;
 
 		/**
 		 * @brief 事件轮询
 		 */
-		void pollEvents();
+		virtual void pollEvents() = 0;
 
 		/**
 		 * @brief 切换双缓存
 		 */
-		void swapBuffer();
+		virtual void swapBuffer() = 0;
 
 		/**
-		 * @brief 窗口销毁，卸载glfw资源
+		 * @brief 窗口销毁，卸载资源
 		 */
-		void destroy();
-	 private:
-		lbWindow();
-	 private:
-		GLFWwindow* m_Window;
-		// 内部结构体 记录窗口属性
-		struct WindowData
-		{
-			std::string Title;
-			uint32_t Width{0}, Height{0};
-			EventCallbackFn EventCallback;
-		}m_Data;
+		virtual void destroy() = 0;
+
+		/**
+		 * @brief 获取活动窗口
+		 * @return
+		 */
+		[[nodiscard]] virtual void *GetNativeWindow() const = 0;
+
+		/**
+		 * @brief 窗口创建
+		 */
+		static lbWindow* Create(uint32_t width = 1280, uint32_t height = 720, const std::string& windowTitle = "Lambix Engine");
 	};
+
 
 } // Lambix

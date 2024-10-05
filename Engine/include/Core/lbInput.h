@@ -53,17 +53,19 @@ namespace Lambix
 		 * @return
 		 */
 		inline static float GetMouseY() { return s_lbInput->GetMouseYHelp(); }
-	 private:
-		virtual bool IsKeyPressedHelp(int keycode);
-		virtual bool IsMouseButtonPressedHelp(int button);
-		virtual std::pair<float, float> GetMousePositionHelp();
-		virtual float GetMouseXHelp();
-		virtual float GetMouseYHelp();
+	 protected:
+		virtual bool IsKeyPressedHelp(int keycode) = 0;
+		virtual bool IsMouseButtonPressedHelp(int button) = 0;
+		virtual std::pair<float, float> GetMousePositionHelp() = 0;
+		virtual float GetMouseXHelp() = 0;
+		virtual float GetMouseYHelp() = 0;
 	 private:
 		static lbInput* s_lbInput;
 	};
 
 } // Lambix
+
+#ifdef LAMBIX_OS_WINDOWS
 
 // 鼠标键值
 #define LB_MOUSE_BUTTON_1         0
@@ -202,3 +204,5 @@ namespace Lambix
 #define LB_KEY_RIGHT_ALT          346
 #define LB_KEY_RIGHT_SUPER        347
 #define LB_KEY_MENU               348
+
+#endif

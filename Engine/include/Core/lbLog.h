@@ -47,14 +47,18 @@ namespace Lambix
 #define LOG_INFO(...) ::Lambix::lbLog::GetLogger()->info(__VA_ARGS__)
 #define LOG_WARN(...) ::Lambix::lbLog::GetLogger()->warn(__VA_ARGS__)
 #define LOG_ERROR(...) ::Lambix::lbLog::GetLogger()->error(__VA_ARGS__)
-#define LOG_FATAL(...) ::Lambix::lbLog::GetLogger()->fatal(__VA_ARGS__)
+#define LOG_CRITICAL(...) ::Lambix::lbLog::GetLogger()->critical(__VA_ARGS__)
 
 // 断言
+#ifdef LAMBIX_DEBUG
 #define LOG_ASSERT(x, ...)                                   \
 	{                                                        \
 		if (!(x))                                            \
 		{                                                    \
-			LOG_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
+			LOG_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); \
 			__debugbreak();                                  \
 		}                                                    \
 	}
+#else
+#define LOG_ASSERT(x, ...)
+#endif
