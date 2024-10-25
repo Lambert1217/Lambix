@@ -9,7 +9,7 @@
  */
 //
 
-#include "Debug/lbLog.h"
+#include "Core/lbLog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace Lambix
@@ -20,10 +20,13 @@ namespace Lambix
 	void lbLog::init()
 	{
 		// 设置日志输出格式
-		spdlog::set_pattern("[%T] %^[%l]%$: %v");
+		spdlog::set_pattern("[%n][%T]%^[%l]%$: %v");
 
 		// 设置logger的名称和等级
-		s_Logger = spdlog::stdout_color_mt("GLToolBox");
+		s_Logger = spdlog::stdout_color_mt("Lambix");
 		s_Logger->set_level(spdlog::level::trace);
+
+		LOG_INFO("Log initialization successful");
+		LOG_INFO("Welcome to Lambix Engine!");
 	}
 } // Lambix
