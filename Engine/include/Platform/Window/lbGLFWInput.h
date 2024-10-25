@@ -2,7 +2,7 @@
  ***************************************************************
  * @file            : WindowsInput.h
  * @author          : Lambert
- * @brief           : Windows平台输入处理
+ * @brief           : GLFW窗口输入处理
  * @attention       : None
  * @data            : 2024/10/5
  ***************************************************************
@@ -16,7 +16,7 @@
 namespace Lambix
 {
 
-	class WindowsInput : public lbInput
+	class lbGLFWInput : public lbInput
 	{
 	 protected:
 		bool IsKeyPressedHelp(int keycode) override;

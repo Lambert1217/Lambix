@@ -9,38 +9,36 @@
  */
 //
 
-#include "Platform/Windows/WindowsInput.h"
+#include "Platform/Window/lbGLFWInput.h"
 #include "Core/lbApplication.h"
 #include "GLFW/glfw3.h"
 
 namespace Lambix
 {
-	lbInput* lbInput::s_lbInput = new WindowsInput();
-
-	bool WindowsInput::IsKeyPressedHelp(int keycode)
+	bool lbGLFWInput::IsKeyPressedHelp(int keycode)
 	{
 		auto window = static_cast<GLFWwindow*>(lbApplication::GetInstance().GetWindow()->GetNativeWindow());
 		auto state = glfwGetKey(window, keycode);
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
-	bool WindowsInput::IsMouseButtonPressedHelp(int button)
+	bool lbGLFWInput::IsMouseButtonPressedHelp(int button)
 	{
 		auto window = static_cast<GLFWwindow*>(lbApplication::GetInstance().GetWindow()->GetNativeWindow());
 		auto state = glfwGetMouseButton(window, button);
 		return state == GLFW_PRESS;
 	}
-	std::pair<float, float> WindowsInput::GetMousePositionHelp()
+	std::pair<float, float> lbGLFWInput::GetMousePositionHelp()
 	{
 		auto window = static_cast<GLFWwindow*>(lbApplication::GetInstance().GetWindow()->GetNativeWindow());
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		return { (float)xpos, (float)ypos };
 	}
-	float WindowsInput::GetMouseXHelp()
+	float lbGLFWInput::GetMouseXHelp()
 	{
 		return GetMousePositionHelp().first;
 	}
-	float WindowsInput::GetMouseYHelp()
+	float lbGLFWInput::GetMouseYHelp()
 	{
 		return GetMousePositionHelp().second;
 	}

@@ -28,5 +28,5 @@ void ExampleLayer::OnUpdate(Lambix::lbTimestep ts)
 }
 void ExampleLayer::OnEvent(Lambix::Event& event)
 {
-	LOG_INFO(event.ToString());
+	//LOG_INFO(event.ToString());
 }

@@ -2,7 +2,7 @@
  ***************************************************************
  * @file            : WindowsWindow.h
  * @author          : Lambert
- * @brief           : Windows平台窗口，使用glfw实现
+ * @brief           : GLFW窗口实现
  * @attention       : None
  * @data            : 2024/10/5
  ***************************************************************
@@ -17,18 +17,14 @@ class GLFWwindow;
 
 namespace Lambix{
 
-	class WindowsWindow : public lbWindow
+	class lbGLFWWindow : public lbWindow
 	{
 	 public:
-		WindowsWindow() : m_Window(nullptr), m_Data() {};
-		virtual ~WindowsWindow() = default;
+		lbGLFWWindow(uint32_t width, uint32_t height, const std::string& windowTitle);
+		virtual ~lbGLFWWindow() = default;
 
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-		void SetVSync(bool enabled) override;
-		[[nodiscard]] bool IsVSync() const override;
-		bool init(uint32_t width, uint32_t height, const std::string& windowTitle) override;
 		void pollEvents() override;
-		void swapBuffer() override;
 		void destroy() override;
 
 		[[nodiscard]] void* GetNativeWindow() const override{ return m_Window; }
@@ -38,8 +34,7 @@ namespace Lambix{
 		struct WindowData
 		{
 			std::string Title;
-			uint32_t Width{0}, Height{0};
-			bool VSync{false};
+			uint32_t Width, Height;
 			EventCallbackFn EventCallback;
 		}m_Data;
 	};

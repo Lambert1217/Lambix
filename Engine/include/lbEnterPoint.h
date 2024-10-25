@@ -10,19 +10,23 @@
 //
 #pragma once
 
-#ifdef LAMBIX_OS_WINDOWS
-extern Lambix::lbApplication *Lambix::CreateApplication();
+#if LAMBIX_OS_WINDOWS | LAMBIX_OS_APPLE | LAMBIX_OS_LINUX
 
+extern Lambix::lbApplication *Lambix::CreateApplication();
 // 程序的入口
 int main(int argc, char **argv)
 {
 	// 初始化日志
 	Lambix::lbLog::init();
 
-	// 窗口创建
+	// 程序创建
 	auto app = Lambix::CreateApplication();
+	// 程序初始化
+	app->init();
 	// 窗口运行
 	app->run();
+	// 窗口退出
+	app->quit();
 
 	return 0;
 }

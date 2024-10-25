@@ -1,6 +1,6 @@
 /**
  ***************************************************************
- * @file            : WindowsWindow.cpp
+ * @file            : lbGLFWWindow.cpp
  * @author          : Lambert
  * @brief           : None
  * @attention       : None
@@ -9,7 +9,7 @@
  */
 //
 
-#include "Platform/Windows/WindowsWindow.h"
+#include "Platform/Window/lbGLFWWindow.h"
 #include "Core/lbLog.h"
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/KeyEvent.h"
@@ -18,44 +18,17 @@
 
 namespace Lambix{
 
-	lbWindow* lbWindow::Create(uint32_t width, uint32_t height, const std::string& windowTitle)
-	{
-		auto window = new WindowsWindow();
-		window->init(width, height, windowTitle);
-		return window;
-	}
-
-	void Lambix::WindowsWindow::SetVSync(bool enabled)
-	{
-		if (enabled) {
-			glfwSwapInterval(1);
-		} else {
-			glfwSwapInterval(0);
-		}
-		m_Data.VSync = enabled;
-	}
-	bool Lambix::WindowsWindow::IsVSync() const
-	{
-		return m_Data.VSync;
-	}
-	bool Lambix::WindowsWindow::init(uint32_t width, uint32_t height, const std::string& windowTitle)
+	lbGLFWWindow::lbGLFWWindow(uint32_t width, uint32_t height, const std::string& windowTitle)
 	{
 		// glfw 初始化
-		if(!glfwInit()){
-			LOG_ERROR("GLFW initialization failed!");
-			return false;
-		}
+		LOG_ASSERT(glfwInit(),"GLFW initialization failed!");
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		// 创建窗口
 		m_Data.Width = width;
 		m_Data.Height = height;
 		m_Data.Title = windowTitle;
-		this->SetVSync(m_Data.VSync);
 		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height,m_Data.Title.c_str(), nullptr, nullptr);
-		if(!m_Window){
-			LOG_ERROR("GLFWwindow creation failed!");
-			return false;
-		}
+		LOG_ASSERT(m_Window, "GLFWwindow creation failed!");
 		// 设置上下文
 		glfwMakeContextCurrent(m_Window);
 
@@ -157,21 +130,17 @@ namespace Lambix{
 		});
 
 		LOG_INFO("Window initialization：({0},{1},{2})",m_Data.Width, m_Data.Height, m_Data.Title);
-		return true;
 	}
-	void Lambix::WindowsWindow::pollEvents()
+
+	void Lambix::lbGLFWWindow::pollEvents()
 	{
 		glfwPollEvents();
 	}
-	void Lambix::WindowsWindow::swapBuffer()
-	{
-		glfwSwapBuffers(m_Window);
-	}
-	void Lambix::WindowsWindow::destroy()
+
+	void Lambix::lbGLFWWindow::destroy()
 	{
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
 		LOG_INFO("Window Destruction");
 	}
-
 }

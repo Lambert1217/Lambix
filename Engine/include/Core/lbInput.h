@@ -65,7 +65,7 @@ namespace Lambix
 
 } // Lambix
 
-#ifdef LAMBIX_OS_WINDOWS
+#if LAMBIX_OS_WINDOWS | LAMBIX_OS_APPLE | LAMBIX_OS_LINUX
 
 // 鼠标键值
 #define LB_MOUSE_BUTTON_1         0

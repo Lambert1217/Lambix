@@ -17,12 +17,22 @@
 
 namespace Lambix
 {
+	struct lbAppSettings{
+		uint32_t WindowWidth{1280};
+		uint32_t WindowHeight{720};
+		std::string WindowTitle{"Lambix Engine"};
+	};
 
 	class lbApplication
 	{
 	 public:
 		lbApplication();
 		virtual ~lbApplication() = default;
+
+		/**
+		 * @brief 程序初始化
+		 */
+		void init();
 
 		/**
 		 * @brief 程序执行
@@ -65,6 +75,7 @@ namespace Lambix
 
 	 private:
 		static lbApplication* s_lbApplication; // 应用类单例
+		lbAppSettings m_AppSettings;
 		lbWindow* m_Window;
 		bool isRunning{true};
 		lbLayerStack m_LayerStack;

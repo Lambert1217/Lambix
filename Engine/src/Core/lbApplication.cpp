@@ -23,10 +23,13 @@ namespace Lambix
 	{
 		LOG_ASSERT(!s_lbApplication, "lbApplication already exists");
 		s_lbApplication = this;
+	}
 
+	void lbApplication::init()
+	{
 		// 窗口初始化
-		m_Window = lbWindow::Create();
-		m_Window->SetEventCallback([this](auto && PH1) { OnEvent(std::forward<decltype(PH1)>(PH1)); });
+		m_Window = lbWindow::Create(m_AppSettings.WindowWidth, m_AppSettings.WindowHeight, m_AppSettings.WindowTitle);
+		m_Window->SetEventCallback(LB_BIND_EVENT_FN(lbApplication::OnEvent));
 	}
 
 	void lbApplication::run()
@@ -44,7 +47,7 @@ namespace Lambix
 			}
 
 			m_Window->pollEvents();
-			m_Window->swapBuffer();
+			//m_Window->swapBuffer();
 		}
 
 	}
@@ -70,7 +73,6 @@ namespace Lambix
 	bool lbApplication::OnWindowClose(WindowCloseEvent& e)
 	{
 		isRunning = false;
-		quit();
 		return true;
 	}
 	bool lbApplication::OnWindowResize(WindowResizeEvent& e)
