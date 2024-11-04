@@ -21,7 +21,10 @@ namespace Lambix{
 	lbGLFWWindow::lbGLFWWindow(uint32_t width, uint32_t height, const std::string& windowTitle)
 	{
 		// glfw 初始化
-		LOG_ASSERT(glfwInit(),"GLFW initialization failed!");
+		if(!glfwInit()){
+			LOG_CRITICAL("GLFW initialization failed!");
+			return;
+		}
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		// 创建窗口
 		m_Data.Width = width;
