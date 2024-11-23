@@ -14,6 +14,7 @@
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/lbWindow.h"
 #include "lbLayerStack.h"
+#include "Imgui/lbImguiLayer.h"
 
 namespace Lambix
 {
@@ -78,6 +79,7 @@ namespace Lambix
 		static lbApplication* s_lbApplication; // 应用类单例
 		lbAppSettings m_AppSettings;
 		lbWindow* m_Window;
+		lbImguiLayer* m_ImguiLayer;
 		bool isRunning{true};
 		lbLayerStack m_LayerStack;
 		float LastFrameTime{ 0.0f };

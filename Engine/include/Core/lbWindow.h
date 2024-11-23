@@ -46,6 +46,18 @@ namespace Lambix
 		virtual bool IsVSync() const = 0;
 
 		/**
+		 * @brief 获取窗口宽度
+		 * @return
+		 */
+		virtual uint32_t GetWidth() const = 0;
+
+		/**
+		 * @brief 获取窗口宽度
+		 * @return
+		 */
+		virtual uint32_t GetHeight() const = 0;
+
+		/**
 		 * @brief 获取活动窗口
 		 * @return
 		 */

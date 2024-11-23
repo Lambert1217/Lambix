@@ -14,6 +14,7 @@ file(GLOB_RECURSE CORE_SOURCE_FILES "src/Core/**.cpp")
 find_package(spdlog CONFIG REQUIRED) # 配置并查找spdlog库
 find_package(glfw3 CONFIG REQUIRED) # 配置并查找GLFW3库
 find_package(glm CONFIG REQUIRED)   # 配置并查找GLM库
+find_package(imgui CONFIG REQUIRED) # 配置并查找Imgui
 
 # 创建一个名为lbx的库
 add_library(lbx "")
@@ -79,6 +80,7 @@ target_link_libraries(lbx
         PUBLIC
         spdlog::spdlog
         glm::glm
+        imgui::imgui
         PRIVATE
         glfw
         glad::glad

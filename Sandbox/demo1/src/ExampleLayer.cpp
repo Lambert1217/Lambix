@@ -10,23 +10,26 @@
 //
 
 #include "ExampleLayer.h"
+#include "imgui.h"
 
 ExampleLayer::ExampleLayer(): Lambix::lbLayer("Example")
 {
 }
 void ExampleLayer::OnAttach()
 {
-	LOG_INFO("{0} -> OnAttach", this->GetName());
 }
 void ExampleLayer::OnDetach()
 {
-	LOG_INFO("{0} -> OnDetach", this->GetName());
 }
 void ExampleLayer::OnUpdate(Lambix::lbTimestep ts)
 {
-	//LOG_INFO("{0} -> OnUpdate: {1}s", this->GetName(), (float)ts);
 }
 void ExampleLayer::OnEvent(Lambix::Event& event)
 {
-	//LOG_INFO(event.ToString());
+}
+void ExampleLayer::OnImGuiRender()
+{
+	ImGui::Begin("Setting");
+	ImGui::Text("Hello Imgui!");
+	ImGui::End();
 }

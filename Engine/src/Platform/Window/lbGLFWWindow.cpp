@@ -176,4 +176,12 @@ namespace Lambix{
 	{
 		return m_Data.VSync;
 	}
+	uint32_t lbGLFWWindow::GetWidth() const
+	{
+		return m_Data.Width;
+	}
+	uint32_t lbGLFWWindow::GetHeight() const
+	{
+		return m_Data.Height;
+	}
 }

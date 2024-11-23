@@ -23,4 +23,5 @@
 	 virtual void OnDetach() override;
 	 virtual void OnUpdate(Lambix::lbTimestep ts) override;
 	 virtual void OnEvent(Lambix::Event& event) override;
-};
+	 virtual void OnImGuiRender() override;
+ };
