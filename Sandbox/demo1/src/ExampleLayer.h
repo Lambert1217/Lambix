@@ -24,4 +24,7 @@
 	 virtual void OnUpdate(Lambix::lbTimestep ts) override;
 	 virtual void OnEvent(Lambix::Event& event) override;
 	 virtual void OnImGuiRender() override;
+
+  private:
+	glm::vec4 m_ClearColor;
  };

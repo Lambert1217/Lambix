@@ -17,6 +17,7 @@
 #include "Core/lbInput.h"
 #include "Core/lbLayer.h"
 #include "Core/lbTimestep.h"
+#include "Core/Renderer/lbRendererCommand.h"
 // -----Events
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/KeyEvent.h"

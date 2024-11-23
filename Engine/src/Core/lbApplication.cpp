@@ -14,8 +14,7 @@
 #include "Core/lbWindow.h"
 #include "Core/lbCore.h"
 #include "GLFW/glfw3.h"
-
-#include "glad/glad.h"
+#include "Core/Renderer/lbRendererCommand.h"
 
 namespace Lambix
 {
@@ -43,10 +42,6 @@ namespace Lambix
 	{
 		while (isRunning)
 		{
-			{
-				glClearColor(1.0f, 0.8f, 0.8f, 1.0f);
-				glClear(GL_COLOR_BUFFER_BIT);
-			}
 			auto CurrentTime = (float)glfwGetTime();
 			lbTimestep timestep = CurrentTime - LastFrameTime;
 			LastFrameTime = CurrentTime;
@@ -93,7 +88,7 @@ namespace Lambix
 	}
 	bool lbApplication::OnWindowResize(WindowResizeEvent& e)
 	{
-		LOG_TRACE("OnResize : ({0},{1})",e.GetWidth(), e.GetHeight());
+		lbRendererCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 		return false;
 	}
 	void lbApplication::PushLayer(lbLayer* layer)
