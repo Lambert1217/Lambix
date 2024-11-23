@@ -12,6 +12,7 @@
 #pragma once
 
 #include "Core/lbWindow.h"
+#include "Core/Renderer/lbGraphicsContext.h"
 
 class GLFWwindow;
 
@@ -21,20 +22,26 @@ namespace Lambix{
 	{
 	 public:
 		lbGLFWWindow(uint32_t width, uint32_t height, const std::string& windowTitle);
-		virtual ~lbGLFWWindow() = default;
+		virtual ~lbGLFWWindow();
 
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
-		void pollEvents() override;
-		void destroy() override;
+		void OnUpdate() override;
+		void SetVSync(bool enabled) override;
+		bool IsVSync() const override;
 
 		[[nodiscard]] void* GetNativeWindow() const override{ return m_Window; }
 	 private:
+		void destroy();
+	 private:
 		GLFWwindow* m_Window;
+		lbGraphicsContext* m_Context;
+
 		// 内部结构体 记录窗口属性
 		struct WindowData
 		{
 			std::string Title;
 			uint32_t Width, Height;
+			bool VSync;
 			EventCallbackFn EventCallback;
 		}m_Data;
 	};

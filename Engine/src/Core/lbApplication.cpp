@@ -25,14 +25,15 @@ namespace Lambix
 		s_lbApplication = this;
 	}
 
-	void lbApplication::init()
+	void lbApplication::Init()
 	{
 		// 窗口初始化
 		m_Window = lbWindow::Create(m_AppSettings.WindowWidth, m_AppSettings.WindowHeight, m_AppSettings.WindowTitle);
+		m_Window->SetVSync(m_AppSettings.VSync);
 		m_Window->SetEventCallback(LB_BIND_EVENT_FN(lbApplication::OnEvent));
 	}
 
-	void lbApplication::run()
+	void lbApplication::Run()
 	{
 		while (isRunning)
 		{
@@ -46,14 +47,12 @@ namespace Lambix
 				layer->OnUpdate(timestep);
 			}
 
-			m_Window->pollEvents();
-			//m_Window->swapBuffer();
+			m_Window->OnUpdate();
 		}
 
 	}
-	void lbApplication::quit()
+	void lbApplication::Quit()
 	{
-		m_Window->destroy();
 		LOG_INFO("Program Quit");
 	}
 

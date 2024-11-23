@@ -29,14 +29,21 @@ namespace Lambix
 		virtual void SetEventCallback(const EventCallbackFn &callback) = 0;
 
 		/**
-		 * @brief 事件轮询
+		 * @brief 窗口更新
 		 */
-		virtual void pollEvents() = 0;
+		virtual void OnUpdate() = 0;
 
 		/**
-		 * @brief 窗口销毁，卸载资源
+		 * @brief 设置垂直同步
+		 * @param enabled
 		 */
-		virtual void destroy() = 0;
+		virtual void SetVSync(bool enabled) = 0;
+
+		/**
+		 * @brief 返还当前是否垂直同步
+		 * @return
+		 */
+		virtual bool IsVSync() const = 0;
 
 		/**
 		 * @brief 获取活动窗口

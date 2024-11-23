@@ -21,6 +21,7 @@ namespace Lambix
 		uint32_t WindowWidth{1280};
 		uint32_t WindowHeight{720};
 		std::string WindowTitle{"Lambix Engine"};
+		bool VSync{false};
 	};
 
 	class lbApplication
@@ -32,17 +33,17 @@ namespace Lambix
 		/**
 		 * @brief 程序初始化
 		 */
-		void init();
+		void Init();
 
 		/**
 		 * @brief 程序执行
 		 */
-		void run();
+		void Run();
 
 		/**
 		 * @brief 程序退出
 		 */
-		void quit();
+		void Quit();
 
 		/**
 		 * 获取程序单例

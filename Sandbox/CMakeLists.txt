@@ -1,4 +1,7 @@
-file(GLOB_RECURSE SANDBOX_SOURCE_FILES src/**.cpp)
+# SandBox们
 
-add_executable(sandbox ${SANDBOX_SOURCE_FILES})
-target_link_libraries(sandbox PRIVATE lb_engine)
+# demo1
+file(GLOB_RECURSE DEMO1_SOURCE_FILES demo1/src/**.cpp)
+
+add_executable(demo1 ${DEMO1_SOURCE_FILES})
+target_link_libraries(demo1 PRIVATE Lambix::Engine)

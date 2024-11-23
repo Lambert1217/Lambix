@@ -16,6 +16,10 @@
 #include "Core/Events/MouseEvent.h"
 #include "GLFW/glfw3.h"
 
+#ifdef LAMBIX_USE_OPENGL
+#include "Backend/OpenGL/lbOpenGLContext.h"
+#endif
+
 namespace Lambix{
 
 	lbGLFWWindow::lbGLFWWindow(uint32_t width, uint32_t height, const std::string& windowTitle)
@@ -25,15 +29,24 @@ namespace Lambix{
 			LOG_CRITICAL("GLFW initialization failed!");
 			return;
 		}
-		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+		// m_Date 设置
+		{
+			m_Data.Width = width;
+			m_Data.Height = height;
+			m_Data.Title = windowTitle;
+			m_Data.VSync = true;  // 默认开启垂直同步
+		}
+
 		// 创建窗口
-		m_Data.Width = width;
-		m_Data.Height = height;
-		m_Data.Title = windowTitle;
-		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height,m_Data.Title.c_str(), nullptr, nullptr);
+		m_Window = glfwCreateWindow((int)m_Data.Width, (int)m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		LOG_ASSERT(m_Window, "GLFWwindow creation failed!");
+
 		// 设置上下文
-		glfwMakeContextCurrent(m_Window);
+#ifdef LAMBIX_USE_OPENGL
+		m_Context = new lbOpenGLContext(m_Window);
+#endif
+		m_Context->Init();
 
 		// 通过 m_Window 传递 m_Data
 		glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -135,15 +148,32 @@ namespace Lambix{
 		LOG_INFO("Window initialization：({0},{1},{2})",m_Data.Width, m_Data.Height, m_Data.Title);
 	}
 
-	void Lambix::lbGLFWWindow::pollEvents()
+	lbGLFWWindow::~lbGLFWWindow()
+	{
+		destroy();
+	}
+
+	void Lambix::lbGLFWWindow::OnUpdate()
 	{
 		glfwPollEvents();
+		m_Context->SwapBuffers();
 	}
 
 	void Lambix::lbGLFWWindow::destroy()
 	{
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
-		LOG_INFO("Window Destruction");
+	}
+	void lbGLFWWindow::SetVSync(bool enabled)
+	{
+		m_Data.VSync = enabled;
+		if (enabled)
+			glfwSwapInterval(1);
+		else
+			glfwSwapInterval(0);
+	}
+	bool lbGLFWWindow::IsVSync() const
+	{
+		return m_Data.VSync;
 	}
 }

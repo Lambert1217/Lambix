@@ -22,11 +22,11 @@ int main(int argc, char **argv)
 	// 程序创建
 	auto app = Lambix::CreateApplication();
 	// 程序初始化
-	app->init();
+	app->Init();
 	// 窗口运行
-	app->run();
+	app->Run();
 	// 窗口退出
-	app->quit();
+	app->Quit();
 
 	return 0;
 }
