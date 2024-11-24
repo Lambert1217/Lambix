@@ -9,10 +9,10 @@
  */
 //
 
-#include "Core/lbApplication.h"
-#include "Core/lbLog.h"
-#include "Core/lbWindow.h"
-#include "Core/lbCore.h"
+#include "Core/Base/lbApplication.h"
+#include "Core/Base/lbLog.h"
+#include "Core/Base/lbWindow.h"
+#include "Core/Base/lbCore.h"
 #include "GLFW/glfw3.h"
 #include "Core/Renderer/lbRendererCommand.h"
 
@@ -24,6 +24,8 @@ namespace Lambix
 	{
 		LOG_ASSERT(!s_lbApplication, "lbApplication already exists");
 		s_lbApplication = this;
+
+		Init();
 	}
 
 	void lbApplication::Init()

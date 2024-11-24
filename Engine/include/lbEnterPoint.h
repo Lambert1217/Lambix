@@ -21,8 +21,6 @@ int main(int argc, char **argv)
 
 	// 程序创建
 	auto app = Lambix::CreateApplication();
-	// 程序初始化
-	app->Init();
 	// 窗口运行
 	app->Run();
 	// 窗口退出

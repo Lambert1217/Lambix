@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "Core/lbLayer.h"
+#include "Core/Base/lbLayer.h"
 
 namespace Lambix
 {

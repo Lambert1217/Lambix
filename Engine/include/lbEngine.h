@@ -12,12 +12,15 @@
 #pragma once
 
 // --Core
-#include "Core/lbLog.h"
-#include "Core/lbApplication.h"
-#include "Core/lbInput.h"
-#include "Core/lbLayer.h"
-#include "Core/lbTimestep.h"
+#include "Core/Base/lbLog.h"
+#include "Core/Base/lbApplication.h"
+#include "Core/Base/lbInput.h"
+#include "Core/Base/lbLayer.h"
+#include "Core/Base/lbTimestep.h"
 #include "Core/Renderer/lbRendererCommand.h"
+#include "Core/Renderer/lbBuffer.h"
+#include "Core/Renderer/lbVertexArray.h"
+#include "Core/Renderer/lbShader.h"
 // -----Events
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/KeyEvent.h"

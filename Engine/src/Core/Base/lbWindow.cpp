@@ -9,7 +9,7 @@
  */
 //
 
-#include "Core/lbWindow.h"
+#include "Core/Base/lbWindow.h"
 
 #if LAMBIX_OS_WINDOWS | LAMBIX_OS_APPLE | LAMBIX_OS_LINUX
 #include "Platform/Window/lbGLFWWindow.h"

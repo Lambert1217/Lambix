@@ -55,7 +55,7 @@ namespace Lambix
 	{                                                        \
 		if (!(x))                                            \
 		{                                                    \
-			LOG_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); \
+			LOG_CRITICAL("Assertion Failed({0}:{1})\n{2}", __FILE__ , __LINE__ , __VA_ARGS__); \
 			__debugbreak();                                  \
 		}                                                    \
 	}

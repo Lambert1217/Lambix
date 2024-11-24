@@ -9,7 +9,7 @@
  */
 //
 
-#include "Core/lbInput.h"
+#include "Core/Base/lbInput.h"
 
 #if LAMBIX_OS_WINDOWS | LAMBIX_OS_APPLE | LAMBIX_OS_LINUX
 #include "Platform/Window/lbGLFWInput.h"

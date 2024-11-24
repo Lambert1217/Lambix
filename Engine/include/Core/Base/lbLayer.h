@@ -15,7 +15,7 @@
 #include <utility>
 
 #include "lbTimestep.h"
-#include "Events/Event.h"
+#include "Core/Events/Event.h"
 
 namespace Lambix
 {

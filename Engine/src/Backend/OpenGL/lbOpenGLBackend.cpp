@@ -34,4 +34,9 @@ namespace Lambix
 	{
 		glViewport(x, y, width, height);
 	}
+	void lbOpenGLBackend::DrawIndexed(const std::shared_ptr<lbVertexArray>& vertexArray)
+	{
+		vertexArray->Bind();
+		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+	}
 } // Lambix

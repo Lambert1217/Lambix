@@ -9,7 +9,7 @@
  */
 //
 
-#include "Core/lbLayerStack.h"
+#include "Core/Base/lbLayerStack.h"
 
 namespace Lambix
 {

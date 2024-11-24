@@ -35,6 +35,10 @@ namespace Lambix
 		{
 			s_RendererBackend->SetViewport(x, y, width, height);
 		}
+		inline static void DrawIndexed(const std::shared_ptr<lbVertexArray>& vertexArray)
+		{
+			s_RendererBackend->DrawIndexed(vertexArray);
+		}
 	 private:
 		static lbRendererBackend* s_RendererBackend;
 	};

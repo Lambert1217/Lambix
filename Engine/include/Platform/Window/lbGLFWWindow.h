@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "Core/lbWindow.h"
+#include "Core/Base/lbWindow.h"
 #include "Core/Renderer/lbGraphicsContext.h"
 
 class GLFWwindow;

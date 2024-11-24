@@ -9,7 +9,7 @@
  */
 //
 
-#include "Core/lbLog.h"
+#include "Core/Base/lbLog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace Lambix

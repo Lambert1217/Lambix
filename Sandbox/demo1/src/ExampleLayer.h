@@ -27,4 +27,6 @@
 
   private:
 	glm::vec4 m_ClearColor;
+	std::shared_ptr<Lambix::lbVertexArray> vao;
+	std::shared_ptr<Lambix::lbShaderProgram> shaderProgram;
  };

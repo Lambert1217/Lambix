@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "Core/lbInput.h"
+#include "Core/Base/lbInput.h"
 
 namespace Lambix
 {

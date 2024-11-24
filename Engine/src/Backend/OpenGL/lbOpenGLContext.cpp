@@ -10,7 +10,7 @@
 //
 
 #include "Backend/OpenGL/lbOpenGLContext.h"
-#include "Core/lbLog.h"
+#include "Core/Base/lbLog.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"

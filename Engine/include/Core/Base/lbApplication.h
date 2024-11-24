@@ -12,9 +12,9 @@
 #pragma once
 
 #include "Core/Events/ApplicationEvent.h"
-#include "Core/lbWindow.h"
+#include "lbWindow.h"
 #include "lbLayerStack.h"
-#include "Imgui/lbImguiLayer.h"
+#include "Core/Imgui/lbImguiLayer.h"
 
 namespace Lambix
 {
