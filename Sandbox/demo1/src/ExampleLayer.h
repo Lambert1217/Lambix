@@ -27,6 +27,7 @@
 
   private:
 	glm::vec4 m_ClearColor;
-	std::shared_ptr<Lambix::lbVertexArray> vao;
-	std::shared_ptr<Lambix::lbShaderProgram> shaderProgram;
+	glm::vec3 eyePosition;
+	float time{0};
+	std::shared_ptr<Lambix::lbTexture> dogTexture;
  };

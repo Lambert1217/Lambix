@@ -1,7 +1,7 @@
 # SandBox们
 
-# 拷贝着色器文件夹
-file(COPY ${CMAKE_SOURCE_DIR}/OtherFiles/Shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# 拷贝资源文件夹
+file(COPY ${CMAKE_SOURCE_DIR}/Resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # demo1
 file(GLOB_RECURSE DEMO1_SOURCE_FILES demo1/src/**.cpp)

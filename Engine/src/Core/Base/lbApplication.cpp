@@ -14,6 +14,7 @@
 #include "Core/Base/lbWindow.h"
 #include "Core/Base/lbCore.h"
 #include "GLFW/glfw3.h"
+#include "Core/Renderer/lbRenderer3D.h"
 #include "Core/Renderer/lbRendererCommand.h"
 
 namespace Lambix
@@ -34,6 +35,10 @@ namespace Lambix
 		m_Window = lbWindow::Create(m_AppSettings.WindowWidth, m_AppSettings.WindowHeight, m_AppSettings.WindowTitle);
 		m_Window->SetVSync(m_AppSettings.VSync);
 		m_Window->SetEventCallback(LB_BIND_EVENT_FN(lbApplication::OnEvent));
+
+		// 渲染初始
+		lbRendererCommand::Init();
+		lbRenderer3D::Init();
 
 		// Imgui
 		m_ImguiLayer = new lbImguiLayer();

@@ -12,6 +12,7 @@
 #include "Backend/OpenGL/lbOpenGLShader.h"
 #include "Core/Base/lbLog.h"
 #include "glad/glad.h"
+#include "glm/gtc/type_ptr.hpp"
 
 namespace Lambix
 {
@@ -114,6 +115,11 @@ namespace Lambix
 		if(m_RendererID != 0){
 			glDeleteProgram(m_RendererID);
 		}
+		if(vertexShader->GetType() != lbShaderType::Vertex || fragmentShader->GetType() != lbShaderType::Fragment)
+		{
+			LOG_ERROR("ERROR::SHADER::LINK::Wrong shader type!");
+			return false;
+		}
 		m_RendererID = glCreateProgram();
 		glAttachShader(m_RendererID, vertexShader->GetID());
 		glAttachShader(m_RendererID, fragmentShader->GetID());
@@ -128,5 +134,35 @@ namespace Lambix
 			return false;
 		}
 		return true;
+	}
+	void lbOpenGLShaderProgram::UploadUniformInt(const std::string& name, const int value)
+	{
+		GLuint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1i(location, value);
+	}
+	void lbOpenGLShaderProgram::UploadUniformFloat(const std::string& name, const float value)
+	{
+		GLuint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform1f(location, value);
+	}
+	void lbOpenGLShaderProgram::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
+	{
+		GLuint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform2f(location, value.x, value.y);
+	}
+	void lbOpenGLShaderProgram::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
+	{
+		GLuint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform3f(location, value.x, value.y, value.z);
+	}
+	void lbOpenGLShaderProgram::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
+	{
+		GLuint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniform4f(location, value.x, value.y, value.z, value.w);
+	}
+	void lbOpenGLShaderProgram::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
+	{
+		GLuint location = glGetUniformLocation(m_RendererID, name.c_str());
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 } // Lambix

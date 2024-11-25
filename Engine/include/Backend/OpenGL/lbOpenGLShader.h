@@ -41,6 +41,13 @@ namespace Lambix
 		void Bind() const override;
 		void Unbind() const override;
 		bool Link(const std::shared_ptr<lbShader>& vertexShader, const std::shared_ptr<lbShader>& fragmentShader) override;
+
+		void UploadUniformInt(const std::string& name, const int value) override;
+		void UploadUniformFloat(const std::string& name, const float value) override;
+		void UploadUniformFloat2(const std::string& name, const glm::vec2& value) override;
+		void UploadUniformFloat3(const std::string& name, const glm::vec3& value) override;
+		void UploadUniformFloat4(const std::string& name, const glm::vec4& value) override;
+		void UploadUniformMat4(const std::string& name, const glm::mat4& matrix) override;
 	 private:
 		uint32_t m_RendererID;
 	};

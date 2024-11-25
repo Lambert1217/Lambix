@@ -20,7 +20,7 @@ namespace Lambix
 {
 	struct lbAppSettings{
 		uint32_t WindowWidth{1280};
-		uint32_t WindowHeight{720};
+		uint32_t WindowHeight{960};
 		std::string WindowTitle{"Lambix Engine"};
 		bool VSync{true};
 	};

@@ -16,7 +16,10 @@
     "version>=" : "0.1.36"
   }, {
     "name" : "imgui",
-    "features": ["docking-experimental", "glfw-binding", "opengl3-binding"],
+    "features" : [ "docking-experimental", "glfw-binding", "opengl3-binding" ],
     "version>=" : "1.91.0"
+  }, {
+    "name" : "stb",
+    "version>=" : "2024-07-29#1"
   } ]
 }

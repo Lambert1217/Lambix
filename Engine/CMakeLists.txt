@@ -15,6 +15,7 @@ find_package(spdlog CONFIG REQUIRED) # 配置并查找spdlog库
 find_package(glfw3 CONFIG REQUIRED) # 配置并查找GLFW3库
 find_package(glm CONFIG REQUIRED)   # 配置并查找GLM库
 find_package(imgui CONFIG REQUIRED) # 配置并查找Imgui
+find_package(Stb REQUIRED) # 配置并查找Stb
 
 # 创建一个名为lbx的库
 add_library(lbx "")
@@ -70,6 +71,8 @@ target_sources(lbx PUBLIC
 target_include_directories(lbx
         PUBLIC
         include
+        PRIVATE
+        ${Stb_INCLUDE_DIR}
 )
 
 # 添加预编译头文件

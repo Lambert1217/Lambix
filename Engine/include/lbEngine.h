@@ -21,6 +21,8 @@
 #include "Core/Renderer/lbBuffer.h"
 #include "Core/Renderer/lbVertexArray.h"
 #include "Core/Renderer/lbShader.h"
+#include "Core/Renderer/lbTexture.h"
+#include "Core/Renderer/lbRenderer3D.h"
 // -----Events
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/KeyEvent.h"
