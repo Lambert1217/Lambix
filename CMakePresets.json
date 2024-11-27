@@ -1,0 +1,42 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "Lambix-Base",
+            "displayName": "vcpkg base 配置",
+            "description": "设置 Ninja 生成器、版本和安装目录",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cmakeExecutable": "C:\\msys64\\mingw64\\bin\\cmake.exe",
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "E:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "EXECUTABLE_OUTPUT_PATH": "${sourceDir}/out/bin/${presetName}"
+            }
+        },
+        {
+            "name": "Lambix-mingw-debug",
+            "inherits": "Lambix-Base",
+            "displayName": "MinGW-Debug 配置",
+            "description": "继承自 Lambix-Base, 设置为 Debug 构建, 使用Mingw编译",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
+                "CMAKE_C_COMPILER": "C:\\msys64\\mingw64\\bin\\gcc.exe",
+                "CMAKE_CXX_COMPILER": "C:\\msys64\\mingw64\\bin\\g++.exe"
+            }
+        },
+        {
+            "name": "Lambix-mingw-release",
+            "inherits": "Lambix-Base",
+            "displayName": "MinGW-Release 配置",
+            "description": "继承自 Lambix-Base, 设置为 Release 构建, 使用Mingw编译",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
+                "CMAKE_C_COMPILER": "C:\\msys64\\mingw64\\bin\\gcc.exe",
+                "CMAKE_CXX_COMPILER": "C:\\msys64\\mingw64\\bin\\g++.exe"
+            }
+        }
+    ]
+}

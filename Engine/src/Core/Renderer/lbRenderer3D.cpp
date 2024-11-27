@@ -23,10 +23,11 @@ namespace Lambix
 		// temp
 		glm::mat4 m_ViewProjectionMatrix{glm::mat4(1.0f)};
 	};
-	static std::unique_ptr<lbRenderer3DStorage> s_lbRenderer3DStorage = std::make_unique<lbRenderer3DStorage>();
+	static std::unique_ptr<lbRenderer3DStorage> s_lbRenderer3DStorage;
 
 	void lbRenderer3D::Init()
 	{
+		s_lbRenderer3DStorage = std::make_unique<lbRenderer3DStorage>();
 		// cubeVao
 		s_lbRenderer3DStorage->cubeVao = CreateCubeVertexArray();
 		// shaderBaseTexture
