@@ -23,6 +23,7 @@
 #include "Core/Renderer/lbShader.h"
 #include "Core/Renderer/lbTexture.h"
 #include "Core/Renderer/lbRenderer3D.h"
+#include "Core/Renderer/lbFrameBuffer.h"
 // -----Events
 #include "Core/Events/ApplicationEvent.h"
 #include "Core/Events/KeyEvent.h"

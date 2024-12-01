@@ -27,6 +27,8 @@ namespace Lambix
 
 		uint32_t GetWidth() const override;
 		uint32_t GetHeight() const override;
+		uint32_t GetRendererID() const override;
+
 		void SetData(void* data, uint32_t size) override;
 	 private:
 		uint32_t m_Width, m_Height;

@@ -71,7 +71,10 @@ namespace Lambix
 		void PushOverlay(lbLayer* overlay);
 
 		[[nodiscard]] inline lbWindow* GetWindow() const { return m_Window; }
-	 private:
+		inline lbAppSettings &GetAppSetting() { return m_AppSettings; }
+		inline const lbAppSettings &GetAppSetting() const { return m_AppSettings; }
+
+	private:
 		bool OnWindowClose(WindowCloseEvent& e); // 窗口关闭事件处理函数
 		bool OnWindowResize(WindowResizeEvent& e); // 窗口关闭事件处理函数
 
@@ -81,6 +84,7 @@ namespace Lambix
 		lbWindow* m_Window;
 		lbImguiLayer* m_ImguiLayer;
 		bool isRunning{true};
+		bool isMinsize{false};
 		lbLayerStack m_LayerStack;
 		float LastFrameTime{ 0.0f };
 	};

@@ -53,10 +53,13 @@ namespace Lambix
 			lbTimestep timestep = CurrentTime - LastFrameTime;
 			LastFrameTime = CurrentTime;
 
-			// 遍历各层级 执行更新
-			for (lbLayer* layer : m_LayerStack)
+			// 如果没有最小化 遍历各层级 执行更新
+			if (!isMinsize)
 			{
-				layer->OnUpdate(timestep);
+				for (lbLayer *layer : m_LayerStack)
+				{
+					layer->OnUpdate(timestep);
+				}
 			}
 			// imgui 绘制
 			m_ImguiLayer->Begin();
@@ -72,6 +75,7 @@ namespace Lambix
 	}
 	void lbApplication::Quit()
 	{
+		isRunning = false;
 		LOG_INFO("Program Quit");
 	}
 
@@ -90,11 +94,17 @@ namespace Lambix
 	}
 	bool lbApplication::OnWindowClose(WindowCloseEvent& e)
 	{
-		isRunning = false;
+		Quit();
 		return true;
 	}
 	bool lbApplication::OnWindowResize(WindowResizeEvent& e)
 	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			isMinsize = true;
+			return false;
+		}
+		isMinsize = false;
 		lbRendererCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 		return false;
 	}

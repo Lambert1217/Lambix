@@ -23,8 +23,6 @@ int main(int argc, char **argv)
 	auto app = Lambix::CreateApplication();
 	// 窗口运行
 	app->Run();
-	// 窗口退出
-	app->Quit();
 
 	return 0;
 }

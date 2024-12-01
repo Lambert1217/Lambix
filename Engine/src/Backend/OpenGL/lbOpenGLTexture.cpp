@@ -89,6 +89,10 @@ namespace Lambix
 	{
 		return m_Height;
 	}
+	uint32_t lbOpenGLTexture::GetRendererID() const
+	{
+		return m_RendererID;
+	}
 	void lbOpenGLTexture::SetData(void* data, uint32_t size)
 	{
 		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
