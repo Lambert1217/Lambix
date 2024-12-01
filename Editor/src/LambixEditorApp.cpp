@@ -5,7 +5,7 @@
 class LambixEditorApp : public Lambix::lbApplication
 {
 public:
-	LambixEditorApp()
+	LambixEditorApp(const Lambix::lbAppSettings &settings) : Lambix::lbApplication(settings)
 	{
 		PushLayer(new EditorLayer());
 	}
@@ -14,5 +14,7 @@ public:
 
 Lambix::lbApplication *Lambix::CreateApplication()
 {
-	return new LambixEditorApp();
+	Lambix::lbAppSettings appSettings;
+	appSettings.WindowTitle = "Lambix Engine Editor";
+	return new LambixEditorApp(appSettings);
 }

@@ -28,55 +28,55 @@ namespace Lambix
 	class lbApplication
 	{
 	 public:
-		lbApplication();
-		virtual ~lbApplication() = default;
+		 lbApplication(const lbAppSettings &appSettings = lbAppSettings());
+		 virtual ~lbApplication() = default;
 
-		/**
-		 * @brief 程序初始化
-		 */
-		void Init();
+		 /**
+		  * @brief 程序初始化
+		  */
+		 void Init(const lbAppSettings &appSettings);
 
-		/**
-		 * @brief 程序执行
-		 */
-		void Run();
+		 /**
+		  * @brief 程序执行
+		  */
+		 void Run();
 
-		/**
-		 * @brief 程序退出
-		 */
-		void Quit();
+		 /**
+		  * @brief 程序退出
+		  */
+		 void Quit();
 
-		/**
-		 * 获取程序单例
-		 * @return
-		 */
-		inline static lbApplication& GetInstance() { return *s_lbApplication; }
+		 /**
+		  * 获取程序单例
+		  * @return
+		  */
+		 inline static lbApplication &GetInstance() { return *s_lbApplication; }
 
-		/**
-		 * @brief 事件处理
-		 * @param e
-		 */
-		void OnEvent(Event& e);
+		 /**
+		  * @brief 事件处理
+		  * @param e
+		  */
+		 void OnEvent(Event &e);
 
-		/**
-		 * 普通层入栈
-		 * @param layer
-		 */
-		void PushLayer(lbLayer* layer);
+		 /**
+		  * 普通层入栈
+		  * @param layer
+		  */
+		 void PushLayer(lbLayer *layer);
 
-		/**
-		 * 覆盖层入栈
-		 * @param overlay
-		 */
-		void PushOverlay(lbLayer* overlay);
+		 /**
+		  * 覆盖层入栈
+		  * @param overlay
+		  */
+		 void PushOverlay(lbLayer *overlay);
 
-		[[nodiscard]] inline lbWindow* GetWindow() const { return m_Window; }
-		inline lbAppSettings &GetAppSetting() { return m_AppSettings; }
-		inline const lbAppSettings &GetAppSetting() const { return m_AppSettings; }
+		 [[nodiscard]] inline lbWindow *GetWindow() const { return m_Window; }
+		 inline lbAppSettings &GetAppSetting() { return m_AppSettings; }
+		 inline const lbAppSettings &GetAppSetting() const { return m_AppSettings; }
 
-	private:
-		bool OnWindowClose(WindowCloseEvent& e); // 窗口关闭事件处理函数
-		bool OnWindowResize(WindowResizeEvent& e); // 窗口关闭事件处理函数
+	 private:
+		 bool OnWindowClose(WindowCloseEvent &e);	// 窗口关闭事件处理函数
+		 bool OnWindowResize(WindowResizeEvent &e); // 窗口关闭事件处理函数
 
 	 private:
 		static lbApplication* s_lbApplication; // 应用类单例

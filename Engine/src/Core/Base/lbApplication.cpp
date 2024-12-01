@@ -21,16 +21,17 @@ namespace Lambix
 {
 	lbApplication* lbApplication::s_lbApplication = nullptr;
 
-	lbApplication::lbApplication() : m_Window(nullptr), m_ImguiLayer(nullptr)
+	lbApplication::lbApplication(const lbAppSettings &appSettings) : m_Window(nullptr), m_ImguiLayer(nullptr)
 	{
 		LOG_ASSERT(!s_lbApplication, "lbApplication already exists");
 		s_lbApplication = this;
 
-		Init();
+		Init(appSettings);
 	}
 
-	void lbApplication::Init()
+	void lbApplication::Init(const lbAppSettings &appSettings)
 	{
+		m_AppSettings = appSettings;
 		// 窗口初始化
 		m_Window = lbWindow::Create(m_AppSettings.WindowWidth, m_AppSettings.WindowHeight, m_AppSettings.WindowTitle);
 		m_Window->SetVSync(m_AppSettings.VSync);

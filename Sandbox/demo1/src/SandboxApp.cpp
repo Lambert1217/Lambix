@@ -5,13 +5,16 @@
 class SandboxApp : public Lambix::lbApplication
 {
  public:
-	SandboxApp(){
-		PushLayer(new ExampleLayer());
-	}
+	 SandboxApp(const Lambix::lbAppSettings &settings) : Lambix::lbApplication(settings)
+	 {
+		 PushLayer(new ExampleLayer());
+	 }
 	~SandboxApp() override = default;
 };
 
 Lambix::lbApplication* Lambix::CreateApplication()
 {
-	return new SandboxApp();
+	Lambix::lbAppSettings appSettings;
+	appSettings.WindowTitle = "Demo1";
+	return new SandboxApp(appSettings);
 }
