@@ -7,7 +7,7 @@
             "description": "设置 Ninja 生成器、版本和安装目录",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "cmakeExecutable": "C:\\msys64\\mingw64\\bin\\cmake.exe",
+            "cmakeExecutable": "E:\\msys64\\mingw64\\bin\\cmake.exe",
             "cacheVariables": {
                 "CMAKE_TOOLCHAIN_FILE": "E:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
@@ -22,8 +22,8 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
-                "CMAKE_C_COMPILER": "C:\\msys64\\mingw64\\bin\\gcc.exe",
-                "CMAKE_CXX_COMPILER": "C:\\msys64\\mingw64\\bin\\g++.exe"
+                "CMAKE_C_COMPILER": "E:\\msys64\\mingw64\\bin\\gcc.exe",
+                "CMAKE_CXX_COMPILER": "E:\\msys64\\mingw64\\bin\\g++.exe"
             }
         },
         {
@@ -34,8 +34,8 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
-                "CMAKE_C_COMPILER": "C:\\msys64\\mingw64\\bin\\gcc.exe",
-                "CMAKE_CXX_COMPILER": "C:\\msys64\\mingw64\\bin\\g++.exe"
+                "CMAKE_C_COMPILER": "E:\\msys64\\mingw64\\bin\\gcc.exe",
+                "CMAKE_CXX_COMPILER": "E:\\msys64\\mingw64\\bin\\g++.exe"
             }
         }
     ]

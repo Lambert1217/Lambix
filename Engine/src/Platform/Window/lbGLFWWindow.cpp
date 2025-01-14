@@ -145,7 +145,7 @@ namespace Lambix{
 		  data.EventCallback(event);
 		});
 
-		LOG_INFO("Window initialization：({0},{1},{2})",m_Data.Width, m_Data.Height, m_Data.Title);
+		LOG_INFO("Window initialization:({0},{1},{2})", m_Data.Width, m_Data.Height, m_Data.Title);
 	}
 
 	lbGLFWWindow::~lbGLFWWindow()
