@@ -2,41 +2,35 @@
     "version": 6,
     "configurePresets": [
         {
-            "name": "Lambix-Base",
-            "displayName": "vcpkg base 配置",
-            "description": "设置 Ninja 生成器、版本和安装目录",
-            "generator": "Ninja",
+            "name": "MSVC-x86_amd64",
+            "displayName": "Visual Studio Community 2022 Release - x86_amd64",
+            "description": "将编译器用于 Visual Studio 17 2022 (x86_x64 体系结构)",
+            "generator": "Visual Studio 17 2022",
+            "toolset": "host=x86",
+            "architecture": "x64",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "cmakeExecutable": "E:\\msys64\\mingw64\\bin\\cmake.exe",
+            "cmakeExecutable": "E:/vcpkg/downloads/tools/cmake-3.30.1-windows/cmake-3.30.1-windows-i386/bin/cmake.exe",
             "cacheVariables": {
-                "CMAKE_TOOLCHAIN_FILE": "E:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake",
+                "CMAKE_TOOLCHAIN_FILE": "E:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x64-windows",
                 "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
-                "EXECUTABLE_OUTPUT_PATH": "${sourceDir}/out/bin/${presetName}"
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
             }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "MSVC-debug",
+            "displayName": "Visual Studio Community 2022 Release - x86_amd64 - Debug",
+            "configurePreset": "MSVC-x86_amd64",
+            "configuration": "Debug"
         },
         {
-            "name": "Lambix-mingw-debug",
-            "inherits": "Lambix-Base",
-            "displayName": "MinGW-Debug 配置",
-            "description": "继承自 Lambix-Base, 设置为 Debug 构建, 使用Mingw编译",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Debug",
-                "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
-                "CMAKE_C_COMPILER": "E:\\msys64\\mingw64\\bin\\gcc.exe",
-                "CMAKE_CXX_COMPILER": "E:\\msys64\\mingw64\\bin\\g++.exe"
-            }
-        },
-        {
-            "name": "Lambix-mingw-release",
-            "inherits": "Lambix-Base",
-            "displayName": "MinGW-Release 配置",
-            "description": "继承自 Lambix-Base, 设置为 Release 构建, 使用Mingw编译",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
-                "CMAKE_C_COMPILER": "E:\\msys64\\mingw64\\bin\\gcc.exe",
-                "CMAKE_CXX_COMPILER": "E:\\msys64\\mingw64\\bin\\g++.exe"
-            }
+            "name": "MSVC-release",
+            "displayName": "Visual Studio Community 2022 Release - x86_amd64 - Release",
+            "configurePreset": "MSVC-x86_amd64",
+            "configuration": "Release"
         }
     ]
 }

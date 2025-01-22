@@ -24,10 +24,9 @@ add_library(lbx "")
 add_library(Lambix::Engine ALIAS lbx)
 
 # 设置编译类型
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    # 如果是Debug模式，定义LAMBIX_DEBUG宏
-    target_compile_definitions(lbx PUBLIC LAMBIX_DEBUG)
-endif()
+target_compile_definitions(lbx PUBLIC 
+    $<$<CONFIG:Debug>:LAMBIX_DEBUG>
+)
 
 # 根据操作系统定义平台相关的宏，并收集平台相关的源文件
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

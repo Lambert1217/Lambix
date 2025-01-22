@@ -20,7 +20,7 @@ ExampleLayer::ExampleLayer(): Lambix::lbLayer("Example"),
 }
 void ExampleLayer::OnAttach()
 {
-	dogTexture = lbTexture::Create("Resources/Textures/dog.png");
+	dogTexture = lbTexture::Create("../Resources/Textures/dog.png");
 }
 void ExampleLayer::OnDetach()
 {
