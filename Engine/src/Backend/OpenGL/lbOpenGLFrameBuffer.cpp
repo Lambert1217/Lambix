@@ -12,17 +12,34 @@ namespace Lambix
     lbOpenGLFrameBuffer::~lbOpenGLFrameBuffer()
     {
         glDeleteFramebuffers(1, &m_RendererID);
+        glDeleteTextures(1, &m_ColorAttachment);
+        glDeleteTextures(1, &m_DepthAttachment);
     }
     void lbOpenGLFrameBuffer::Bind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
+        glViewport(0, 0, m_Specification.width, m_Specification.height);
     }
     void lbOpenGLFrameBuffer::Unbind()
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
+    void lbOpenGLFrameBuffer::Resize(uint32_t width, uint32_t height)
+    {
+        m_Specification.width = width;
+        m_Specification.height = height;
+
+        Invalidate();
+    }
     void lbOpenGLFrameBuffer::Invalidate()
     {
+        // 如果已经创建，先删除
+        if (m_RendererID)
+        {
+            glDeleteFramebuffers(1, &m_RendererID);
+            glDeleteTextures(1, &m_ColorAttachment);
+            glDeleteTextures(1, &m_DepthAttachment);
+        }
         // 创建帧缓冲并绑定
         glCreateFramebuffers(1, &m_RendererID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);

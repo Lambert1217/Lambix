@@ -14,6 +14,7 @@
 #include "GLFW/glfw3.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
+#include "Core/Utils/lbFileUtils.h"
 
 #ifdef LAMBIX_USE_OPENGL
 #include "imgui_impl_opengl3.h"
@@ -30,17 +31,19 @@ namespace Lambix
 		// 设置 ImGui 上下文
 		IMGUI_CHECKVERSION();	// 检查 ImGui 版本
 		ImGui::CreateContext(); // 创建 ImGui 上下文
+
+		// 启用一些 ImGui 的特性
 		ImGuiIO &io = ImGui::GetIO();
-		(void)io;
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // 启用键盘控制
-		// io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // 启用游戏手柄控制
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;	// 启用停靠功能
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // 启用多视口 / 平台窗口
-		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
-		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
+		io.ConfigWindowsMoveFromTitleBarOnly = true;		// 仅允许移动窗口标题栏
 
 		// 设置 Dear ImGui 样式
-		ImGui::StyleColorsLight(); // 设置深色风格
+		ImGui::StyleColorsLight();
+
+		// 添加字体
+		io.Fonts->AddFontFromFileTTF(lbJoinPath(lbResRootDir, "Fonts/Roboto/Roboto-Regular.ttf").c_str(), 20.0f);
 
 		// 当启用多视口时，我们调整 WindowRounding/WindowBg，以便平台窗口看起来与常规窗口相同。
 		ImGuiStyle &style = ImGui::GetStyle();

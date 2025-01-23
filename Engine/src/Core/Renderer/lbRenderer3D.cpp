@@ -12,6 +12,7 @@
 #include "Core/Renderer/lbRenderer3D.h"
 #include <Core/Renderer/lbRendererCommand.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Core/Utils/lbFileUtils.h"
 
 namespace Lambix
 {
@@ -35,8 +36,8 @@ namespace Lambix
 			s_lbRenderer3DStorage->shaderBaseTexture = lbShaderProgram::Create();
 			std::shared_ptr<lbShader> vertexShader = lbShader::Create(lbShaderType::Vertex);
 			std::shared_ptr<lbShader> fragmentShader = lbShader::Create(lbShaderType::Fragment);
-			vertexShader->CompileFromFile("../Resources/Shaders/Vertex/baseTexture.vert");
-			fragmentShader->CompileFromFile("../Resources/Shaders/Fragment/baseTexture.frag");
+			vertexShader->CompileFromFile(lbJoinPath(lbResRootDir, "Shaders/Vertex/baseTexture.vert"));
+			fragmentShader->CompileFromFile(lbJoinPath(lbResRootDir, "Shaders/Fragment/baseTexture.frag"));
 			s_lbRenderer3DStorage->shaderBaseTexture->Link(vertexShader, fragmentShader);
 		}
 		// WhiteTexture

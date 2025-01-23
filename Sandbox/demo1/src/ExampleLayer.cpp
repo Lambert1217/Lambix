@@ -12,6 +12,7 @@
 #include "ExampleLayer.h"
 #include "imgui.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "Core/Utils/lbFileUtils.h"
 
 using namespace Lambix;
 ExampleLayer::ExampleLayer(): Lambix::lbLayer("Example"),
@@ -20,7 +21,7 @@ ExampleLayer::ExampleLayer(): Lambix::lbLayer("Example"),
 }
 void ExampleLayer::OnAttach()
 {
-	dogTexture = lbTexture::Create("../Resources/Textures/dog.png");
+	dogTexture = lbTexture::Create(lbJoinPath(lbResRootDir, "Textures/dog.png"));
 }
 void ExampleLayer::OnDetach()
 {
