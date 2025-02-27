@@ -29,4 +29,7 @@
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
 
-
+// --ECS
+#include "Core/ECS/lbScene.h"
+#include "Core/ECS/lbEntity.h"
+#include "Core/ECS/Components/lbBasicComponents.h"

@@ -29,5 +29,6 @@ namespace Lambix
 	private:
 		std::shared_ptr<lbFrameBuffer> m_FrameBuffer;
 		glm::vec2 m_ViewportSize;
+		std::shared_ptr<lbScene> m_Scene;
 	};
 }

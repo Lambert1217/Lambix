@@ -15,6 +15,15 @@ namespace Lambix
 		spec.width = lbApplication::GetInstance().GetAppSetting().WindowWidth;
 		spec.height = lbApplication::GetInstance().GetAppSetting().WindowHeight;
 		m_FrameBuffer = lbFrameBuffer::Create(spec);
+
+		// temp
+		m_Scene = std::make_shared<lbScene>();
+		auto &entity1 = m_Scene->CreateEntity("Test Entity1");
+		entity1.AddChild(m_Scene->CreateEntity("Test Entity1.1"));
+		entity1.AddChild(m_Scene->CreateEntity("Test Entity1.2"));
+		m_Scene->CreateEntity("Test Entity2");
+		m_Scene->CreateEntity("Test Entity3");
+		m_Scene->CreateEntity("Test Entity4");
 	}
 	void lbEditorLayer::OnDetach()
 	{
@@ -36,6 +45,8 @@ namespace Lambix
 		lbRenderer3D::DrawCube({0.f, 0.f, 0.f}, {1.f, 1.f, 1.f}, {0.f, rotation, 0.f}, {0.3f, 0.4f, 0.5f, 1.f});
 		lbRenderer3D::EndScene();
 		m_FrameBuffer->Unbind();
+
+		m_Scene->OnUpdate();
 	}
 	void lbEditorLayer::OnEvent(Event &event)
 	{
