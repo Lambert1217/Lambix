@@ -33,6 +33,7 @@
 #include "Core/ECS/lbScene.h"
 #include "Core/ECS/lbEntity.h"
 #include "Core/ECS/Components/lbBasicComponents.h"
+#include "Core/ECS/Components/lbTransformComponent.h"
 
 // --UI
 #include "Core/UI/lbLogUI.h"

@@ -30,12 +30,14 @@ namespace Lambix
 
         void OnUpdate(lbTimestep ts);
 
+        entt::registry &GetRegistry() { return m_Registry; }
+        const std::unordered_map<entt::entity, std::shared_ptr<lbEntity>> &GetEntityMap() const { return m_EntityMap; }
+
     private:
         void PrintEntityHierarchy(entt::entity entity, int indentLevel);
+        void UpdateTransforms();
 
     private:
-        friend class lbEntity;
-
         entt::registry m_Registry;
         std::unordered_map<entt::entity, std::shared_ptr<lbEntity>> m_EntityMap;
     };

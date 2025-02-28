@@ -100,6 +100,20 @@ namespace Lambix
 		}
 		lbRendererCommand::DrawIndexed(s_lbRenderer3DStorage->cubeVao);
 	}
+	void lbRenderer3D::DrawCube(const glm::mat4 &worldMatrix, const glm::vec4 &color)
+	{
+		s_lbRenderer3DStorage->shaderBaseTexture->Bind();
+		{
+			s_lbRenderer3DStorage->WhiteTexture->Bind();
+			s_lbRenderer3DStorage->shaderBaseTexture->UploadUniformInt("Texture", 0);
+			s_lbRenderer3DStorage->shaderBaseTexture->UploadUniformFloat4("Color", color);
+		}
+		{
+			// MVP传给着色器
+			s_lbRenderer3DStorage->shaderBaseTexture->UploadUniformMat4("MVP", s_lbRenderer3DStorage->m_ViewProjectionMatrix * worldMatrix);
+		}
+		lbRendererCommand::DrawIndexed(s_lbRenderer3DStorage->cubeVao);
+	}
 	std::shared_ptr<lbVertexArray> lbRenderer3D::CreateCubeVertexArray()
 	{
 		float vertices[] = {

@@ -25,27 +25,27 @@ namespace Lambix
         T &AddComponent(Args &&...args)
         {
             LOG_ASSERT(!HasComponent<T>(), "Entity already has component!");
-            return m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+            return m_Scene->GetRegistry().emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
         }
 
         template <typename T>
         T &GetComponent() const
         {
             LOG_ASSERT(HasComponent<T>(), "Entity does not have component!");
-            return m_Scene->m_Registry.get<T>(m_EntityHandle);
+            return m_Scene->GetRegistry().get<T>(m_EntityHandle);
         }
 
         template <typename T>
         bool HasComponent() const
         {
-            return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
+            return m_Scene->GetRegistry().any_of<T>(m_EntityHandle);
         }
 
         template <typename T>
         void RemoveComponent()
         {
             LOG_ASSERT(HasComponent<T>(), "Entity does not have component!");
-            m_Scene->m_Registry.remove<T>(m_EntityHandle);
+            m_Scene->GetRegistry().remove<T>(m_EntityHandle);
         }
 
         void SetParent(std::shared_ptr<lbEntity> parent);
@@ -58,6 +58,7 @@ namespace Lambix
 
         const std::string &GetName() { return GetComponent<lbIdentityComponent>().m_Name; }
         const lbUUID &GetUUID() { return GetComponent<lbIdentityComponent>().m_UUID; }
+        lbScene *GetScene() const { return m_Scene; }
 
     private:
         entt::entity m_EntityHandle{entt::null};

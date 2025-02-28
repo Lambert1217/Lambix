@@ -28,7 +28,9 @@ namespace Lambix
 
 		static void DrawCube(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& rotation, const glm::vec4& color);
 		static void DrawCube(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& rotation, const std::shared_ptr<lbTexture>& texture);
-	 private:
+		static void DrawCube(const glm::mat4 &worldMatrix, const glm::vec4 &color);
+
+	private:
 		static std::shared_ptr<lbVertexArray> CreateCubeVertexArray();
 	};
 }

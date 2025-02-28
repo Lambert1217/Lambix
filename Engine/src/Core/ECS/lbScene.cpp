@@ -1,6 +1,7 @@
 #include "Core/ECS/lbScene.h"
 #include "Core/ECS/lbEntity.h"
 #include "Core/ECS/Components/lbBasicComponents.h"
+#include "Core/ECS/Components/lbTransformComponent.h"
 
 namespace Lambix
 {
@@ -13,6 +14,8 @@ namespace Lambix
     {
         std::shared_ptr<lbEntity> entity = std::make_shared<lbEntity>(m_Registry.create(), this);
         entity->AddComponent<lbIdentityComponent>(uuid, name);
+        auto &transformComp = entity->AddComponent<lbTransformComponent>();
+        transformComp.LinkToEntity(entity);
 
         m_EntityMap[*entity] = entity;
         return entity;
@@ -58,32 +61,7 @@ namespace Lambix
 
     void lbScene::OnUpdate(lbTimestep ts)
     {
-        // temp: 每2.5秒输出一次实体父子关系
-        static float time = 0.0f;
-        time += ts;
-        if (time > 2.5f)
-        {
-            time = 0.0f;
-            LOG_INFO("Scene Entity Hierarchy({}):", m_EntityMap.size());
-
-            // 使用深度优先搜索遍历所有根实体
-            auto view = m_Registry.view<lbIdentityComponent>();
-            for (auto entity : view)
-            {
-                // 判断是否为根实体（没有父组件或父实体无效）
-                bool isRoot = true;
-                if (auto *parentComp = m_Registry.try_get<lbParentComponent>(entity))
-                {
-                    isRoot = (parentComp->m_Parent == entt::null) ||
-                             (m_EntityMap.find(parentComp->m_Parent) == m_EntityMap.end());
-                }
-
-                if (isRoot && m_EntityMap.count(entity))
-                {
-                    PrintEntityHierarchy(entity, 0);
-                }
-            }
-        }
+        UpdateTransforms();
     }
 
     void lbScene::PrintEntityHierarchy(entt::entity entity, int indentLevel)
@@ -125,6 +103,20 @@ namespace Lambix
                 {
                     LOG_WARN("{0}  |- [INVALID CHILD] {1}", indent, (uint32_t)child);
                 }
+            }
+        }
+    }
+
+    void lbScene::UpdateTransforms()
+    {
+        auto view = m_Registry.view<lbTransformComponent>();
+        for (auto entity : view)
+        {
+            auto &transform = view.get<lbTransformComponent>(entity);
+            if (transform.IsDirty())
+            {
+                // 强制更新世界矩阵
+                transform.GetWorldMatrix();
             }
         }
     }
