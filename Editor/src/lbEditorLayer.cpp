@@ -38,9 +38,7 @@ namespace Lambix
 		lbRendererCommand::SetClearColor({0.3f, 0.3f, 0.3f, 1.0f});
 		lbRendererCommand::Clear();
 
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f),
-												(float)lbApplication::GetInstance().GetWindow()->GetWidth() / (float)lbApplication::GetInstance().GetWindow()->GetHeight(),
-												0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100.0f);
 		glm::mat4 view = glm::lookAt({0, 0, -3}, {0, 0, 0}, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		static float rotation = 0;
