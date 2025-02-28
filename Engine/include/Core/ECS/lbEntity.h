@@ -48,15 +48,11 @@ namespace Lambix
             m_Scene->m_Registry.remove<T>(m_EntityHandle);
         }
 
-        void AddChild(lbEntity &child)
-        {
-            auto &hierarchy = GetComponent<lbHierarchyComponent>();
-            hierarchy.m_Children.push_back(child);
-            auto &childHierarchy = m_Scene->m_Registry.get<lbHierarchyComponent>(child);
-            childHierarchy.m_Parent = m_EntityHandle;
-        }
+        void SetParent(std::shared_ptr<lbEntity> parent);
+        std::vector<std::shared_ptr<lbEntity>> GetChildren() const;
 
-        operator bool() const { return m_EntityHandle != entt::null; }
+        bool IsValid() const { return m_EntityHandle != entt::null && m_Scene != nullptr; }
+        operator bool() const { return m_EntityHandle != entt::null && m_Scene != nullptr; }
         operator entt::entity() const { return m_EntityHandle; }
         operator uint32_t() const { return (uint32_t)m_EntityHandle; }
 

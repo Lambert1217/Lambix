@@ -12,6 +12,7 @@
 
 #include "Core/Base/lbUUID.h"
 #include "entt/entt.hpp"
+#include "Core/Base/lbTimestep.h"
 
 namespace Lambix
 {
@@ -22,15 +23,20 @@ namespace Lambix
         lbScene() = default;
         ~lbScene() = default;
 
-        lbEntity CreateEntity(const std::string &name);
-        lbEntity CreateEntityWithUUID(const std::string &name, lbUUID uuid);
+        std::shared_ptr<lbEntity> CreateEntity(const std::string &name);
+        std::shared_ptr<lbEntity> CreateEntityWithUUID(const std::string &name, lbUUID uuid);
 
-        void OnUpdate();
+        void DestroyEntity(std::shared_ptr<lbEntity> entity);
+
+        void OnUpdate(lbTimestep ts);
+
+    private:
+        void PrintEntityHierarchy(entt::entity entity, int indentLevel);
 
     private:
         friend class lbEntity;
 
         entt::registry m_Registry;
-        std::unordered_map<entt::entity, lbEntity> m_EntityMap;
+        std::unordered_map<entt::entity, std::shared_ptr<lbEntity>> m_EntityMap;
     };
 }

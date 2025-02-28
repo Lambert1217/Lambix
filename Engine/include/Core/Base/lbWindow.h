@@ -64,6 +64,12 @@ namespace Lambix
 		[[nodiscard]] virtual void *GetNativeWindow() const = 0;
 
 		/**
+		 * @brief 设置开启最大化
+		 *
+		 */
+		virtual void SetMaximized() = 0;
+
+		/**
 		 * @brief 窗口创建
 		 */
 		static lbWindow* Create(uint32_t width, uint32_t height, const std::string& windowTitle);

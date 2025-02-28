@@ -36,6 +36,7 @@ namespace Lambix
 		m_Window = lbWindow::Create(m_AppSettings.WindowWidth, m_AppSettings.WindowHeight, m_AppSettings.WindowTitle);
 		m_Window->SetVSync(m_AppSettings.VSync);
 		m_Window->SetEventCallback(LB_BIND_EVENT_FN(lbApplication::OnEvent));
+		m_Window->SetMaximized();
 
 		// 渲染初始
 		lbRendererCommand::Init();

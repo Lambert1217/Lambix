@@ -184,4 +184,8 @@ namespace Lambix{
 	{
 		return m_Data.Height;
 	}
+	void lbGLFWWindow::SetMaximized()
+	{
+		glfwMaximizeWindow(m_Window);
+	}
 }

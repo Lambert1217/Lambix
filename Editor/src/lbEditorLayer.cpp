@@ -19,11 +19,15 @@ namespace Lambix
 		// temp
 		m_Scene = std::make_shared<lbScene>();
 		auto &entity1 = m_Scene->CreateEntity("Test Entity1");
-		entity1.AddChild(m_Scene->CreateEntity("Test Entity1.1"));
-		entity1.AddChild(m_Scene->CreateEntity("Test Entity1.2"));
-		m_Scene->CreateEntity("Test Entity2");
-		m_Scene->CreateEntity("Test Entity3");
-		m_Scene->CreateEntity("Test Entity4");
+		auto &entity2 = m_Scene->CreateEntity("Test Entity2");
+		auto &entity3 = m_Scene->CreateEntity("Test Entity3");
+		auto &entity4 = m_Scene->CreateEntity("Test Entity4");
+		auto &entity5 = m_Scene->CreateEntity("Test Entity5");
+
+		entity2->SetParent(entity1);
+		entity3->SetParent(entity1);
+		entity4->SetParent(entity2);
+		entity5->SetParent(entity3);
 	}
 	void lbEditorLayer::OnDetach()
 	{
@@ -46,7 +50,8 @@ namespace Lambix
 		lbRenderer3D::EndScene();
 		m_FrameBuffer->Unbind();
 
-		m_Scene->OnUpdate();
+		// temp
+		m_Scene->OnUpdate(ts);
 	}
 	void lbEditorLayer::OnEvent(Event &event)
 	{
@@ -126,9 +131,8 @@ namespace Lambix
 			ImGui::Text("Hello Scene");
 			ImGui::End();
 
-			ImGui::Begin("Log");
-			ImGui::Text("Log");
-			ImGui::End();
+			static bool show_log = true;
+			Lambix::lbLogUI::Draw(&show_log);
 
 			ImGui::Begin("indicator");
 			ImGui::Text("indicator");

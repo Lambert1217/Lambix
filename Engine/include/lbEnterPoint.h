@@ -17,7 +17,7 @@ extern Lambix::lbApplication *Lambix::CreateApplication();
 int main(int argc, char **argv)
 {
 	// 初始化日志
-	Lambix::lbLog::init();
+	Lambix::lbLog::Init(true, true);
 
 	// 程序创建
 	auto app = Lambix::CreateApplication();

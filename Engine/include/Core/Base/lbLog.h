@@ -13,6 +13,8 @@
 
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/spdlog.h"
+#include <memory>
+#include <mutex>
 
 namespace Lambix
 {
@@ -20,27 +22,21 @@ namespace Lambix
 	class lbLog
 	{
 	public:
-		/**
-		 * @brief 日志系统初始化
-		 *
-		 */
-		static void init();
+		// 初始化日志系统 (控制台日志开关, ImGui日志开关)
+		static void Init(bool console_enable = true, bool imgui_enable = false);
 
-		/**
-		 * @brief Get the Logger object
-		 *
-		 * @return std::shared_ptr<spdlog::logger>&
-		 */
-		inline static std::shared_ptr<spdlog::logger> &GetLogger()
-		{
-			return s_Logger;
-		}
+		// 动态控制日志输出目标
+		static void EnableConsole(bool enable);
+		static void EnableImGui(bool enable);
+
+		static std::shared_ptr<spdlog::logger> &GetLogger() { return s_Logger; }
 
 	private:
 		static std::shared_ptr<spdlog::logger> s_Logger;
+		static std::shared_ptr<class lbImGuiSink> s_ImGuiSink; // 前向声明
+		static std::mutex s_Mutex;
 	};
-
-} // Lambix
+}
 
 // 日志系统输出宏
 #define LOG_TRACE(...) ::Lambix::lbLog::GetLogger()->trace(__VA_ARGS__)
@@ -51,13 +47,14 @@ namespace Lambix
 
 // 断言
 #ifdef LAMBIX_DEBUG
-#define LOG_ASSERT(x, ...)                                   \
-	{                                                        \
-		if (!(x))                                            \
-		{                                                    \
-			LOG_CRITICAL("Assertion Failed({0}:{1})\n{2}", __FILE__ , __LINE__ , __VA_ARGS__); \
-			__debugbreak();                                  \
-		}                                                    \
+#define LOG_ASSERT(x, ...)                                                                              \
+	{                                                                                                   \
+		if (!(x))                                                                                       \
+		{                                                                                               \
+			LOG_CRITICAL("Assertion Failed at {0}:{1}, Assertion Info as Follow:", __FILE__, __LINE__); \
+			LOG_CRITICAL(__VA_ARGS__);                                                                  \
+			__debugbreak();                                                                             \
+		}                                                                                               \
 	}
 #else
 #define LOG_ASSERT(x, ...)

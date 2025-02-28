@@ -27,6 +27,7 @@ namespace Lambix{
 		void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void OnUpdate() override;
 		void SetVSync(bool enabled) override;
+		void SetMaximized() override;
 		bool IsVSync() const override;
 		uint32_t GetWidth() const override;
 		uint32_t GetHeight() const override;
@@ -43,8 +44,9 @@ namespace Lambix{
 		{
 			std::string Title;
 			uint32_t Width, Height;
-			bool VSync;
-			EventCallbackFn EventCallback;
+			bool VSync;					   // 是否开启垂直同步
+			EventCallbackFn EventCallback; // 事件回调
+			bool Maximized;				   // 是否最大化
 		}m_Data;
 	};
 }

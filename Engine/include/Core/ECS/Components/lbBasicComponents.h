@@ -27,9 +27,13 @@ namespace Lambix
         std::vector<std::string> m_Tags; // 标签列表
     };
 
-    struct lbHierarchyComponent
+    struct lbParentComponent
     {
-        entt::entity m_Parent = entt::null;   // 父实体
-        std::vector<entt::entity> m_Children; // 子实体列表
+        entt::entity m_Parent{entt::null};
+    };
+
+    struct lbChildrenComponent
+    {
+        std::vector<entt::entity> m_Children;
     };
 }

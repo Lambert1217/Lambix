@@ -4,48 +4,127 @@
 
 namespace Lambix
 {
-    lbEntity lbScene::CreateEntity(const std::string &name)
+    std::shared_ptr<lbEntity> lbScene::CreateEntity(const std::string &name)
     {
         return CreateEntityWithUUID(name, GenUUID());
     }
 
-    lbEntity lbScene::CreateEntityWithUUID(const std::string &name, lbUUID uuid)
+    std::shared_ptr<lbEntity> lbScene::CreateEntityWithUUID(const std::string &name, lbUUID uuid)
     {
-        lbEntity entity = {m_Registry.create(), this};
-        entity.AddComponent<lbIdentityComponent>(uuid, name);
-        entity.AddComponent<lbHierarchyComponent>();
+        std::shared_ptr<lbEntity> entity = std::make_shared<lbEntity>(m_Registry.create(), this);
+        entity->AddComponent<lbIdentityComponent>(uuid, name);
 
-        m_EntityMap[entity] = entity;
+        m_EntityMap[*entity] = entity;
         return entity;
     }
 
-    void lbScene::OnUpdate()
+    void lbScene::DestroyEntity(std::shared_ptr<lbEntity> entity)
     {
-        // 输出实体父子关系
-        std::queue<lbEntity> entityQueue;
-        auto &view = m_Registry.view<lbHierarchyComponent>();
+        if (!entity || !m_EntityMap.count(*entity))
+            return;
 
-        for (auto entity : view)
+        // 递归销毁子实体
+        if (auto *childrenComp = m_Registry.try_get<lbChildrenComponent>(*entity))
         {
-            auto &hierarchy = view.get<lbHierarchyComponent>(entity);
-            if (hierarchy.m_Parent == entt::null)
+            auto children = childrenComp->m_Children; // 复制列表避免迭代时修改
+            for (auto childHandle : children)
             {
-                LOG_INFO("Entity: {0}, Parent: null", m_EntityMap[entity].GetName());
-            }
-            for (auto child : hierarchy.m_Children)
-            {
-                entityQueue.push(m_EntityMap[child]);
+                if (auto it = m_EntityMap.find(childHandle); it != m_EntityMap.end())
+                {
+                    DestroyEntity(it->second);
+                }
             }
         }
-        while (!entityQueue.empty())
+
+        // 处理父节点关系
+        if (auto *parentComp = m_Registry.try_get<lbParentComponent>(*entity))
         {
-            auto entity = entityQueue.front();
-            entityQueue.pop();
-            auto &hierarchy = entity.GetComponent<lbHierarchyComponent>();
-            LOG_INFO("Entity: {0}, Parent: {1}", entity.GetName(), m_EntityMap[hierarchy.m_Parent].GetName());
-            for (auto child : hierarchy.m_Children)
+            if (auto parentIt = m_EntityMap.find(parentComp->m_Parent);
+                parentIt != m_EntityMap.end())
             {
-                entityQueue.push(m_EntityMap[child]);
+                auto &parentChildren = parentIt->second->GetComponent<lbChildrenComponent>();
+                parentChildren.m_Children.erase(
+                    std::remove(parentChildren.m_Children.begin(),
+                                parentChildren.m_Children.end(),
+                                *entity),
+                    parentChildren.m_Children.end());
+            }
+        }
+
+        // 清理注册表
+        m_Registry.destroy(*entity);
+        m_EntityMap.erase(*entity);
+    }
+
+    void lbScene::OnUpdate(lbTimestep ts)
+    {
+        // temp: 每2.5秒输出一次实体父子关系
+        static float time = 0.0f;
+        time += ts;
+        if (time > 2.5f)
+        {
+            time = 0.0f;
+            LOG_INFO("Scene Entity Hierarchy({}):", m_EntityMap.size());
+
+            // 使用深度优先搜索遍历所有根实体
+            auto view = m_Registry.view<lbIdentityComponent>();
+            for (auto entity : view)
+            {
+                // 判断是否为根实体（没有父组件或父实体无效）
+                bool isRoot = true;
+                if (auto *parentComp = m_Registry.try_get<lbParentComponent>(entity))
+                {
+                    isRoot = (parentComp->m_Parent == entt::null) ||
+                             (m_EntityMap.find(parentComp->m_Parent) == m_EntityMap.end());
+                }
+
+                if (isRoot && m_EntityMap.count(entity))
+                {
+                    PrintEntityHierarchy(entity, 0);
+                }
+            }
+        }
+    }
+
+    void lbScene::PrintEntityHierarchy(entt::entity entity, int indentLevel)
+    {
+        const std::string indent(indentLevel * 2, ' ');
+
+        // 获取实体基本信息
+        auto &identity = m_Registry.get<lbIdentityComponent>(entity);
+        std::string parentInfo = "";
+
+        // 获取父实体信息
+        if (auto *parentComp = m_Registry.try_get<lbParentComponent>(entity))
+        {
+            if (auto parentIt = m_EntityMap.find(parentComp->m_Parent);
+                parentIt != m_EntityMap.end())
+            {
+                parentInfo = " -> Parent: " + parentIt->second->GetName();
+            }
+        }
+
+        // 输出带缩进的实体信息
+        LOG_TRACE("{0}[{1}] {2} (UUID: {3}){4}",
+                  indent,
+                  (uint32_t)entity,
+                  identity.m_Name,
+                  identity.m_UUID,
+                  parentInfo);
+
+        // 递归输出子实体
+        if (auto *childrenComp = m_Registry.try_get<lbChildrenComponent>(entity))
+        {
+            for (auto child : childrenComp->m_Children)
+            {
+                if (m_EntityMap.count(child))
+                {
+                    PrintEntityHierarchy(child, indentLevel + 1);
+                }
+                else
+                {
+                    LOG_WARN("{0}  |- [INVALID CHILD] {1}", indent, (uint32_t)child);
+                }
             }
         }
     }
