@@ -13,9 +13,15 @@ namespace Lambix
     std::shared_ptr<lbEntity> lbScene::CreateEntityWithUUID(const std::string &name, lbUUID uuid)
     {
         std::shared_ptr<lbEntity> entity = std::make_shared<lbEntity>(m_Registry.create(), this);
-        entity->AddComponent<lbIdentityComponent>(uuid, name);
-        auto &transformComp = entity->AddComponent<lbTransformComponent>();
-        transformComp.LinkToEntity(entity);
+        // ID组件
+        {
+            entity->AddComponent<lbIdentityComponent>(uuid, name);
+        }
+        // 变换组件
+        {
+            auto &transformComp = entity->AddComponent<lbTransformComponent>();
+            transformComp.LinkToEntity(entity);
+        }
 
         m_EntityMap[*entity] = entity;
         return entity;

@@ -11,7 +11,7 @@ namespace Lambix
         if (m_LocalPosition != position)
         {
             m_LocalPosition = position;
-            SetDirty();
+            SetDirty(true, false);
         }
     }
 
@@ -21,7 +21,7 @@ namespace Lambix
         if (m_LocalRotation != rotation)
         {
             m_LocalRotation = rotation;
-            SetDirty();
+            SetDirty(true, false);
         }
     }
 
@@ -31,7 +31,7 @@ namespace Lambix
         if (m_LocalScale != scale)
         {
             m_LocalScale = scale;
-            SetDirty();
+            SetDirty(true, false);
         }
     }
 
@@ -73,7 +73,7 @@ namespace Lambix
 
     const glm::mat4 &lbTransformComponent::GetWorldMatrix()
     {
-        if (IsDirty())
+        if (m_WorldMatrixDirty)
         {
             UpdateWorldMatrix();
         }
@@ -82,7 +82,7 @@ namespace Lambix
 
     const glm::mat4 &lbTransformComponent::GetLocalMatrix()
     {
-        if (IsDirty())
+        if (m_LocalMatrixDirty)
         {
             UpdateLocalMatrix();
         }
@@ -99,7 +99,7 @@ namespace Lambix
         {
             m_WorldMatrix = GetLocalMatrix();
         }
-        m_Dirty = false; // 在此处清除脏位
+        m_WorldMatrixDirty = false; // 在此处清除脏位
     }
 
     void lbTransformComponent::UpdateLocalMatrix()
@@ -108,6 +108,7 @@ namespace Lambix
         glm::mat4 rotation = glm::mat4_cast(m_LocalRotation);
         glm::mat4 scale = glm::scale(glm::mat4(1.0f), m_LocalScale);
         m_LocalMatrix = translation * rotation * scale;
+        m_LocalMatrixDirty = false; // 在此处清除脏位
     }
 
     // 世界位置计算（保持原矩阵提取方式）
@@ -117,22 +118,35 @@ namespace Lambix
     }
 
     // 脏位管理
-    void lbTransformComponent::SetDirty(bool dirty)
+    void lbTransformComponent::SetDirty(bool localDirty, bool worldDirty)
     {
-        // 仅当状态变化时处理
-        if (m_Dirty == dirty)
-            return;
+        bool needsPropagation = false;
 
-        m_Dirty = dirty;
+        // 更新本地脏标记
+        if (localDirty && !m_LocalMatrixDirty)
+        {
+            m_LocalMatrixDirty = true;
+            m_WorldMatrixDirty = true; // 本地矩阵脏位更新时，世界矩阵也需要更新
+            needsPropagation = true;
+        }
 
-        // 仅传播脏标记，不触发计算
-        if (m_Dirty)
+        // 更新世界脏标记
+        if (worldDirty && !m_WorldMatrixDirty)
+        {
+            m_WorldMatrixDirty = true;
+            needsPropagation = true;
+        }
+
+        // 传播到子对象
+        if (needsPropagation)
         {
             auto children = GetChildrenTransform();
             for (auto child : children)
             {
                 if (child)
-                    child->SetDirty(true); // 强制传播
+                {
+                    child->SetDirty(false, true); // 仅传播世界脏标记
+                }
             }
         }
     }
@@ -177,6 +191,6 @@ namespace Lambix
     void lbTransformComponent::SetParentTransform(lbTransformComponent *parent)
     {
         m_Parent = parent;
-        SetDirty();
+        SetDirty(false, true); // 设置父对象后，需要更新世界矩阵
     }
 }

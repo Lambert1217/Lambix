@@ -53,8 +53,8 @@ namespace Lambix
         void RotateAroundAxis(const glm::vec3 &axis, float angle);
 
         // 脏位管理
-        bool IsDirty() const { return m_Dirty || (m_Parent && m_Parent->IsDirty()); }
-        void SetDirty(bool dirty = true);
+        void SetDirty(bool localDirty, bool worldDirty);
+        bool IsDirty() const { return m_LocalMatrixDirty || m_WorldMatrixDirty; }
 
         // 层级关系
         std::vector<lbTransformComponent *> GetChildrenTransform();
@@ -74,7 +74,10 @@ namespace Lambix
         // 层级关系
         lbTransformComponent *m_Parent = nullptr;
         std::weak_ptr<lbEntity> m_Entity;
-        bool m_Dirty = true;
+
+        // 脏位标记
+        bool m_LocalMatrixDirty = true;
+        bool m_WorldMatrixDirty = true;
 
         // 矩阵更新
         void UpdateWorldMatrix();
