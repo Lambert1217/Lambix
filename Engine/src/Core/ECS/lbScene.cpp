@@ -5,6 +5,15 @@
 
 namespace Lambix
 {
+    lbScene::lbScene()
+    {
+        // 创建主摄像机实体
+        m_PrimaryCameraEntity = CreateEntity("Primary Camera");
+        auto &cameraComp = m_PrimaryCameraEntity->AddComponent<lbCameraComponent>();
+        // cameraComp.ProjectionType = CameraProjectionType::Orthographic;
+        m_PrimaryCameraEntity->GetComponent<lbTransformComponent>().SetLocalPosition({0, 0, 10});
+        m_PrimaryCameraEntity->GetComponent<lbFlagComponent>().SetRenderable(false);
+    }
     std::shared_ptr<lbEntity> lbScene::CreateEntity(const std::string &name)
     {
         return CreateEntityWithUUID(name, GenUUID());
@@ -22,7 +31,11 @@ namespace Lambix
             auto &transformComp = entity->AddComponent<lbTransformComponent>();
             transformComp.LinkToEntity(entity);
         }
-
+        // 标志组件
+        {
+            auto &FlagComponent = entity->AddComponent<lbFlagComponent>();
+            FlagComponent.SetRenderable(true);
+        }
         m_EntityMap[*entity] = entity;
         return entity;
     }
@@ -125,5 +138,11 @@ namespace Lambix
                 transform.GetWorldMatrix();
             }
         }
+    }
+
+    void lbScene::SetViewportSize(float width, float height)
+    {
+        viewportWidth = width;
+        viewportHeight = height;
     }
 }

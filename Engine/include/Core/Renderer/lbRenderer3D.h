@@ -15,6 +15,7 @@
 #include "Core/Renderer/lbTexture.h"
 #include "Core/Renderer/lbShader.h"
 #include "glm/glm.hpp"
+#include "Core/ECS/lbScene.h"
 
 namespace Lambix
 {
@@ -23,7 +24,7 @@ namespace Lambix
 	 public:
 		static void Init();
 
-		static void BeginScene(const glm::mat4& viewProjectionMatrix);
+		static void BeginScene(const std::shared_ptr<lbScene> &scene);
 		static void EndScene();
 
 		static void DrawCube(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& rotation, const glm::vec4& color);

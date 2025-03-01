@@ -28,10 +28,6 @@ namespace Lambix
 
 	private:
 		std::shared_ptr<lbFrameBuffer> m_FrameBuffer;
-		glm::vec2 m_ViewportSize;
 		std::shared_ptr<lbScene> m_Scene;
-		std::shared_ptr<lbEntity> m_RootEntity;
-		std::shared_ptr<lbEntity> m_Child1Entity;
-		std::shared_ptr<lbEntity> m_Child2Entity;
 	};
 }

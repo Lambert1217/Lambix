@@ -13,6 +13,7 @@
 #include "Core/Base/lbUUID.h"
 #include "entt/entt.hpp"
 #include "Core/Base/lbTimestep.h"
+#include "Core/ECS/Components/lbCameraComponent.h"
 
 namespace Lambix
 {
@@ -20,7 +21,7 @@ namespace Lambix
     class lbScene
     {
     public:
-        lbScene() = default;
+        lbScene();
         ~lbScene() = default;
 
         std::shared_ptr<lbEntity> CreateEntity(const std::string &name);
@@ -33,6 +34,15 @@ namespace Lambix
         entt::registry &GetRegistry() { return m_Registry; }
         const std::unordered_map<entt::entity, std::shared_ptr<lbEntity>> &GetEntityMap() const { return m_EntityMap; }
 
+        // 主摄像机管理
+        std::shared_ptr<lbEntity> GetPrimaryCameraEntity() { return m_PrimaryCameraEntity; }
+        void SetPrimaryCamera(std::shared_ptr<lbEntity> cameraEntity) { m_PrimaryCameraEntity = cameraEntity; }
+
+        // 视口管理
+        void SetViewportSize(float width, float height);
+        float GetViewportWidth() const { return viewportWidth; }
+        float GetViewportHeight() const { return viewportHeight; }
+
     private:
         void PrintEntityHierarchy(entt::entity entity, int indentLevel);
         void UpdateTransforms();
@@ -40,5 +50,9 @@ namespace Lambix
     private:
         entt::registry m_Registry;
         std::unordered_map<entt::entity, std::shared_ptr<lbEntity>> m_EntityMap;
+
+        // 主摄像机实体
+        std::shared_ptr<lbEntity> m_PrimaryCameraEntity;
+        float viewportWidth{1}, viewportHeight{1};
     };
 }

@@ -36,4 +36,19 @@ namespace Lambix
     {
         std::vector<entt::entity> m_Children;
     };
+
+    struct lbFlagComponent
+    {
+        uint32_t m_Flags{0}; // 标志位
+        // 第一位表示是否可渲染
+        static constexpr uint32_t RENDERABLE = 1 << 0;
+        void SetRenderable(bool renderable)
+        {
+            if (renderable)
+                m_Flags |= RENDERABLE;
+            else
+                m_Flags &= ~RENDERABLE;
+        }
+        bool IsRenderable() const { return m_Flags & RENDERABLE; }
+    };
 }

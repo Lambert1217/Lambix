@@ -19,51 +19,50 @@ namespace Lambix
 
 		// temp
 		m_Scene = std::make_shared<lbScene>();
-		// 根实体
-		m_RootEntity = m_Scene->CreateEntity("Root");
-		auto &rootTrans = m_RootEntity->GetComponent<lbTransformComponent>();
-		rootTrans.SetLocalPosition({0, 0, 0});
+		// 实体创建
+		auto cubeControl = m_Scene->CreateEntity("CubeControl");
+		cubeControl->GetComponent<lbTransformComponent>().SetLocalPosition({0, 0, 0});
+		cubeControl->GetComponent<lbFlagComponent>().SetRenderable(false);
+		// 生成立方体阵列
+		const float spacing = 2.0f;							   // 立方体之间的间隔
+		const int gridSize = 10;							   // 每个维度的立方体数量
+		const float offset = -(gridSize - 1) * spacing * 0.5f; // 居中偏移量
 
-		// 子实体1
-		m_Child1Entity = m_Scene->CreateEntity("Child1");
-		m_Child1Entity->SetParent(m_RootEntity);
-		auto &child1Trans = m_Child1Entity->GetComponent<lbTransformComponent>();
-		child1Trans.SetLocalPosition({2, 0, 0});
+		// 生成10x10x10的立方体阵列
+		for (int i = 0; i < gridSize; ++i)
+		{
+			for (int j = 0; j < gridSize; ++j)
+			{
+				for (int k = 0; k < gridSize; ++k)
+				{
+					// 计算位置（居中分布）
+					float x = offset + i * spacing;
+					float y = offset + j * spacing;
+					float z = offset + k * spacing;
 
-		// 子实体2
-		m_Child2Entity = m_Scene->CreateEntity("Child2");
-		m_Child2Entity->SetParent(m_Child1Entity);
-		auto &child2Trans = m_Child2Entity->GetComponent<lbTransformComponent>();
-		child2Trans.SetLocalPosition({0, 1, 0});
+					// 创建实体并设置位置
+					auto entity = m_Scene->CreateEntity(
+						fmt::format("Cube_{}_{}_{}", i, j, k) // 唯一名称
+					);
+					entity->GetComponent<lbTransformComponent>()
+						.SetLocalPosition({x, y, z});
+					entity->SetParent(cubeControl);
+				}
+			}
+		}
 	}
 	void lbEditorLayer::OnDetach()
 	{
 	}
 	void lbEditorLayer::OnUpdate(lbTimestep ts)
 	{
-		// temp
-		m_Scene->OnUpdate(ts);
-
+		// 渲染到帧缓冲
 		m_FrameBuffer->Bind();
 		lbRendererCommand::SetClearColor({0.3f, 0.3f, 0.3f, 1.0f});
 		lbRendererCommand::Clear();
-
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), m_ViewportSize.x / m_ViewportSize.y, 0.1f, 100.0f);
-		glm::mat4 view = glm::lookAt({0, 0, -5}, {0, 0, 0}, glm::vec3(0.0f, 1.0f, 0.0f));
-
 		// 开始3D场景渲染
-		lbRenderer3D::BeginScene(projection * view);
-
-		// 遍历场景所有实体
-		for (auto &[entityHandle, entity] : m_Scene->GetEntityMap())
-		{
-			if (entity->HasComponent<lbTransformComponent>())
-			{
-				auto &transform = entity->GetComponent<lbTransformComponent>();
-				lbRenderer3D::DrawCube(transform.GetWorldMatrix(), {0.8f, 0.6f, 0.8f, 1.0f});
-			}
-		}
-
+		m_Scene->OnUpdate(ts);
+		lbRenderer3D::BeginScene(m_Scene);
 		lbRenderer3D::EndScene();
 		m_FrameBuffer->Unbind();
 	}
@@ -157,120 +156,51 @@ namespace Lambix
 		{
 			ImGui::Begin("Entity Control");
 
-			// 根实体控制
-			if (ImGui::CollapsingHeader("Root Entity", ImGuiTreeNodeFlags_DefaultOpen))
+			// 实体控制
+			for (auto &[entityHandle, entity] : m_Scene->GetEntityMap())
 			{
-				auto &trans = m_RootEntity->GetComponent<lbTransformComponent>();
+				// 使用唯一标识符：实体ID + 名称
+				std::string headerLabel = fmt::format("{}##{}", entity->GetName(), entity->GetUUID());
 
-				// 位置
-				glm::vec3 pos = trans.GetLocalPosition();
-				if (ImGui::DragFloat3("Position##Root", glm::value_ptr(pos), 0.1f))
+				if (ImGui::CollapsingHeader(headerLabel.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
 				{
-					trans.SetLocalPosition(pos);
-				}
+					auto &trans = entity->GetComponent<lbTransformComponent>();
 
-				// 旋转控制（改进版）
-				glm::quat rotation = trans.GetLocalRotation();
-				glm::vec3 eulerRadians = glm::eulerAngles(rotation); // 使用eulerAngles函数
+					// 生成唯一控件ID
+					const std::string entityID = std::to_string(entity->GetUUID());
 
-				// 转换为角度并规范化到[-180, 180)范围
-				glm::vec3 eulerDegrees = glm::degrees(eulerRadians);
-				eulerDegrees = glm::vec3(
-					fmod(eulerDegrees.x + 180.0f, 360.0f) - 180.0f,
-					fmod(eulerDegrees.y + 180.0f, 360.0f) - 180.0f,
-					fmod(eulerDegrees.z + 180.0f, 360.0f) - 180.0f);
+					// 位置控件
+					glm::vec3 pos = trans.GetLocalPosition();
+					if (ImGui::DragFloat3(("Position##" + entityID).c_str(),
+										  glm::value_ptr(pos), 0.1f))
+					{
+						trans.SetLocalPosition(pos);
+					}
 
-				if (ImGui::DragFloat3("Rotation##Root", glm::value_ptr(eulerDegrees), 0.1f,
-									  -FLT_MAX, FLT_MAX, "%.1f°"))
-				{
-					// 转换回弧度并创建四元数
-					glm::vec3 newEuler = glm::radians(eulerDegrees);
-					trans.SetLocalRotation(glm::quat(newEuler));
-				}
+					// 旋转控件
+					glm::quat rotation = trans.GetLocalRotation();
+					glm::vec3 eulerRadians = glm::eulerAngles(rotation);
+					glm::vec3 eulerDegrees = glm::degrees(eulerRadians);
+					eulerDegrees = glm::vec3(
+						fmod(eulerDegrees.x + 180.0f, 360.0f) - 180.0f,
+						fmod(eulerDegrees.y + 180.0f, 360.0f) - 180.0f,
+						fmod(eulerDegrees.z + 180.0f, 360.0f) - 180.0f);
 
-				// 缩放
-				glm::vec3 scale = trans.GetLocalScale();
-				if (ImGui::DragFloat3("Scale##Root", glm::value_ptr(scale), 0.1f))
-				{
-					trans.SetLocalScale(scale);
-				}
-			}
+					if (ImGui::DragFloat3(("Rotation##" + entityID).c_str(),
+										  glm::value_ptr(eulerDegrees), 0.1f,
+										  -FLT_MAX, FLT_MAX, "%.1f°"))
+					{
+						glm::vec3 newEuler = glm::radians(eulerDegrees);
+						trans.SetLocalRotation(glm::quat(newEuler));
+					}
 
-			// 子实体1控制（新增旋转部分）
-			if (ImGui::CollapsingHeader("Child1 Entity"))
-			{
-				auto &trans = m_Child1Entity->GetComponent<lbTransformComponent>();
-
-				// 位置
-				glm::vec3 pos = trans.GetLocalPosition();
-				if (ImGui::DragFloat3("Position##Child1", glm::value_ptr(pos), 0.1f))
-				{
-					trans.SetLocalPosition(pos);
-				}
-
-				// 旋转控制（改进版）
-				glm::quat rotation = trans.GetLocalRotation();
-				glm::vec3 eulerRadians = glm::eulerAngles(rotation); // 使用eulerAngles函数
-
-				// 转换为角度并规范化到[-180, 180)范围
-				glm::vec3 eulerDegrees = glm::degrees(eulerRadians);
-				eulerDegrees = glm::vec3(
-					fmod(eulerDegrees.x + 180.0f, 360.0f) - 180.0f,
-					fmod(eulerDegrees.y + 180.0f, 360.0f) - 180.0f,
-					fmod(eulerDegrees.z + 180.0f, 360.0f) - 180.0f);
-
-				if (ImGui::DragFloat3("Rotation##Child1", glm::value_ptr(eulerDegrees), 0.1f,
-									  -FLT_MAX, FLT_MAX, "%.1f°"))
-				{
-					// 转换回弧度并创建四元数
-					glm::vec3 newEuler = glm::radians(eulerDegrees);
-					trans.SetLocalRotation(glm::quat(newEuler));
-				}
-
-				// 缩放
-				glm::vec3 scale = trans.GetLocalScale();
-				if (ImGui::DragFloat3("Scale##Child1", glm::value_ptr(scale), 0.1f))
-				{
-					trans.SetLocalScale(scale);
-				}
-			}
-
-			// 子实体2控制（新增旋转部分）
-			if (ImGui::CollapsingHeader("Child2 Entity"))
-			{
-				auto &trans = m_Child2Entity->GetComponent<lbTransformComponent>();
-
-				// 位置
-				glm::vec3 pos = trans.GetLocalPosition();
-				if (ImGui::DragFloat3("Position##Child2", glm::value_ptr(pos), 0.1f))
-				{
-					trans.SetLocalPosition(pos);
-				}
-
-				// 旋转控制（改进版）
-				glm::quat rotation = trans.GetLocalRotation();
-				glm::vec3 eulerRadians = glm::eulerAngles(rotation); // 使用eulerAngles函数
-
-				// 转换为角度并规范化到[-180, 180)范围
-				glm::vec3 eulerDegrees = glm::degrees(eulerRadians);
-				eulerDegrees = glm::vec3(
-					fmod(eulerDegrees.x + 180.0f, 360.0f) - 180.0f,
-					fmod(eulerDegrees.y + 180.0f, 360.0f) - 180.0f,
-					fmod(eulerDegrees.z + 180.0f, 360.0f) - 180.0f);
-
-				if (ImGui::DragFloat3("Rotation##Child2", glm::value_ptr(eulerDegrees), 0.1f,
-									  -FLT_MAX, FLT_MAX, "%.1f°"))
-				{
-					// 转换回弧度并创建四元数
-					glm::vec3 newEuler = glm::radians(eulerDegrees);
-					trans.SetLocalRotation(glm::quat(newEuler));
-				}
-
-				// 缩放
-				glm::vec3 scale = trans.GetLocalScale();
-				if (ImGui::DragFloat3("Scale##Child2", glm::value_ptr(scale), 0.1f))
-				{
-					trans.SetLocalScale(scale);
+					// 缩放控件
+					glm::vec3 scale = trans.GetLocalScale();
+					if (ImGui::DragFloat3(("Scale##" + entityID).c_str(),
+										  glm::value_ptr(scale), 0.1f))
+					{
+						trans.SetLocalScale(scale);
+					}
 				}
 			}
 
@@ -282,13 +212,13 @@ namespace Lambix
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 			ImGui::Begin("Viewport");
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-			if (m_ViewportSize != *(glm::vec2 *)&viewportPanelSize)
+			if (m_Scene->GetViewportWidth() != viewportPanelSize.x || m_Scene->GetViewportHeight() != viewportPanelSize.y)
 			{
-				m_ViewportSize = {viewportPanelSize.x, viewportPanelSize.y};
-				m_FrameBuffer->Resize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+				m_Scene->SetViewportSize(viewportPanelSize.x, viewportPanelSize.y);
+				m_FrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
 			}
 			static ImTextureID TextureID = (ImTextureID)(uintptr_t)m_FrameBuffer->GetColorAttachmentRendererID();
-			ImGui::Image(TextureID, ImVec2{m_ViewportSize.x, m_ViewportSize.y}, ImVec2{0, 1}, ImVec2{1, 0});
+			ImGui::Image(TextureID, viewportPanelSize, ImVec2{0, 1}, ImVec2{1, 0});
 			ImGui::End();
 			ImGui::PopStyleVar();
 		}

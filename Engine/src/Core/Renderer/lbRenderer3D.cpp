@@ -13,6 +13,8 @@
 #include <Core/Renderer/lbRendererCommand.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Core/Utils/lbFileUtils.h"
+#include "Core/ECS/lbEntity.h"
+#include "Core/ECS/Components/lbTransformComponent.h"
 
 namespace Lambix
 {
@@ -47,9 +49,29 @@ namespace Lambix
 			s_lbRenderer3DStorage->WhiteTexture->SetData(&WhiteTextureData, sizeof(uint32_t));
 		}
 	}
-	void lbRenderer3D::BeginScene(const glm::mat4& viewProjectionMatrix)
+	void lbRenderer3D::BeginScene(const std::shared_ptr<lbScene> &scene)
 	{
-		s_lbRenderer3DStorage->m_ViewProjectionMatrix = viewProjectionMatrix;
+		auto &camera = scene->GetPrimaryCameraEntity()->GetComponent<lbCameraComponent>();
+		auto &cameraTransform = scene->GetPrimaryCameraEntity()->GetComponent<lbTransformComponent>();
+		s_lbRenderer3DStorage->m_ViewProjectionMatrix = camera.GetProjection(scene->GetViewportWidth(), scene->GetViewportHeight()) * glm::inverse(cameraTransform.GetWorldMatrix());
+
+		// 渲染指令
+		scene->GetRegistry().view<lbTransformComponent, lbFlagComponent>().each([](auto entity, auto &trans, auto &flags)
+																				{
+			if(flags.IsRenderable())
+			{
+				// 生成基于实体ID的哈希颜色
+				const auto entityID = entt::to_integral(entity);
+				const std::hash<uint32_t> hasher;
+				const uint32_t colorSeed = hasher(static_cast<uint32_t>(entityID));
+	
+				// 将哈希值转换为RGB颜色（使用位操作生成不同颜色通道）
+				const float r = ((colorSeed >> 16) & 0xFF) / 255.0f; // 取高位字节作为红色
+				const float g = ((colorSeed >> 8)  & 0xFF) / 255.0f; // 取中间字节作为绿色
+				const float b = (colorSeed        & 0xFF) / 255.0f; // 取低位字节作为蓝色
+	
+				DrawCube(trans.GetWorldMatrix(), {r, g, b, 1.0f});
+			} });
 	}
 	void lbRenderer3D::EndScene()
 	{
