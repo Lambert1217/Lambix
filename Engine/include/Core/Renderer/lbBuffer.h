@@ -56,9 +56,9 @@ namespace Lambix
 	{
 		std::string Name;       ///< 属性的名称
 		lbShaderDataType Type;  ///< 属性的数据类型
-		uint32_t Size;          ///< 属性的字节大小
-		uint32_t Offset;        ///< 在缓冲区中的偏移量
+		uint32_t Size;			///< 属性的字节大小
 		bool Normalized;        ///< 是否需要将整数值转换为标准化浮点值
+		uint32_t Index;			///< 属性的索引(对应着色器程序中的location)
 
 		lbBufferElement() = default;
 
@@ -68,57 +68,13 @@ namespace Lambix
 		 * @param type 属性的数据类型
 		 * @param normalized 是否需要标准化（默认为false）
 		 */
-		lbBufferElement(const std::string &name, lbShaderDataType type, bool normalized = false);
+		lbBufferElement(const std::string &name, lbShaderDataType type, uint32_t index, bool normalized = false);
 
 		/**
 		 * @brief 获取属性的组件数量
 		 * @return 返回属性的组件数量（例如Float3有3个组件）
 		 */
 		[[nodiscard]] uint32_t GetComponentCount() const;
-	};
-
-	/**
-	 * @class lbBufferLayout
-	 * @brief 定义了缓冲区布局的类
-	 *
-	 * 这个类管理一组`lbBufferElement`，描述了顶点缓冲区的布局。
-	 */
-	class lbBufferLayout
-	{
-	 public:
-		lbBufferLayout() = default;
-		/**
-		 * @brief 通过初始化列表构造缓冲区布局
-		 * @param element 初始化列表，包含多个`lbBufferElement`
-		 */
-		lbBufferLayout(const std::initializer_list<lbBufferElement> &element);
-
-		/**
-		 * @brief 获取缓冲区的步长
-		 * @return 返回缓冲区的步长（即每个顶点的字节大小）
-		 */
-		[[nodiscard]] inline uint32_t GetStride() const { return m_Stride; }
-
-		/**
-		 * @brief 获取缓冲区元素的列表
-		 * @return 返回包含所有缓冲区元素的const引用
-		 */
-		[[nodiscard]] inline const std::vector<lbBufferElement> &GetElements() const { return m_Elements; }
-
-		// 提供迭代器接口以便于遍历缓冲区元素
-		std::vector<lbBufferElement>::iterator begin() { return m_Elements.begin(); }
-		std::vector<lbBufferElement>::iterator end() { return m_Elements.end(); }
-		[[nodiscard]] std::vector<lbBufferElement>::const_iterator begin() const { return m_Elements.begin(); }
-		[[nodiscard]] std::vector<lbBufferElement>::const_iterator end() const { return m_Elements.end(); }
-
-	 private:
-		std::vector<lbBufferElement> m_Elements; ///< 包含所有缓冲区元素的向量
-		uint32_t m_Stride = 0;                   ///< 缓冲区的步长
-
-		/**
-		 * @brief 计算每个元素的偏移量和整个缓冲区的步长
-		 */
-		void CalculateOffsetAndStride();
 	};
 
 	/**
@@ -135,17 +91,10 @@ namespace Lambix
 		virtual void Bind() const = 0;                ///< 绑定缓冲区
 		virtual void Unbind() const = 0;              ///< 解绑缓冲区
 
-		/**
-		 * @brief 设置缓冲区的布局
-		 * @param layout 包含缓冲区布局信息的对象
-		 */
-		virtual void SetLayout(const lbBufferLayout &layout) = 0;
+		virtual const lbBufferElement &GetElement() const = 0; ///< 获取缓冲区元素
 
-		/**
-		 * @brief 获取当前缓冲区的布局
-		 * @return 返回缓冲区布局的const引用
-		 */
-		[[nodiscard]] virtual const lbBufferLayout &GetLayout() const = 0;
+		virtual void *GetData() const = 0;		  ///< 获取缓冲区数据的指针
+		virtual uint32_t GetDataSize() const = 0; ///< 获取缓冲区数据的大小
 
 		/**
 		 * @brief 创建一个新的顶点缓冲区
@@ -153,7 +102,7 @@ namespace Lambix
 		 * @param size 顶点数据的总字节大小
 		 * @return 返回指向新创建的顶点缓冲区的智能指针
 		 */
-		static std::shared_ptr<lbVertexBuffer> Create(float* vertices, uint32_t size);
+		static std::shared_ptr<lbVertexBuffer> Create(void *data, uint32_t size, const lbBufferElement &element);
 	};
 
 	/**

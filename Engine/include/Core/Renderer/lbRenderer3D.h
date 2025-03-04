@@ -11,11 +11,11 @@
 
 #pragma once
 
-#include "lbVertexArray.h"
 #include "Core/Renderer/lbTexture.h"
 #include "Core/Renderer/lbShader.h"
 #include "glm/glm.hpp"
 #include "Core/ECS/lbScene.h"
+#include "Core/Renderer/lbGeometry.h"
 
 namespace Lambix
 {
@@ -32,6 +32,6 @@ namespace Lambix
 		static void DrawCube(const glm::mat4 &worldMatrix, const glm::vec4 &color);
 
 	private:
-		static std::shared_ptr<lbVertexArray> CreateCubeVertexArray();
+		static std::shared_ptr<lbGeometry> CreateCubeGeometry();
 	};
 }

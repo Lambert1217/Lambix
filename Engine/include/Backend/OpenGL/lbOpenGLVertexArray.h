@@ -34,7 +34,6 @@ namespace Lambix
 		std::vector<std::shared_ptr<lbVertexBuffer>> m_VertexBuffers;
 		std::shared_ptr<lbIndexBuffer> m_IndexBuffer;
 		uint32_t m_RendererID;
-		uint32_t index;
 	};
 
 } // Lambix

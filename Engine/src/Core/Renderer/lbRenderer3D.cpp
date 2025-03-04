@@ -20,7 +20,7 @@ namespace Lambix
 {
 	struct lbRenderer3DStorage
 	{
-		std::shared_ptr<lbVertexArray> cubeVao;
+		std::shared_ptr<lbGeometry> cubeGeometry;
 		std::shared_ptr<lbShaderProgram> shaderBaseTexture;
 		std::shared_ptr<lbTexture> WhiteTexture;
 		// temp
@@ -32,7 +32,7 @@ namespace Lambix
 	{
 		s_lbRenderer3DStorage = std::make_unique<lbRenderer3DStorage>();
 		// cubeVao
-		s_lbRenderer3DStorage->cubeVao = CreateCubeVertexArray();
+		s_lbRenderer3DStorage->cubeGeometry = CreateCubeGeometry();
 		// shaderBaseTexture
 		{
 			s_lbRenderer3DStorage->shaderBaseTexture = lbShaderProgram::Create();
@@ -97,7 +97,7 @@ namespace Lambix
 			// MVP传给着色器
 			s_lbRenderer3DStorage->shaderBaseTexture->UploadUniformMat4("MVP", s_lbRenderer3DStorage->m_ViewProjectionMatrix * model);
 		}
-		lbRendererCommand::DrawIndexed(s_lbRenderer3DStorage->cubeVao);
+		lbRendererCommand::DrawIndexed(s_lbRenderer3DStorage->cubeGeometry->GetVertexArray());
 	}
 	void lbRenderer3D::DrawCube(const glm::vec3& position,
 								const glm::vec3& scale,
@@ -120,7 +120,7 @@ namespace Lambix
 			// MVP传给着色器
 			s_lbRenderer3DStorage->shaderBaseTexture->UploadUniformMat4("MVP", s_lbRenderer3DStorage->m_ViewProjectionMatrix * model);
 		}
-		lbRendererCommand::DrawIndexed(s_lbRenderer3DStorage->cubeVao);
+		lbRendererCommand::DrawIndexed(s_lbRenderer3DStorage->cubeGeometry->GetVertexArray());
 	}
 	void lbRenderer3D::DrawCube(const glm::mat4 &worldMatrix, const glm::vec4 &color)
 	{
@@ -134,69 +134,183 @@ namespace Lambix
 			// MVP传给着色器
 			s_lbRenderer3DStorage->shaderBaseTexture->UploadUniformMat4("MVP", s_lbRenderer3DStorage->m_ViewProjectionMatrix * worldMatrix);
 		}
-		lbRendererCommand::DrawIndexed(s_lbRenderer3DStorage->cubeVao);
+		lbRendererCommand::DrawIndexed(s_lbRenderer3DStorage->cubeGeometry->GetVertexArray());
 	}
-	std::shared_ptr<lbVertexArray> lbRenderer3D::CreateCubeVertexArray()
+	std::shared_ptr<lbGeometry> lbRenderer3D::CreateCubeGeometry()
 	{
-		float vertices[] = {
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-			0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		float position[] = {
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
 
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
 
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
 
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
 
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
+			-0.5f,
+			-0.5f,
 
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+			-0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			0.5f,
+			-0.5f,
+			0.5f,
+			-0.5f,
 		};
+		float UV[] = {
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 1.0f,
+
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			0.0f, 1.0f};
 		uint32_t indices[36];
 		for(int i = 0; i < 36; ++i)
 		{
 			indices[i] = i;
 		}
-		std::shared_ptr<lbVertexBuffer> vbo = lbVertexBuffer::Create(vertices, sizeof(vertices));
-		lbBufferLayout layout = {
-			{"position", lbShaderDataType::Float3},
-			{"uv",    	 lbShaderDataType::Float2}
-		};
-		vbo->SetLayout(layout);
+		std::shared_ptr<lbVertexBuffer> vboPosition = lbVertexBuffer::Create(position, sizeof(position), {"position", lbShaderDataType::Float3, 0});
+		std::shared_ptr<lbVertexBuffer> vboUV = lbVertexBuffer::Create(UV, sizeof(UV), {"uv", lbShaderDataType::Float2, 1});
 		std::shared_ptr<lbIndexBuffer> ebo = lbIndexBuffer::Create(indices, sizeof(indices)/sizeof(uint32_t));
 
-		std::shared_ptr<lbVertexArray> cubeVao = lbVertexArray::Create();
-		cubeVao->AddVertexBuffer(vbo);
-		cubeVao->SetIndexBuffer(ebo);
-		return cubeVao;
+		lbGeometry::Ptr cubeGeometry = lbGeometry::Create();
+		cubeGeometry->SetAttribute("position", vboPosition);
+		cubeGeometry->SetAttribute("UV", vboUV);
+		cubeGeometry->SetIndexBuffer(ebo);
+
+		cubeGeometry->ComputeBoundingSphere();
+
+		return cubeGeometry;
 	}
 }

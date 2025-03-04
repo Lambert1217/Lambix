@@ -16,11 +16,12 @@
 namespace Lambix
 {
     // lbOpenGLVertexBuffer
-	lbOpenGLVertexBuffer::lbOpenGLVertexBuffer(float* vertices, uint32_t size)
+	lbOpenGLVertexBuffer::lbOpenGLVertexBuffer(void *data, uint32_t size, const lbBufferElement &element)
+		: m_Element(element), m_Data(data), m_Size(size)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 	}
 	lbOpenGLVertexBuffer::~lbOpenGLVertexBuffer()
 	{

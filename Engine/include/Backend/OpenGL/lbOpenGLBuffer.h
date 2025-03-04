@@ -19,16 +19,22 @@ namespace Lambix
 	class lbOpenGLVertexBuffer : public lbVertexBuffer
 	{
 	 public:
-		lbOpenGLVertexBuffer(float *vertices, uint32_t size);
-		~lbOpenGLVertexBuffer() override;
+		 lbOpenGLVertexBuffer(void *data, uint32_t size, const lbBufferElement &element);
+		 ~lbOpenGLVertexBuffer() override;
 
-		void Bind() const override;
-		void Unbind() const override;
-		void SetLayout(const lbBufferLayout& layout) override {m_Layout = layout;}
-		[[nodiscard]] const lbBufferLayout& GetLayout() const override {return m_Layout;}
+		 void Bind() const override;
+		 void Unbind() const override;
+
+		 void *GetData() const override { return m_Data; }
+		 uint32_t GetDataSize() const override { return m_Size; }
+
+		 [[nodiscard]] const lbBufferElement &GetElement() const override { return m_Element; }
+
 	 private:
 		uint32_t m_RendererID;
-		lbBufferLayout m_Layout;
+		lbBufferElement m_Element;
+		void *m_Data;
+		uint32_t m_Size;
 	};
 
 	class lbOpenGLIndexBuffer : public lbIndexBuffer

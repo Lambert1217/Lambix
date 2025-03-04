@@ -46,7 +46,7 @@ namespace Lambix
 		LOG_ASSERT(false, "Unknown ShaderDataType!");
 		return 0;
 	}
-	lbOpenGLVertexArray::lbOpenGLVertexArray() : index(0)
+	lbOpenGLVertexArray::lbOpenGLVertexArray()
 	{
 		glCreateVertexArrays(1, &m_RendererID);
 	}
@@ -63,19 +63,15 @@ namespace Lambix
 	}
 	void lbOpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<lbVertexBuffer> vertexBuffer)
 	{
-		LOG_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+		LOG_ASSERT(vertexBuffer->GetElement().GetComponentCount(), "Vertex Buffer has no element!");
 
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
 
-		const auto &layout = vertexBuffer->GetLayout();
-		for (const auto &element : layout)
-		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
-				element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(), (const void *)(intptr_t)element.Offset);
-			index++;
-		}
+		auto &element = vertexBuffer->GetElement();
+		glEnableVertexAttribArray(element.Index);
+		glVertexAttribPointer(element.Index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
+							  element.Normalized ? GL_TRUE : GL_FALSE, vertexBuffer->GetElement().Size, (const void *)0);
 
 		m_VertexBuffers.push_back(vertexBuffer);
 	}

@@ -19,10 +19,10 @@
 namespace Lambix
 {
 
-	std::shared_ptr<lbVertexBuffer> lbVertexBuffer::Create(float* vertices, uint32_t size)
+	std::shared_ptr<lbVertexBuffer> lbVertexBuffer::Create(void *data, uint32_t size, const lbBufferElement &element)
 	{
 #ifdef LAMBIX_USE_OPENGL
-		return std::make_shared<lbOpenGLVertexBuffer>(vertices, size);
+		return std::make_shared<lbOpenGLVertexBuffer>(data, size, element);
 #endif
 	}
 
@@ -67,26 +67,8 @@ namespace Lambix
 		return 0;
 	}
 
-	lbBufferLayout::lbBufferLayout(const std::initializer_list<lbBufferElement> &element)
-		: m_Elements(element)
-	{
-		CalculateOffsetAndStride();
-	}
-
-	void lbBufferLayout::CalculateOffsetAndStride()
-	{
-		uint32_t offset = 0;
-		m_Stride = 0;
-		for (auto &element : m_Elements)
-		{
-			element.Offset = offset;
-			offset += element.Size;
-			m_Stride += element.Size;
-		}
-	}
-
-	lbBufferElement::lbBufferElement(const std::string &name, lbShaderDataType type, bool normalized)
-		: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized)
+	lbBufferElement::lbBufferElement(const std::string &name, lbShaderDataType type, uint32_t index, bool normalized)
+		: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Normalized(normalized), Index(index)
 	{
 	}
 
