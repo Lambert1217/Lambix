@@ -20,36 +20,14 @@ namespace Lambix
 		// temp
 		m_Scene = std::make_shared<lbScene>();
 		// 实体创建
-		auto cubeControl = m_Scene->CreateEntity("CubeControl");
-		cubeControl->GetComponent<lbTransformComponent>().SetLocalPosition({0, 0, 0});
-		cubeControl->GetComponent<lbFlagComponent>().SetRenderable(false);
-		// 生成立方体阵列
-		const float spacing = 2.0f;							   // 立方体之间的间隔
-		const int gridSize = 10;							   // 每个维度的立方体数量
-		const float offset = -(gridSize - 1) * spacing * 0.5f; // 居中偏移量
-
-		// 生成10x10x10的立方体阵列
-		for (int i = 0; i < gridSize; ++i)
-		{
-			for (int j = 0; j < gridSize; ++j)
-			{
-				for (int k = 0; k < gridSize; ++k)
-				{
-					// 计算位置（居中分布）
-					float x = offset + i * spacing;
-					float y = offset + j * spacing;
-					float z = offset + k * spacing;
-
-					// 创建实体并设置位置
-					auto entity = m_Scene->CreateEntity(
-						fmt::format("Cube_{}_{}_{}", i, j, k) // 唯一名称
-					);
-					entity->GetComponent<lbTransformComponent>()
-						.SetLocalPosition({x, y, z});
-					entity->SetParent(cubeControl);
-				}
-			}
-		}
+		auto cube = m_Scene->CreateEntity("Cube");
+		auto &meshRenderer = cube->AddComponent<lbMeshRendererComponent>();
+		meshRenderer.geometry = lbCubeGeometry::Create();
+		meshRenderer.material = lbBasicMaterial::Create();
+		auto mat = std::dynamic_pointer_cast<lbBasicMaterial>(meshRenderer.material);
+		mat->GetProperties().baseColor = {1.0, 0.78, 0.8, 1.0};
+		// meshRenderer.material->SetDiffuseMap(lbTexture::Create(lbJoinPath(lbResRootDir, "Textures/dog.png")));
+		cube->GetComponent<lbFlagComponent>().SetRenderable(true);
 	}
 	void lbEditorLayer::OnDetach()
 	{
@@ -62,8 +40,6 @@ namespace Lambix
 		lbRendererCommand::Clear();
 		// 开始3D场景渲染
 		m_Scene->OnUpdate(ts);
-		lbRenderer3D::BeginScene(m_Scene);
-		lbRenderer3D::EndScene();
 		m_FrameBuffer->Unbind();
 	}
 	void lbEditorLayer::OnEvent(Event &event)

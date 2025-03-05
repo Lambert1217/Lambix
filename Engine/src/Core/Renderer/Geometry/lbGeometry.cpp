@@ -1,4 +1,4 @@
-#include "Core/Renderer/lbGeometry.h"
+#include "Core/Renderer/Geometry/lbGeometry.h"
 #include "Core/Base/lbLog.h"
 
 namespace Lambix
@@ -37,10 +37,10 @@ namespace Lambix
     // 计算包围盒
     void lbGeometry::ComputeBoundingBox()
     {
-        auto posBuffer = GetAttribute("position");
+        auto posBuffer = GetAttribute("a_Position");
         if (!posBuffer)
         {
-            LOG_ERROR("No position buffer found!");
+            LOG_ERROR("No a_Position buffer found!");
             return;
         }
 
@@ -66,7 +66,7 @@ namespace Lambix
         // 共用中心
         m_boundingSphere->m_Center = m_boundingBox->GetCenter();
 
-        auto posBuffer = GetAttribute("position");
+        auto posBuffer = GetAttribute("a_Position");
         uint32_t count = posBuffer->GetDataSize() / posBuffer->GetElement().Size;
         float *position = (float *)posBuffer->GetData();
         // 找到距离当前球心最大距离的点

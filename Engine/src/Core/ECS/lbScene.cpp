@@ -1,7 +1,6 @@
 #include "Core/ECS/lbScene.h"
 #include "Core/ECS/lbEntity.h"
-#include "Core/ECS/Components/lbBasicComponents.h"
-#include "Core/ECS/Components/lbTransformComponent.h"
+#include "Core/Renderer/lbRendererCommand.h"
 
 namespace Lambix
 {
@@ -12,7 +11,6 @@ namespace Lambix
         auto &cameraComp = m_PrimaryCameraEntity->AddComponent<lbCameraComponent>();
         // cameraComp.ProjectionType = CameraProjectionType::Orthographic;
         m_PrimaryCameraEntity->GetComponent<lbTransformComponent>().SetLocalPosition({0, 0, 10});
-        m_PrimaryCameraEntity->GetComponent<lbFlagComponent>().SetRenderable(false);
     }
     std::shared_ptr<lbEntity> lbScene::CreateEntity(const std::string &name)
     {
@@ -34,7 +32,7 @@ namespace Lambix
         // 标志组件
         {
             auto &FlagComponent = entity->AddComponent<lbFlagComponent>();
-            FlagComponent.SetRenderable(true);
+            FlagComponent.SetRenderable(false);
         }
         m_EntityMap[*entity] = entity;
         return entity;
@@ -80,69 +78,29 @@ namespace Lambix
 
     void lbScene::OnUpdate(lbTimestep ts)
     {
-        UpdateTransforms();
-    }
-
-    void lbScene::PrintEntityHierarchy(entt::entity entity, int indentLevel)
-    {
-        const std::string indent(indentLevel * 2, ' ');
-
-        // 获取实体基本信息
-        auto &identity = m_Registry.get<lbIdentityComponent>(entity);
-        std::string parentInfo = "";
-
-        // 获取父实体信息
-        if (auto *parentComp = m_Registry.try_get<lbParentComponent>(entity))
-        {
-            if (auto parentIt = m_EntityMap.find(parentComp->m_Parent);
-                parentIt != m_EntityMap.end())
-            {
-                parentInfo = " -> Parent: " + parentIt->second->GetName();
-            }
-        }
-
-        // 输出带缩进的实体信息
-        LOG_TRACE("{0}[{1}] {2} (UUID: {3}){4}",
-                  indent,
-                  (uint32_t)entity,
-                  identity.m_Name,
-                  identity.m_UUID,
-                  parentInfo);
-
-        // 递归输出子实体
-        if (auto *childrenComp = m_Registry.try_get<lbChildrenComponent>(entity))
-        {
-            for (auto child : childrenComp->m_Children)
-            {
-                if (m_EntityMap.count(child))
-                {
-                    PrintEntityHierarchy(child, indentLevel + 1);
-                }
-                else
-                {
-                    LOG_WARN("{0}  |- [INVALID CHILD] {1}", indent, (uint32_t)child);
-                }
-            }
-        }
-    }
-
-    void lbScene::UpdateTransforms()
-    {
-        auto view = m_Registry.view<lbTransformComponent>();
-        for (auto entity : view)
-        {
-            auto &transform = view.get<lbTransformComponent>(entity);
-            if (transform.IsDirty())
-            {
-                // 强制更新世界矩阵
-                transform.GetWorldMatrix();
-            }
-        }
+        auto view = m_Registry.view<lbTransformComponent, lbMeshRendererComponent, lbFlagComponent>();
+        view.each([this](auto entity, lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags)
+                  { DrawEntity(trans, meshRenderer, flags); });
     }
 
     void lbScene::SetViewportSize(float width, float height)
     {
         viewportWidth = width;
         viewportHeight = height;
+    }
+
+    void lbScene::DrawEntity(lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags)
+    {
+        if (!flags.IsRenderable())
+            return;
+        meshRenderer.material->Bind();
+        meshRenderer.material->UpdateUniforms();
+        auto &ModelMatrix = trans.GetWorldMatrix();
+        auto MVP = m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().GetProjection(viewportWidth, viewportHeight) * glm::inverse(m_PrimaryCameraEntity->GetComponent<lbTransformComponent>().GetWorldMatrix()) * ModelMatrix;
+        meshRenderer.material->GetShaderProgram()->UploadUniformMat4("u_ModelViewProjection", MVP);
+        meshRenderer.material->GetShaderProgram()->UploadUniformMat4("u_ModelMatrix", ModelMatrix);
+        auto vao = meshRenderer.geometry->GetVertexArray();
+        vao->Bind();
+        lbRendererCommand::DrawIndexed(DrawMode::Triangles, vao);
     }
 }

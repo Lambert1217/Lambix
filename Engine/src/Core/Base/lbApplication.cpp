@@ -14,7 +14,6 @@
 #include "Core/Base/lbWindow.h"
 #include "Core/Base/lbCore.h"
 #include "GLFW/glfw3.h"
-#include "Core/Renderer/lbRenderer3D.h"
 #include "Core/Renderer/lbRendererCommand.h"
 
 namespace Lambix
@@ -40,7 +39,6 @@ namespace Lambix
 
 		// 渲染初始
 		lbRendererCommand::Init();
-		lbRenderer3D::Init();
 
 		// Imgui
 		m_ImguiLayer = new lbImguiLayer();

@@ -14,6 +14,9 @@
 #include "entt/entt.hpp"
 #include "Core/Base/lbTimestep.h"
 #include "Core/ECS/Components/lbCameraComponent.h"
+#include "Core/ECS/Components/lbBasicComponents.h"
+#include "Core/ECS/Components/lbTransformComponent.h"
+#include "Core/ECS/Components/lbMeshRendererComponent.h"
 
 namespace Lambix
 {
@@ -44,8 +47,7 @@ namespace Lambix
         float GetViewportHeight() const { return viewportHeight; }
 
     private:
-        void PrintEntityHierarchy(entt::entity entity, int indentLevel);
-        void UpdateTransforms();
+        void DrawEntity(lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags);
 
     private:
         entt::registry m_Registry;
