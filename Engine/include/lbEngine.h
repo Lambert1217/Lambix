@@ -49,3 +49,6 @@
 
 // ----Utils
 #include "Core/Utils/lbFileUtils.h"
+
+// ----Resource
+#include "Core/Resource/lbResourceManager.h"

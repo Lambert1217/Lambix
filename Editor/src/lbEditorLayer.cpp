@@ -24,9 +24,7 @@ namespace Lambix
 		auto &meshRenderer = cube->AddComponent<lbMeshRendererComponent>();
 		meshRenderer.geometry = lbCubeGeometry::Create();
 		meshRenderer.material = lbBasicMaterial::Create();
-		auto mat = std::dynamic_pointer_cast<lbBasicMaterial>(meshRenderer.material);
-		mat->GetProperties().baseColor = {1.0, 0.78, 0.8, 1.0};
-		// meshRenderer.material->SetDiffuseMap(lbTexture::Create(lbJoinPath(lbResRootDir, "Textures/dog.png")));
+		// meshRenderer.material->SetDiffuseMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/dog.png")));
 		cube->GetComponent<lbFlagComponent>().SetRenderable(true);
 	}
 	void lbEditorLayer::OnDetach()

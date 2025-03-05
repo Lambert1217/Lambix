@@ -1,5 +1,6 @@
 #include "Core/Renderer/Material/lbMaterial.h"
 #include "Core/Renderer/lbRendererCommand.h"
+#include "Core/Resource/lbResourceManager.h"
 
 namespace Lambix
 {
@@ -12,9 +13,7 @@ namespace Lambix
 
         if (!m_diffuseMap)
         {
-            m_diffuseMap = lbTexture::Create(1, 1);
-            uint32_t WhiteTextureData = 0xffffffff;
-            m_diffuseMap->SetData(&WhiteTextureData, sizeof(uint32_t));
+            m_diffuseMap = lbResourceManager::GetInstance().PureWhite1_1;
         }
 
         m_diffuseMap->Bind(0);

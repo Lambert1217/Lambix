@@ -30,4 +30,10 @@ namespace Lambix
 		return std::make_shared<lbOpenGLTexture>(width, height);
 #endif
 	}
+	std::shared_ptr<lbTexture> lbTexture::Create(lbTextureType type, uint32_t width, uint32_t height, Format format)
+	{
+#ifdef LAMBIX_USE_OPENGL
+		return std::make_shared<lbOpenGLTexture>(type, width, height, format);
+#endif
+	}
 }

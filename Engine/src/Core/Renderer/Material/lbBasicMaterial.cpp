@@ -1,17 +1,14 @@
 #include "Core/Renderer/Material/lbBasicMaterial.h"
 #include "Core/Utils/lbFileUtils.h"
+#include "Core/Resource/lbResourceManager.h"
 
 namespace Lambix
 {
     void lbBasicMaterial::Initialize()
     {
-        auto vertexShader = lbShader::Create(lbShaderType::Vertex);
-        vertexShader->CompileFromFile(lbJoinPath(lbResRootDir, "Shaders/Vertex/BasicMaterial.vert"));
-        auto fragShader = lbShader::Create(lbShaderType::Fragment);
-        fragShader->CompileFromFile(lbJoinPath(lbResRootDir, "Shaders/Fragment/BasicMaterial.frag"));
-
-        m_shaderProgram = lbShaderProgram::Create();
-        m_shaderProgram->Link(vertexShader, fragShader);
+        std::string vertexShaderPath = lbJoinPath(lbResRootDir, "Shaders/Vertex/BasicMaterial.vert");
+        std::string fragmentShaderPath = lbJoinPath(lbResRootDir, "Shaders/Fragment/BasicMaterial.frag");
+        m_shaderProgram = lbResourceManager::GetInstance().GetShaderProgram(vertexShaderPath, fragmentShaderPath);
     }
 
     void lbBasicMaterial::UpdateUniforms() const
