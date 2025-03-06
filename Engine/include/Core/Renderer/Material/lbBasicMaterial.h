@@ -25,8 +25,11 @@ namespace Lambix
         struct Properties
         {
             glm::vec4 baseColor = glm::vec4(1.0f);
+            // pbr
+            glm::vec3 albedo = glm::vec3(0.8f);
             float metallic = 0.0f;
             float roughness = 0.5f;
+            float ao = 1.0f;
         };
 
         Properties &GetProperties() { return m_properties; }

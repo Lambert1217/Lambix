@@ -109,6 +109,14 @@ namespace Lambix
 	{
 		glUseProgram(0);
 	}
+	void lbOpenGLShaderProgram::BindUniformBlock(const std::string &blockName, uint32_t bindingPoint) const
+	{
+		GLuint index = glGetUniformBlockIndex(m_RendererID, blockName.c_str());
+		if (index != GL_INVALID_INDEX)
+		{
+			glUniformBlockBinding(m_RendererID, index, bindingPoint);
+		}
+	}
 	bool lbOpenGLShaderProgram::Link(const std::shared_ptr<lbShader>& vertexShader,
 		const std::shared_ptr<lbShader>& fragmentShader)
 	{

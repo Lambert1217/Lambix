@@ -43,6 +43,7 @@
 #include "Core/ECS/Components/lbBasicComponents.h"
 #include "Core/ECS/Components/lbTransformComponent.h"
 #include "Core/ECS/Components/lbMeshRendererComponent.h"
+#include "Core/ECS/Components/lbLightComponent.h"
 
 // ----UI
 #include "Core/UI/Imgui/lbLogUI.h"

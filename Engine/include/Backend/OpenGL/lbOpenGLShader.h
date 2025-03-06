@@ -40,6 +40,7 @@ namespace Lambix
 
 		void Bind() const override;
 		void Unbind() const override;
+		void BindUniformBlock(const std::string &blockName, uint32_t bindingPoint) const override;
 		bool Link(const std::shared_ptr<lbShader>& vertexShader, const std::shared_ptr<lbShader>& fragmentShader) override;
 
 		void UploadUniformInt(const std::string& name, const int value) override;

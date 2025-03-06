@@ -1,16 +1,24 @@
 #include "Core/ECS/lbScene.h"
 #include "Core/ECS/lbEntity.h"
 #include "Core/Renderer/lbRendererCommand.h"
+#include "Core/ECS/System/lbLightSystem.h"
 
 namespace Lambix
 {
     lbScene::lbScene()
     {
         // 创建主摄像机实体
-        m_PrimaryCameraEntity = CreateEntity("Primary Camera");
-        auto &cameraComp = m_PrimaryCameraEntity->AddComponent<lbCameraComponent>();
-        // cameraComp.ProjectionType = CameraProjectionType::Orthographic;
-        m_PrimaryCameraEntity->GetComponent<lbTransformComponent>().SetLocalPosition({0, 0, 10});
+        {
+            m_PrimaryCameraEntity = CreateEntity("Primary Camera");
+            auto &cameraComp = m_PrimaryCameraEntity->AddComponent<lbCameraComponent>();
+            // cameraComp.ProjectionType = CameraProjectionType::Orthographic;
+            m_PrimaryCameraEntity->GetComponent<lbTransformComponent>().SetLocalPosition({0, 0, 10});
+        }
+        // 光照系统
+        {
+            m_LightSystem = std::make_shared<lbLightSystem>(this);
+            m_LightSystem->Init();
+        }
     }
     std::shared_ptr<lbEntity> lbScene::CreateEntity(const std::string &name)
     {
@@ -78,6 +86,9 @@ namespace Lambix
 
     void lbScene::OnUpdate(lbTimestep ts)
     {
+        // 光照系统更新
+        m_LightSystem->OnUpdate(ts);
+        // 实体渲染逻辑
         auto view = m_Registry.view<lbTransformComponent, lbMeshRendererComponent, lbFlagComponent>();
         view.each([this](auto entity, lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags)
                   { DrawEntity(trans, meshRenderer, flags); });
@@ -102,5 +113,6 @@ namespace Lambix
         auto vao = meshRenderer.geometry->GetVertexArray();
         vao->Bind();
         lbRendererCommand::DrawIndexed(DrawMode::Triangles, vao);
+        meshRenderer.material->Unbind();
     }
 }

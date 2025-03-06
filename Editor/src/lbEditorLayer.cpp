@@ -19,12 +19,18 @@ namespace Lambix
 
 		// temp
 		m_Scene = std::make_shared<lbScene>();
+		// 光源创建
+		auto dLightEntity = m_Scene->CreateEntity("dLight");
+		auto &dLight = dLightEntity->AddComponent<lbLightComponent>();
+		dLight.Intensity = 10.f;
+
 		// 实体创建
 		auto cube = m_Scene->CreateEntity("Cube");
 		auto &meshRenderer = cube->AddComponent<lbMeshRendererComponent>();
 		meshRenderer.geometry = lbCubeGeometry::Create();
 		meshRenderer.material = lbBasicMaterial::Create();
-		// meshRenderer.material->SetDiffuseMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/dog.png")));
+		meshRenderer.material->SetDiffuseMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall.jpg")));
+		meshRenderer.material->SetNormalMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall_normal.jpg")));
 		cube->GetComponent<lbFlagComponent>().SetRenderable(true);
 	}
 	void lbEditorLayer::OnDetach()

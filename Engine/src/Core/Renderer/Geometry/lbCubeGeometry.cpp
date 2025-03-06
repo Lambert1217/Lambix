@@ -21,6 +21,7 @@ namespace Lambix
         std::vector<glm::vec3> positions(24);
         std::vector<glm::vec3> normals(24);
         std::vector<glm::vec2> texCoords(24);
+        std::vector<glm::vec3> tangents(24);
 
         // 前面 (Z+)
         positions[0] = {half, half, half};
@@ -35,6 +36,10 @@ namespace Lambix
         positions[3] = {half, -half, half};
         normals[3] = {0, 0, 1};
         texCoords[3] = {1, 0};
+        for (int i = 0; i < 4; ++i)
+        {
+            tangents[i] = glm::vec3(1.0f, 0.0f, 0.0f);
+        }
 
         // 后面 (Z-)
         positions[4] = {half, half, -half};
@@ -49,6 +54,10 @@ namespace Lambix
         positions[7] = {-half, half, -half};
         normals[7] = {0, 0, -1};
         texCoords[7] = {1, 1};
+        for (int i = 4; i < 8; ++i)
+        {
+            tangents[i] = glm::vec3(-1.0f, 0.0f, 0.0f);
+        }
 
         // 左面 (X-)
         positions[8] = {-half, half, half};
@@ -63,6 +72,10 @@ namespace Lambix
         positions[11] = {-half, -half, half};
         normals[11] = {-1, 0, 0};
         texCoords[11] = {1, 0};
+        for (int i = 8; i < 12; ++i)
+        {
+            tangents[i] = glm::vec3(0.0f, 0.0f, 1.0f);
+        }
 
         // 右面 (X+)
         positions[12] = {half, half, half};
@@ -77,6 +90,10 @@ namespace Lambix
         positions[15] = {half, half, -half};
         normals[15] = {1, 0, 0};
         texCoords[15] = {1, 1};
+        for (int i = 12; i < 16; ++i)
+        {
+            tangents[i] = glm::vec3(0.0f, 0.0f, -1.0f);
+        }
 
         // 顶面 (Y+)
         positions[16] = {-half, half, half};
@@ -91,6 +108,10 @@ namespace Lambix
         positions[19] = {-half, half, -half};
         normals[19] = {0, 1, 0};
         texCoords[19] = {0, 0};
+        for (int i = 16; i < 20; ++i)
+        {
+            tangents[i] = glm::vec3(1.0f, 0.0f, 0.0f);
+        }
 
         // 底面 (Y-)
         positions[20] = {-half, -half, half};
@@ -105,6 +126,10 @@ namespace Lambix
         positions[23] = {half, -half, half};
         normals[23] = {0, -1, 0};
         texCoords[23] = {0, 0};
+        for (int i = 20; i < 24; ++i)
+        {
+            tangents[i] = glm::vec3(1.0f, 0.0f, 0.0f);
+        }
 
         // 创建分离的属性缓冲区
         auto posBuffer = lbVertexBuffer::Create(
@@ -121,11 +146,17 @@ namespace Lambix
             texCoords.data(),
             texCoords.size() * sizeof(glm::vec2),
             lbBufferElement("a_TexCoord", lbShaderDataType::Float2, 2));
+        // 创建切线缓冲区
+        auto tangentBuffer = lbVertexBuffer::Create(
+            tangents.data(),
+            tangents.size() * sizeof(glm::vec3),
+            lbBufferElement("a_Tangent", lbShaderDataType::Float3, 3));
 
         // 设置顶点属性
         SetAttribute("a_Position", posBuffer);
         SetAttribute("a_Normal", normalBuffer);
         SetAttribute("a_TexCoord", texBuffer);
+        SetAttribute("a_Tangent", tangentBuffer);
 
         // 索引数据（保持不变）
         uint32_t indices[] = {

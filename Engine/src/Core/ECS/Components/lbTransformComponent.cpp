@@ -117,6 +117,12 @@ namespace Lambix
         return glm::vec3(GetWorldMatrix()[3]);
     }
 
+    glm::vec3 Lambix::lbTransformComponent::GetForward() const
+    {
+        // 使用旋转四元数计算前向方向（局部坐标系的 Z 轴正方向）
+        return m_LocalRotation * glm::vec3(0.0f, 0.0f, 1.0f);
+    }
+
     // 脏位管理
     void lbTransformComponent::SetDirty(bool localDirty, bool worldDirty)
     {

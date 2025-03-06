@@ -31,6 +31,7 @@ namespace Lambix
 
         // 世界空间属性
         glm::vec3 GetWorldPosition();
+        glm::vec3 GetForward() const;
 
         // 矩阵访问
         const glm::mat4 &GetWorldMatrix();

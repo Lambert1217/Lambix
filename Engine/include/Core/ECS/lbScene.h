@@ -21,6 +21,7 @@
 namespace Lambix
 {
     class lbEntity;
+    class lbLightSystem;
     class lbScene
     {
     public:
@@ -56,5 +57,8 @@ namespace Lambix
         // 主摄像机实体
         std::shared_ptr<lbEntity> m_PrimaryCameraEntity;
         float viewportWidth{1}, viewportHeight{1};
+
+        // 光照系统
+        std::shared_ptr<lbLightSystem> m_LightSystem;
     };
 }

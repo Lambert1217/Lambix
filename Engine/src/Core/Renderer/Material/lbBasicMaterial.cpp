@@ -16,8 +16,12 @@ namespace Lambix
         if (m_shaderProgram)
         {
             m_shaderProgram->UploadUniformFloat4("u_BaseColor", m_properties.baseColor);
-            m_shaderProgram->UploadUniformFloat("u_Metallic", m_properties.metallic);
-            m_shaderProgram->UploadUniformFloat("u_Roughness", m_properties.roughness);
+
+            // 上传PBR参数
+            m_shaderProgram->UploadUniformFloat3("u_PBR.albedo", m_properties.albedo);
+            m_shaderProgram->UploadUniformFloat("u_PBR.Metallic", m_properties.metallic);
+            m_shaderProgram->UploadUniformFloat("u_PBR.Roughness", m_properties.roughness);
+            m_shaderProgram->UploadUniformFloat("u_PBR.ao", m_properties.ao);
         }
     }
 }
