@@ -45,7 +45,7 @@
 #include "Core/ECS/Components/lbMeshRendererComponent.h"
 
 // ----UI
-#include "Core/UI/lbLogUI.h"
+#include "Core/UI/Imgui/lbLogUI.h"
 
 // ----Utils
 #include "Core/Utils/lbFileUtils.h"

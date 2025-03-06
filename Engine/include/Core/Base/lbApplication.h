@@ -14,7 +14,7 @@
 #include "Core/Events/ApplicationEvent.h"
 #include "lbWindow.h"
 #include "lbLayerStack.h"
-#include "Core/Imgui/lbImguiLayer.h"
+#include "Core/UI/Imgui/lbImguiLayer.h"
 
 namespace Lambix
 {

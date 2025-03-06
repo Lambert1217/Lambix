@@ -11,7 +11,7 @@
 
 #include "Core/Base/lbLog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
-#include "Core/UI/lbLogUI.h"
+#include "Core/UI/Imgui/lbLogUI.h"
 
 namespace Lambix
 {

@@ -9,7 +9,7 @@
  */
 //
 
-#include "Core/Imgui/lbImguiLayer.h"
+#include "Core/UI/Imgui/lbImguiLayer.h"
 #include "Core/Base/lbApplication.h"
 #include "GLFW/glfw3.h"
 #include "imgui.h"
@@ -19,7 +19,6 @@
 #ifdef LAMBIX_USE_OPENGL
 #include "imgui_impl_opengl3.h"
 #endif
-
 
 namespace Lambix
 {
@@ -35,9 +34,9 @@ namespace Lambix
 		// 启用一些 ImGui 的特性
 		ImGuiIO &io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // 启用键盘控制
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;	// 启用停靠功能
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // 启用多视口 / 平台窗口
-		io.ConfigWindowsMoveFromTitleBarOnly = true;		// 仅允许移动窗口标题栏
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;	  // 启用停靠功能
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;	  // 启用多视口 / 平台窗口
+		io.ConfigWindowsMoveFromTitleBarOnly = true;		  // 仅允许移动窗口标题栏
 
 		// 设置 Dear ImGui 样式
 		ImGui::StyleColorsLight();
@@ -77,8 +76,8 @@ namespace Lambix
 	}
 	void lbImguiLayer::End()
 	{
-		ImGuiIO &io = ImGui::GetIO();																	// 获取 ImGui 的输入输出对象
-		lbApplication &app = lbApplication::GetInstance();												// 获取应用程序实例
+		ImGuiIO &io = ImGui::GetIO();																	  // 获取 ImGui 的输入输出对象
+		lbApplication &app = lbApplication::GetInstance();												  // 获取应用程序实例
 		io.DisplaySize = ImVec2((float)app.GetWindow()->GetWidth(), (float)app.GetWindow()->GetHeight()); // 设置 ImGui 的显示大小为应用程序窗口的大小
 
 		// Rendering
