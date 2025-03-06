@@ -9,30 +9,43 @@
  */
 //
 
-#include "Core/lbApplication.h"
-#include "Core/lbLog.h"
+#include "lbApplication.h"
+#include "Log/lbLog.h"
 #include "Core/lbWindow.h"
 #include "Core/lbCore.h"
 #include "GLFW/glfw3.h"
+#include "Renderer/lbRendererCommand.h"
 
 namespace Lambix
 {
-	lbApplication* lbApplication::s_lbApplication = nullptr;
+	lbApplication *lbApplication::s_lbApplication = nullptr;
 
-	lbApplication::lbApplication() : m_Window(nullptr)
+	lbApplication::lbApplication(const lbAppSettings &appSettings) : m_Window(nullptr), m_ImguiLayer(nullptr)
 	{
 		LOG_ASSERT(!s_lbApplication, "lbApplication already exists");
 		s_lbApplication = this;
+
+		Init(appSettings);
 	}
 
-	void lbApplication::init()
+	void lbApplication::Init(const lbAppSettings &appSettings)
 	{
+		m_AppSettings = appSettings;
 		// 窗口初始化
 		m_Window = lbWindow::Create(m_AppSettings.WindowWidth, m_AppSettings.WindowHeight, m_AppSettings.WindowTitle);
+		m_Window->SetVSync(m_AppSettings.VSync);
 		m_Window->SetEventCallback(LB_BIND_EVENT_FN(lbApplication::OnEvent));
+		m_Window->SetMaximized();
+
+		// 渲染初始
+		lbRendererCommand::Init();
+
+		// Imgui
+		m_ImguiLayer = new lbImguiLayer();
+		PushOverlay(m_ImguiLayer);
 	}
 
-	void lbApplication::run()
+	void lbApplication::Run()
 	{
 		while (isRunning)
 		{
@@ -40,24 +53,32 @@ namespace Lambix
 			lbTimestep timestep = CurrentTime - LastFrameTime;
 			LastFrameTime = CurrentTime;
 
-			// 遍历各层级 执行更新
-			for (lbLayer* layer : m_LayerStack)
+			// 如果没有最小化 遍历各层级 执行更新
+			if (!isMinsize)
 			{
-				layer->OnUpdate(timestep);
+				for (lbLayer *layer : m_LayerStack)
+				{
+					layer->OnUpdate(timestep);
+				}
 			}
+			// imgui 绘制
+			m_ImguiLayer->Begin();
+			for (lbLayer *layer : m_LayerStack)
+			{
+				layer->OnImGuiRender();
+			}
+			m_ImguiLayer->End();
 
-			m_Window->pollEvents();
-			//m_Window->swapBuffer();
+			m_Window->OnUpdate();
 		}
-
 	}
-	void lbApplication::quit()
+	void lbApplication::Quit()
 	{
-		m_Window->destroy();
+		isRunning = false;
 		LOG_INFO("Program Quit");
 	}
 
-	void lbApplication::OnEvent(Event& e)
+	void lbApplication::OnEvent(Event &e)
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(LB_BIND_EVENT_FN(lbApplication::OnWindowClose));
@@ -70,22 +91,28 @@ namespace Lambix
 				break;
 		}
 	}
-	bool lbApplication::OnWindowClose(WindowCloseEvent& e)
+	bool lbApplication::OnWindowClose(WindowCloseEvent &e)
 	{
-		isRunning = false;
+		Quit();
 		return true;
 	}
-	bool lbApplication::OnWindowResize(WindowResizeEvent& e)
+	bool lbApplication::OnWindowResize(WindowResizeEvent &e)
 	{
-		LOG_TRACE("OnResize : ({0},{1})",e.GetWidth(), e.GetHeight());
+		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		{
+			isMinsize = true;
+			return false;
+		}
+		isMinsize = false;
+		lbRendererCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 		return false;
 	}
-	void lbApplication::PushLayer(lbLayer* layer)
+	void lbApplication::PushLayer(lbLayer *layer)
 	{
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
-	void lbApplication::PushOverlay(lbLayer* overlay)
+	void lbApplication::PushOverlay(lbLayer *overlay)
 	{
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();

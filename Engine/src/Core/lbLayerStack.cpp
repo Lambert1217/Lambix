@@ -9,31 +9,31 @@
  */
 //
 
-#include "Core/lbLayerStack.h"
+#include "lbLayerStack.h"
 
 namespace Lambix
 {
-	
+
 	lbLayerStack::lbLayerStack() = default;
 
 	lbLayerStack::~lbLayerStack()
 	{
-		for (lbLayer* layer : m_Layers)
+		for (lbLayer *layer : m_Layers)
 			delete layer;
 	}
 
-	void lbLayerStack::PushLayer(lbLayer* layer)
+	void lbLayerStack::PushLayer(lbLayer *layer)
 	{
 		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
 		m_LayerInsertIndex++;
 	}
 
-	void lbLayerStack::PushOverlay(lbLayer* overlay)
+	void lbLayerStack::PushOverlay(lbLayer *overlay)
 	{
 		m_Layers.emplace_back(overlay);
 	}
 
-	void lbLayerStack::PopLayer(lbLayer* layer)
+	void lbLayerStack::PopLayer(lbLayer *layer)
 	{
 		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
 		if (it != m_Layers.end())
@@ -43,7 +43,7 @@ namespace Lambix
 		}
 	}
 
-	void lbLayerStack::PopOverlay(lbLayer* overlay)
+	void lbLayerStack::PopOverlay(lbLayer *overlay)
 	{
 		auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
 		if (it != m_Layers.end())
@@ -51,5 +51,5 @@ namespace Lambix
 			m_Layers.erase(it);
 		}
 	}
-	
+
 } // Lambix

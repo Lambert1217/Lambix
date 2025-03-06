@@ -9,18 +9,19 @@
  */
 //
 
-#include "Core/lbInput.h"
+#include "lbInput.h"
 
 #if LAMBIX_OS_WINDOWS | LAMBIX_OS_APPLE | LAMBIX_OS_LINUX
 #include "Platform/Window/lbGLFWInput.h"
 #endif
 
-namespace Lambix{
+namespace Lambix
+{
 
 #if LAMBIX_OS_WINDOWS | LAMBIX_OS_APPLE | LAMBIX_OS_LINUX
-	lbInput* lbInput::s_lbInput = new lbGLFWInput();
+	lbInput *lbInput::s_lbInput = new lbGLFWInput();
 #else
-	lbInput* lbInput::s_lbInput = nullptr;
+	lbInput *lbInput::s_lbInput = nullptr;
 #endif
-	
+
 }
