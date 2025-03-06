@@ -10,7 +10,7 @@
 //
 
 #include "Backend/OpenGL/lbOpenGLBuffer.h"
-#include "Core/Base/lbLog.h"
+#include "Log/lbLog.h"
 #include "glad/glad.h"
 
 namespace Lambix

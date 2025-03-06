@@ -10,10 +10,10 @@
 //
 
 #include "Platform/Window/lbGLFWWindow.h"
-#include "Core/Base/lbLog.h"
-#include "Core/Events/ApplicationEvent.h"
-#include "Core/Events/KeyEvent.h"
-#include "Core/Events/MouseEvent.h"
+#include "Log/lbLog.h"
+#include "Events/ApplicationEvent.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
 #include "GLFW/glfw3.h"
 
 #ifdef LAMBIX_USE_OPENGL

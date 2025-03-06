@@ -10,7 +10,7 @@
 //
 
 #include "Backend/OpenGL/lbOpenGLTexture.h"
-#include "Core/Base/lbLog.h"
+#include "Log/lbLog.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"

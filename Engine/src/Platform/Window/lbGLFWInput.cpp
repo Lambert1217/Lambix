@@ -10,7 +10,7 @@
 //
 
 #include "Platform/Window/lbGLFWInput.h"
-#include "Core/Base/lbApplication.h"
+#include "Core/lbApplication.h"
 #include "GLFW/glfw3.h"
 
 namespace Lambix

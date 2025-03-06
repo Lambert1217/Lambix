@@ -5,10 +5,21 @@ cmake_minimum_required(VERSION 3.27)
 project(LambixEngine VERSION 0.1)
 
 # 设置C++标准
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 使用GLOB_RECURSE命令递归地查找所有的.cpp文件
-file(GLOB_RECURSE CORE_SOURCE_FILES "src/Core/**.cpp")
+file(GLOB_RECURSE SOURCE_FILES 
+    "src/Core/**.cpp"
+    "src/ECS/**.cpp"
+    "src/Events/**.cpp"
+    "src/Imgui/**.cpp"
+    "src/Log/**.cpp"
+    "src/Math/**.cpp"
+    "src/Renderer/**.cpp"
+    "src/Resource/**.cpp"
+    "src/Utils/**.cpp"
+)
 
 # 查找并配置第三方库
 find_package(spdlog CONFIG REQUIRED) # 配置并查找spdlog库
@@ -62,7 +73,7 @@ endif()
 
 # 将所有源文件添加到库中
 target_sources(lbx PUBLIC
-        ${CORE_SOURCE_FILES}
+        ${SOURCE_FILES}
         ${PLATFORM_SOURCE_FILES}
         ${RENDERER_BACKEND_SOURCE_FILES}
 )
@@ -70,13 +81,13 @@ target_sources(lbx PUBLIC
 # 设置包含目录
 target_include_directories(lbx
         PUBLIC
-        include
+        "src"
         PRIVATE
         ${Stb_INCLUDE_DIR}
 )
 
 # 添加预编译头文件
-target_precompile_headers(lbx PUBLIC lbpch.h)
+target_precompile_headers(lbx PUBLIC "src/lbpch.h")
 
 # 链接第三方库
 target_link_libraries(lbx

@@ -11,7 +11,7 @@
 
 #include "Backend/OpenGL/lbOpenGLVertexArray.h"
 #include "glad/glad.h"
-#include "Core/Base/lbLog.h"
+#include "Log/lbLog.h"
 
 namespace Lambix
 {
