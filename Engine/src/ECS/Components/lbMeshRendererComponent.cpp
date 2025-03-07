@@ -3,4 +3,7 @@
 
 namespace Lambix
 {
+    void lbMeshRendererComponent::OnUpdate(lbTimestep ts)
+    {
+    }
 }

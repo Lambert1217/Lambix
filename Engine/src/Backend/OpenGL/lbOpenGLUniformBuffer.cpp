@@ -12,9 +12,6 @@ namespace Lambix
                           m_Spec.size,
                           nullptr,
                           m_Spec.dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
-
-        LOG_TRACE("Created UBO (ID: {}) Size: {} Binding: {}",
-                  m_RendererID, m_Spec.size, m_Spec.binding);
     }
 
     lbOpenGLUniformBuffer::~lbOpenGLUniformBuffer()

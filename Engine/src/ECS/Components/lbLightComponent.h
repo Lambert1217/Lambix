@@ -9,6 +9,7 @@
  */
 #pragma once
 #include <glm/glm.hpp>
+#include "ECS/Components/lbComponent.h"
 
 namespace Lambix
 {
@@ -20,7 +21,7 @@ namespace Lambix
         Area             // 区域光（未来扩展）
     };
 
-    struct lbLightComponent
+    struct lbLightComponent : public lbComponent
     {
         LightType Type = LightType::Directional;
         glm::vec3 Color = glm::vec3(1.0f); // 光照颜色

@@ -10,7 +10,8 @@ namespace Lambix
 
     void lbEntity::SetParent(std::shared_ptr<lbEntity> parent)
     {
-        if (!parent || !parent->IsValid() || !IsValid() || parent->m_Scene != m_Scene)
+        // 如果parent为空，或者parent的不是同一个场景
+        if (!parent || parent->m_Scene != m_Scene)
         {
             LOG_ERROR("Invalid parent entity or scene mismatch");
             return;
@@ -19,13 +20,19 @@ namespace Lambix
         // 获取或创建当前实体的Parent组件
         auto &parentComp = m_Scene->GetRegistry().get_or_emplace<lbParentComponent>(m_EntityHandle);
 
-        // 处理旧父节点
+        // 如果已经是其父实体，直接返回
+        if (parentComp.m_Parent == parent->m_EntityHandle)
+        {
+            LOG_WARN("Entity {} is already the parent entity of Entity {}.", parent->GetName(), GetName());
+            return;
+        }
+
+        // 处理旧父节点：如果原先有父节点，先从其父实体的子实体列表删除
         if (parentComp.m_Parent != entt::null)
         {
-            if (auto oldParent = m_Scene->GetEntityMap().find(parentComp.m_Parent);
-                oldParent != m_Scene->GetEntityMap().end())
+            if (auto oldParent = m_Scene->GetEntity(parentComp.m_Parent); oldParent)
             {
-                auto &oldChildren = oldParent->second->GetComponent<lbChildrenComponent>();
+                auto &oldChildren = oldParent->GetComponent<lbChildrenComponent>();
                 oldChildren.m_Children.erase(
                     std::remove(oldChildren.m_Children.begin(),
                                 oldChildren.m_Children.end(),
@@ -38,7 +45,7 @@ namespace Lambix
         parentComp.m_Parent = parent->m_EntityHandle;
 
         // 更新新父节点的Children组件
-        auto &newChildren = parent->m_Scene->GetRegistry().get_or_emplace<lbChildrenComponent>(parent->m_EntityHandle);
+        auto &newChildren = m_Scene->GetRegistry().get_or_emplace<lbChildrenComponent>(parent->m_EntityHandle);
         if (std::find(newChildren.m_Children.begin(),
                       newChildren.m_Children.end(),
                       m_EntityHandle) == newChildren.m_Children.end())
@@ -47,18 +54,21 @@ namespace Lambix
         }
 
         // 更新变换组件父子关系
-        if (HasComponent<lbTransformComponent>())
+        GetComponent<lbTransformComponent>().m_Transform.SetDirty();
+    }
+
+    std::shared_ptr<lbEntity> lbEntity::GetParent() const
+    {
+        if (!HasParent())
         {
-            auto &childTransform = GetComponent<lbTransformComponent>();
-            if (parent->HasComponent<lbTransformComponent>())
-            {
-                childTransform.SetParentTransform(&parent->GetComponent<lbTransformComponent>());
-            }
-            else
-            {
-                childTransform.SetParentTransform(nullptr);
-            }
+            return nullptr;
         }
+        if (auto it = m_Scene->GetEntity(GetComponent<lbParentComponent>().m_Parent); it)
+        {
+            // 找到父实体
+            return it;
+        }
+        return nullptr;
     }
 
     std::vector<std::shared_ptr<lbEntity>> lbEntity::GetChildren() const
@@ -68,10 +78,9 @@ namespace Lambix
         {
             for (auto childHandle : childrenComp->m_Children)
             {
-                if (auto it = m_Scene->GetEntityMap().find(childHandle);
-                    it != m_Scene->GetEntityMap().end())
+                if (auto it = m_Scene->GetEntity(childHandle); it)
                 {
-                    children.push_back(it->second);
+                    children.push_back(it);
                 }
             }
         }

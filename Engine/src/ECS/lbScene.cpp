@@ -2,6 +2,7 @@
 #include "ECS/lbEntity.h"
 #include "Renderer/lbRendererCommand.h"
 #include "ECS/System/lbLightSystem.h"
+#include "lbScene.h"
 
 namespace Lambix
 {
@@ -12,7 +13,8 @@ namespace Lambix
             m_PrimaryCameraEntity = CreateEntity("Primary Camera");
             auto &cameraComp = m_PrimaryCameraEntity->AddComponent<lbCameraComponent>();
             // cameraComp.ProjectionType = CameraProjectionType::Orthographic;
-            m_PrimaryCameraEntity->GetComponent<lbTransformComponent>().SetLocalPosition({0, 0, 10});
+            auto &trans = m_PrimaryCameraEntity->GetComponent<lbTransformComponent>();
+            trans.m_Transform.SetPosition({0.0f, 0.0f, 10.f});
         }
         // 光照系统
         {
@@ -32,27 +34,31 @@ namespace Lambix
         {
             entity->AddComponent<lbIdentityComponent>(uuid, name);
         }
+        // 父子组件
+        {
+            entity->AddComponent<lbParentComponent>();
+            entity->AddComponent<lbChildrenComponent>();
+        }
         // 变换组件
         {
             auto &transformComp = entity->AddComponent<lbTransformComponent>();
-            transformComp.LinkToEntity(entity);
         }
         // 标志组件
         {
             auto &FlagComponent = entity->AddComponent<lbFlagComponent>();
             FlagComponent.SetRenderable(false);
         }
-        m_EntityMap[*entity] = entity;
+        m_EntityMap[entity->GetHandle()] = entity;
         return entity;
     }
 
     void lbScene::DestroyEntity(std::shared_ptr<lbEntity> entity)
     {
-        if (!entity || !m_EntityMap.count(*entity))
+        if (!entity || !m_EntityMap.count(entity->GetHandle()))
             return;
 
         // 递归销毁子实体
-        if (auto *childrenComp = m_Registry.try_get<lbChildrenComponent>(*entity))
+        if (auto *childrenComp = m_Registry.try_get<lbChildrenComponent>(entity->GetHandle()))
         {
             auto children = childrenComp->m_Children; // 复制列表避免迭代时修改
             for (auto childHandle : children)
@@ -65,33 +71,56 @@ namespace Lambix
         }
 
         // 处理父节点关系
-        if (auto *parentComp = m_Registry.try_get<lbParentComponent>(*entity))
+        if (auto *parentComp = m_Registry.try_get<lbParentComponent>(entity->GetHandle()))
         {
-            if (auto parentIt = m_EntityMap.find(parentComp->m_Parent);
-                parentIt != m_EntityMap.end())
+            if (auto parentIt = m_EntityMap.find(parentComp->m_Parent); parentIt != m_EntityMap.end())
             {
                 auto &parentChildren = parentIt->second->GetComponent<lbChildrenComponent>();
                 parentChildren.m_Children.erase(
                     std::remove(parentChildren.m_Children.begin(),
                                 parentChildren.m_Children.end(),
-                                *entity),
+                                entity->GetHandle()),
                     parentChildren.m_Children.end());
             }
         }
 
         // 清理注册表
-        m_Registry.destroy(*entity);
-        m_EntityMap.erase(*entity);
+        m_Registry.destroy(entity->GetHandle());
+        m_EntityMap.erase(entity->GetHandle());
     }
 
     void lbScene::OnUpdate(lbTimestep ts)
     {
         // 光照系统更新
         m_LightSystem->OnUpdate(ts);
+        // Transform 更新
+        auto transView = m_Registry.view<lbTransformComponent>();
+        for (auto it : transView)
+        {
+            GetEntity(it)->GetComponent<lbTransformComponent>().OnUpdate(ts);
+        }
+        // 主摄像机更新
+        m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().OnUpdate(ts);
         // 实体渲染逻辑
         auto view = m_Registry.view<lbTransformComponent, lbMeshRendererComponent, lbFlagComponent>();
         view.each([this](auto entity, lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags)
                   { DrawEntity(trans, meshRenderer, flags); });
+    }
+
+    void lbScene::OnEvent(Event &e)
+    {
+        m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().OnEvent(e);
+    }
+
+    std::shared_ptr<lbEntity> lbScene::GetEntity(entt::entity handle) const
+    {
+        if (handle == entt::null)
+            return nullptr;
+        if (auto it = m_EntityMap.find(handle); it != m_EntityMap.end())
+        {
+            return it->second;
+        }
+        return nullptr;
     }
 
     void lbScene::SetViewportSize(float width, float height)
@@ -106,8 +135,8 @@ namespace Lambix
             return;
         meshRenderer.material->Bind();
         meshRenderer.material->UpdateUniforms();
-        auto &ModelMatrix = trans.GetWorldMatrix();
-        auto MVP = m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().GetProjection(viewportWidth, viewportHeight) * glm::inverse(m_PrimaryCameraEntity->GetComponent<lbTransformComponent>().GetWorldMatrix()) * ModelMatrix;
+        const auto &ModelMatrix = trans.m_Transform.GetWorldMatrix();
+        auto MVP = m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().GetViewProjection() * ModelMatrix;
         meshRenderer.material->GetShaderProgram()->UploadUniformMat4("u_ModelViewProjection", MVP);
         meshRenderer.material->GetShaderProgram()->UploadUniformMat4("u_ModelMatrix", ModelMatrix);
         auto vao = meshRenderer.geometry->GetVertexArray();

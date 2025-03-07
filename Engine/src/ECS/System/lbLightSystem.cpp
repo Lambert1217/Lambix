@@ -40,7 +40,7 @@ namespace Lambix
                     return;
                 }
                 auto& data = m_LightData.directionalLights[m_LightData.header.lightCounts.x++];
-                data.direction = glm::vec4(trans.GetForward(), 0.0f);
+                data.direction = glm::vec4(trans.m_Transform.GetFront(), 0.0f);
                 data.base.color = glm::vec4(light.Color, light.Intensity);
                 break;
             }
@@ -51,7 +51,7 @@ namespace Lambix
                     return;
                 }
                 auto& data = m_LightData.pointLights[m_LightData.header.lightCounts.y++];
-                data.position = glm::vec4(trans.GetWorldPosition(), light.Range);
+                data.position = glm::vec4(trans.m_Transform.GetWorldPosition(), light.Range);
                 data.base.color = glm::vec4(light.Color, light.Intensity);
                 data.attenuation = glm::vec4(light.Attenuation, 0.0f);
                 break;
@@ -63,8 +63,8 @@ namespace Lambix
                     return;
                 }
                 auto& data = m_LightData.spotLights[m_LightData.header.lightCounts.z++];
-                data.position = glm::vec4(trans.GetWorldPosition(), light.Range);
-                data.direction = glm::vec4(trans.GetForward(), glm::cos(light.InnerAngle));
+                data.position = glm::vec4(trans.m_Transform.GetWorldPosition(), light.Range);
+                data.direction = glm::vec4(trans.m_Transform.GetFront(), glm::cos(light.InnerAngle));
                 data.base.color = glm::vec4(light.Color, light.Intensity);
                 data.spotParams = glm::vec4(
                     glm::cos(light.OuterAngle),

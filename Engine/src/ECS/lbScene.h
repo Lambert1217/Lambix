@@ -34,9 +34,10 @@ namespace Lambix
         void DestroyEntity(std::shared_ptr<lbEntity> entity);
 
         void OnUpdate(lbTimestep ts);
+        void OnEvent(Event &e);
 
         entt::registry &GetRegistry() { return m_Registry; }
-        const std::unordered_map<entt::entity, std::shared_ptr<lbEntity>> &GetEntityMap() const { return m_EntityMap; }
+        std::shared_ptr<lbEntity> GetEntity(entt::entity handle) const;
 
         // 主摄像机管理
         std::shared_ptr<lbEntity> GetPrimaryCameraEntity() { return m_PrimaryCameraEntity; }

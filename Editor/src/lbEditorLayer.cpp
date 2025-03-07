@@ -25,19 +25,34 @@ namespace Lambix
 		dLight.Intensity = 10.f;
 
 		// 实体创建
-		auto cube = m_Scene->CreateEntity("Cube");
-		auto &meshRenderer = cube->AddComponent<lbMeshRendererComponent>();
-		meshRenderer.geometry = lbCubeGeometry::Create();
-		meshRenderer.material = lbBasicMaterial::Create();
-		meshRenderer.material->SetDiffuseMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall.jpg")));
-		meshRenderer.material->SetNormalMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall_normal.jpg")));
-		cube->GetComponent<lbFlagComponent>().SetRenderable(true);
+		cube1 = m_Scene->CreateEntity("Cube1");
+		auto &meshRenderer1 = cube1->AddComponent<lbMeshRendererComponent>();
+		meshRenderer1.geometry = lbCubeGeometry::Create();
+		meshRenderer1.material = lbBasicMaterial::Create();
+		meshRenderer1.material->SetDiffuseMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall.jpg")));
+		meshRenderer1.material->SetNormalMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall_normal.jpg")));
+		cube1->GetComponent<lbFlagComponent>().SetRenderable(true);
+
+		auto cube2 = m_Scene->CreateEntity("Cube2");
+		cube2->SetParent(cube1);
+		cube2->GetComponent<lbTransformComponent>().m_Transform.Translate({2.f, 0.f, -1.f});
+		auto &meshRenderer2 = cube2->AddComponent<lbMeshRendererComponent>();
+		meshRenderer2.geometry = lbCubeGeometry::Create();
+		meshRenderer2.material = lbBasicMaterial::Create();
+		meshRenderer2.material->SetDiffuseMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall.jpg")));
+		meshRenderer2.material->SetNormalMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall_normal.jpg")));
+		cube2->GetComponent<lbFlagComponent>().SetRenderable(true);
 	}
 	void lbEditorLayer::OnDetach()
 	{
 	}
 	void lbEditorLayer::OnUpdate(lbTimestep ts)
 	{
+		// temp
+		{
+			auto &trans = cube1->GetComponent<lbTransformComponent>();
+			trans.m_Transform.Rotate({ts * 15, ts * 10, ts * 10});
+		}
 		// 渲染到帧缓冲
 		m_FrameBuffer->Bind();
 		lbRendererCommand::SetClearColor({0.3f, 0.3f, 0.3f, 1.0f});
@@ -48,6 +63,7 @@ namespace Lambix
 	}
 	void lbEditorLayer::OnEvent(Event &event)
 	{
+		m_Scene->OnEvent(event);
 	}
 	void lbEditorLayer::OnImGuiRender()
 	{
@@ -129,61 +145,6 @@ namespace Lambix
 
 			ImGui::Begin("indicator");
 			ImGui::Text("indicator");
-			ImGui::End();
-		}
-
-		// 实体控制面板
-		{
-			ImGui::Begin("Entity Control");
-
-			// 实体控制
-			for (auto &[entityHandle, entity] : m_Scene->GetEntityMap())
-			{
-				// 使用唯一标识符：实体ID + 名称
-				std::string headerLabel = fmt::format("{}##{}", entity->GetName(), entity->GetUUID());
-
-				if (ImGui::CollapsingHeader(headerLabel.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					auto &trans = entity->GetComponent<lbTransformComponent>();
-
-					// 生成唯一控件ID
-					const std::string entityID = std::to_string(entity->GetUUID());
-
-					// 位置控件
-					glm::vec3 pos = trans.GetLocalPosition();
-					if (ImGui::DragFloat3(("Position##" + entityID).c_str(),
-										  glm::value_ptr(pos), 0.1f))
-					{
-						trans.SetLocalPosition(pos);
-					}
-
-					// 旋转控件
-					glm::quat rotation = trans.GetLocalRotation();
-					glm::vec3 eulerRadians = glm::eulerAngles(rotation);
-					glm::vec3 eulerDegrees = glm::degrees(eulerRadians);
-					eulerDegrees = glm::vec3(
-						fmod(eulerDegrees.x + 180.0f, 360.0f) - 180.0f,
-						fmod(eulerDegrees.y + 180.0f, 360.0f) - 180.0f,
-						fmod(eulerDegrees.z + 180.0f, 360.0f) - 180.0f);
-
-					if (ImGui::DragFloat3(("Rotation##" + entityID).c_str(),
-										  glm::value_ptr(eulerDegrees), 0.1f,
-										  -FLT_MAX, FLT_MAX, "%.1f°"))
-					{
-						glm::vec3 newEuler = glm::radians(eulerDegrees);
-						trans.SetLocalRotation(glm::quat(newEuler));
-					}
-
-					// 缩放控件
-					glm::vec3 scale = trans.GetLocalScale();
-					if (ImGui::DragFloat3(("Scale##" + entityID).c_str(),
-										  glm::value_ptr(scale), 0.1f))
-					{
-						trans.SetLocalScale(scale);
-					}
-				}
-			}
-
 			ImGui::End();
 		}
 

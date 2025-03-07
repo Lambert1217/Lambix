@@ -9,35 +9,37 @@
  */
 
 #pragma once
+#include "lbComponent.h"
+#include "lbTransformComponent.h"
 #include "Utils/lbUUID.h"
 
 namespace Lambix
 {
-    struct lbIdentityComponent
+    struct lbIdentityComponent : public lbComponent
     {
         lbUUID m_UUID;      // 实体唯一标识
         std::string m_Name; // 实体名称
 
         lbIdentityComponent() : m_UUID(GenUUID()), m_Name(std::string()) {}
-        lbIdentityComponent(const lbUUID &uuid, std::string name) : m_UUID(uuid), m_Name(name) {}
+        lbIdentityComponent(lbUUID uuid, const std::string &name) : m_UUID(uuid), m_Name(name) {}
     };
 
-    struct lbTagComponent
+    struct lbTagComponent : public lbComponent
     {
         std::vector<std::string> m_Tags; // 标签列表
     };
 
-    struct lbParentComponent
+    struct lbParentComponent : public lbComponent
     {
         entt::entity m_Parent{entt::null};
     };
 
-    struct lbChildrenComponent
+    struct lbChildrenComponent : public lbComponent
     {
         std::vector<entt::entity> m_Children;
     };
 
-    struct lbFlagComponent
+    struct lbFlagComponent : public lbComponent
     {
         uint32_t m_Flags{0}; // 标志位
         // 第一位表示是否可渲染

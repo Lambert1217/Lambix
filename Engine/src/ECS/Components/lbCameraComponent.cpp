@@ -1,20 +1,65 @@
 #include "lbCameraComponent.h"
+#include "ECS/lbEntity.h"
 
 namespace Lambix
 {
-    glm::mat4 lbCameraComponent::GetProjection(float viewportWidth, float viewportHeight) const
+    lbCameraComponent::lbCameraComponent(CameraProjectionType cameraType)
+        : ProjectionType(cameraType)
     {
+        switch (ProjectionType)
+        {
+        case CameraProjectionType::Perspective:
+            SetPerspective();
+            break;
+        case CameraProjectionType::Orthographic:
+            SetOrthographic();
+            break;
+        default:
+            LOG_ERROR("Unknown camera type!");
+            break;
+        }
+    }
+    void lbCameraComponent::OnUpdate(lbTimestep ts)
+    {
+        // 先计算 Projection
+        glm::mat4 Projection(1.0f);
+        float aspect = m_Entity.lock()->GetScene()->GetViewportWidth() / m_Entity.lock()->GetScene()->GetViewportHeight();
         if (ProjectionType == CameraProjectionType::Perspective)
         {
-            return glm::perspective(PerspectiveFOV, viewportWidth / viewportHeight, NearClip, FarClip);
+            Projection = glm::perspective(PerspectiveFOV, aspect, NearClip, FarClip);
         }
         else
         {
-            float orthoLeft = -OrthographicSize * (viewportWidth / viewportHeight) * 0.5f;
-            float orthoRight = OrthographicSize * (viewportWidth / viewportHeight) * 0.5f;
+            float orthoLeft = -OrthographicSize * aspect * 0.5f;
+            float orthoRight = OrthographicSize * aspect * 0.5f;
             float orthoBottom = -OrthographicSize * 0.5f;
             float orthoTop = OrthographicSize * 0.5f;
-            return glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, NearClip, FarClip);
+            Projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, NearClip, FarClip);
         }
+        // Projection * view， 其中 view 等于 WorldMatrix 的逆
+        ViewProjectionMatrix = Projection * glm::inverse(m_Entity.lock()->GetComponent<lbTransformComponent>().m_Transform.GetWorldMatrix());
+    }
+    void lbCameraComponent::OnEvent(Event &e)
+    {
+        // TODO: 实现摄像机操控
+        LOG_TRACE("Camera OnEvent");
+    }
+    void lbCameraComponent::SetPerspective(float Fov, float nearClip, float farClip)
+    {
+        ProjectionType = CameraProjectionType::Perspective;
+        PerspectiveFOV = Fov;
+        NearClip = nearClip;
+        FarClip = farClip;
+    }
+    void lbCameraComponent::SetOrthographic(float size, float nearClip, float farClip)
+    {
+        ProjectionType = CameraProjectionType::Orthographic;
+        OrthographicSize = size;
+        NearClip = nearClip;
+        FarClip = farClip;
+    }
+    const glm::mat4 &lbCameraComponent::GetViewProjection() const
+    {
+        return ViewProjectionMatrix;
     }
 }

@@ -29,5 +29,8 @@ namespace Lambix
 	private:
 		std::shared_ptr<lbFrameBuffer> m_FrameBuffer;
 		std::shared_ptr<lbScene> m_Scene;
+
+		// temp
+		std::shared_ptr<lbEntity> cube1;
 	};
 }
