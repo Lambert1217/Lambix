@@ -17,11 +17,13 @@
 #include "ECS/Components/lbBasicComponents.h"
 #include "ECS/Components/lbTransformComponent.h"
 #include "ECS/Components/lbMeshRendererComponent.h"
+#include "ECS/System/lbSystemManager.h"
 
 namespace Lambix
 {
     class lbEntity;
     class lbLightSystem;
+    class lbCameraSystem;
     class lbScene
     {
     public:
@@ -33,20 +35,15 @@ namespace Lambix
 
         void DestroyEntity(std::shared_ptr<lbEntity> entity);
 
+        void Init();
         void OnUpdate(lbTimestep ts);
         void OnEvent(Event &e);
 
         entt::registry &GetRegistry() { return m_Registry; }
         std::shared_ptr<lbEntity> GetEntity(entt::entity handle) const;
 
-        // 主摄像机管理
-        std::shared_ptr<lbEntity> GetPrimaryCameraEntity() { return m_PrimaryCameraEntity; }
-        void SetPrimaryCamera(std::shared_ptr<lbEntity> cameraEntity) { m_PrimaryCameraEntity = cameraEntity; }
-
-        // 视口管理
-        void SetViewportSize(float width, float height);
-        float GetViewportWidth() const { return viewportWidth; }
-        float GetViewportHeight() const { return viewportHeight; }
+        // 根据名称获取系统
+        lbSystem *GetSystem(const std::string &name) { return m_SystemManager->GetSystem(name); }
 
     private:
         void DrawEntity(lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags);
@@ -55,11 +52,7 @@ namespace Lambix
         entt::registry m_Registry;
         std::unordered_map<entt::entity, std::shared_ptr<lbEntity>> m_EntityMap;
 
-        // 主摄像机实体
-        std::shared_ptr<lbEntity> m_PrimaryCameraEntity;
-        float viewportWidth{1}, viewportHeight{1};
-
-        // 光照系统
-        std::shared_ptr<lbLightSystem> m_LightSystem;
+        // 系统管理
+        std::unique_ptr<lbSystemManager> m_SystemManager;
     };
 }

@@ -35,6 +35,5 @@ namespace Lambix
 
         /* data */
         std::weak_ptr<lbEntity> m_Entity;
-        };
-
+    };
 }

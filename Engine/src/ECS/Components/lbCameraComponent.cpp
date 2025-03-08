@@ -1,5 +1,6 @@
 #include "lbCameraComponent.h"
 #include "ECS/lbEntity.h"
+#include "ECS/System/lbCameraSystem.h"
 
 namespace Lambix
 {
@@ -23,7 +24,8 @@ namespace Lambix
     {
         // 先计算 Projection
         glm::mat4 Projection(1.0f);
-        float aspect = m_Entity.lock()->GetScene()->GetViewportWidth() / m_Entity.lock()->GetScene()->GetViewportHeight();
+        auto cameraSystem = static_cast<lbCameraSystem *>(m_Entity.lock()->GetScene()->GetSystem("CameraSystem"));
+        float aspect = cameraSystem->GetViewportWidth() / cameraSystem->GetViewportHeight();
         if (ProjectionType == CameraProjectionType::Perspective)
         {
             Projection = glm::perspective(PerspectiveFOV, aspect, NearClip, FarClip);
@@ -42,7 +44,7 @@ namespace Lambix
     void lbCameraComponent::OnEvent(Event &e)
     {
         // TODO: 实现摄像机操控
-        LOG_TRACE("Camera OnEvent");
+        // LOG_TRACE("Camera OnEvent");
     }
     void lbCameraComponent::SetPerspective(float Fov, float nearClip, float farClip)
     {

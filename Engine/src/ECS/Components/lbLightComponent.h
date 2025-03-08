@@ -10,32 +10,44 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "ECS/Components/lbComponent.h"
+#include "Renderer/Light/lbLight.h"
 
 namespace Lambix
 {
-    enum class LightType
+    class lbLightComponent : public lbComponent
     {
-        Directional = 0, // 方向光（太阳光）
-        Point,           // 点光源（灯泡）
-        Spot,            // 聚光灯（舞台灯）
-        Area             // 区域光（未来扩展）
-    };
+    public:
+        lbLightComponent() = default;
+        ~lbLightComponent() = default;
 
-    struct lbLightComponent : public lbComponent
-    {
-        LightType Type = LightType::Directional;
-        glm::vec3 Color = glm::vec3(1.0f); // 光照颜色
-        float Intensity = 10.0f;           // 光照强度
+        // 类型安全的动态转换
+        template <typename T>
+        std::shared_ptr<T> As() const
+        {
+            if (m_Light && m_Light->GetLightType() == T::GetStaticType())
+            {
+                return std::static_pointer_cast<T>(m_Light);
+            }
+            return nullptr;
+        }
 
-        // 点/聚光灯参数
-        float Range = 10.0f;
-        glm::vec3 Attenuation = glm::vec3(1.0f, 0.09f, 0.032f); // 三参数衰减模型
+        template <typename T, typename... Args>
+        void Create(Args &&...args)
+        {
+            m_Light = std::make_shared<T>(std::forward<Args>(args)...);
+        }
 
-        // 聚光灯专用
-        float InnerAngle = glm::radians(30.0f); // 内锥角
-        float OuterAngle = glm::radians(45.0f); // 外锥角
+        // 判断当前类型
+        lbLightType GetType() const;
 
-        // 调试标记
-        bool Visualize = false; // 是否显示光源图标
+        void OnUpdate(lbTimestep ts) override;
+
+    private:
+        void ProcessDirectional();
+        void ProcessPoint();
+        void ProcessSpot();
+
+    private:
+        std::shared_ptr<lbLight> m_Light{nullptr};
     };
 }

@@ -30,6 +30,8 @@
 // ----Geometry
 #include "Renderer/Geometry/lbGeometry.h"
 #include "Renderer/Geometry/lbCubeGeometry.h"
+// ----Light
+#include "Renderer/Light/lbLight.h"
 
 // --Events
 #include "Events/ApplicationEvent.h"
@@ -39,10 +41,15 @@
 // --ECS
 #include "ECS/lbScene.h"
 #include "ECS/lbEntity.h"
+// ----Components
 #include "ECS/Components/lbBasicComponents.h"
 #include "ECS/Components/lbTransformComponent.h"
 #include "ECS/Components/lbMeshRendererComponent.h"
 #include "ECS/Components/lbLightComponent.h"
+// ----System
+#include "ECS/System/lbCameraSystem.h"
+#include "ECS/System/lbLightSystem.h"
+#include "ECS/System/lbTransformSystem.h"
 
 // --UI
 #include "Imgui/lbLogUI.h"

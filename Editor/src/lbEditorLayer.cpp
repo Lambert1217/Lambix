@@ -19,10 +19,11 @@ namespace Lambix
 
 		// temp
 		m_Scene = std::make_shared<lbScene>();
+		m_Scene->Init();
 		// 光源创建
 		auto dLightEntity = m_Scene->CreateEntity("dLight");
 		auto &dLight = dLightEntity->AddComponent<lbLightComponent>();
-		dLight.Intensity = 10.f;
+		dLight.Create<lbDirectionalLight>(glm::vec3{0.0f, -1.0f, -1.0f});
 
 		// 实体创建
 		cube1 = m_Scene->CreateEntity("Cube1");
@@ -153,9 +154,10 @@ namespace Lambix
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 			ImGui::Begin("Viewport");
 			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-			if (m_Scene->GetViewportWidth() != viewportPanelSize.x || m_Scene->GetViewportHeight() != viewportPanelSize.y)
+			auto cameraSystem = static_cast<lbCameraSystem *>(m_Scene->GetSystem("CameraSystem"));
+			if (cameraSystem->GetViewportWidth() != viewportPanelSize.x || cameraSystem->GetViewportHeight() != viewportPanelSize.y)
 			{
-				m_Scene->SetViewportSize(viewportPanelSize.x, viewportPanelSize.y);
+				cameraSystem->SetViewportSize(viewportPanelSize.x, viewportPanelSize.y);
 				m_FrameBuffer->Resize((uint32_t)viewportPanelSize.x, (uint32_t)viewportPanelSize.y);
 			}
 			static ImTextureID TextureID = (ImTextureID)(uintptr_t)m_FrameBuffer->GetColorAttachmentRendererID();

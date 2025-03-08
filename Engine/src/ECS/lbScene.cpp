@@ -2,25 +2,14 @@
 #include "ECS/lbEntity.h"
 #include "Renderer/lbRendererCommand.h"
 #include "ECS/System/lbLightSystem.h"
+#include "ECS/System/lbTransformSystem.h"
+#include "ECS/System/lbCameraSystem.h"
 #include "lbScene.h"
 
 namespace Lambix
 {
-    lbScene::lbScene()
+    lbScene::lbScene() : m_SystemManager(std::make_unique<lbSystemManager>())
     {
-        // 创建主摄像机实体
-        {
-            m_PrimaryCameraEntity = CreateEntity("Primary Camera");
-            auto &cameraComp = m_PrimaryCameraEntity->AddComponent<lbCameraComponent>();
-            // cameraComp.ProjectionType = CameraProjectionType::Orthographic;
-            auto &trans = m_PrimaryCameraEntity->GetComponent<lbTransformComponent>();
-            trans.m_Transform.SetPosition({0.0f, 0.0f, 10.f});
-        }
-        // 光照系统
-        {
-            m_LightSystem = std::make_shared<lbLightSystem>(this);
-            m_LightSystem->Init();
-        }
     }
     std::shared_ptr<lbEntity> lbScene::CreateEntity(const std::string &name)
     {
@@ -89,18 +78,23 @@ namespace Lambix
         m_EntityMap.erase(entity->GetHandle());
     }
 
+    void lbScene::Init()
+    {
+        // 创建各个系统
+        // 变换系统 用于更新实体的TransformComponent  优先级 1
+        auto transformSystem = m_SystemManager->CreateSystem<lbTransformSystem>(this);
+        transformSystem->Init();
+        // 摄像机系统，用于管理摄像机， 优先级 2
+        auto cameraSystem = m_SystemManager->CreateSystem<lbCameraSystem>(this);
+        cameraSystem->Init();
+        // 光源系统 用于更新实体的LightComponent，收集光源上传到UBO  优先级 3
+        auto lightSystem = m_SystemManager->CreateSystem<lbLightSystem>(this);
+        lightSystem->Init();
+    }
+
     void lbScene::OnUpdate(lbTimestep ts)
     {
-        // 光照系统更新
-        m_LightSystem->OnUpdate(ts);
-        // Transform 更新
-        auto transView = m_Registry.view<lbTransformComponent>();
-        for (auto it : transView)
-        {
-            GetEntity(it)->GetComponent<lbTransformComponent>().OnUpdate(ts);
-        }
-        // 主摄像机更新
-        m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().OnUpdate(ts);
+        m_SystemManager->OnUpdate(ts);
         // 实体渲染逻辑
         auto view = m_Registry.view<lbTransformComponent, lbMeshRendererComponent, lbFlagComponent>();
         view.each([this](auto entity, lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags)
@@ -109,7 +103,7 @@ namespace Lambix
 
     void lbScene::OnEvent(Event &e)
     {
-        m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().OnEvent(e);
+        m_SystemManager->OnEvent(e);
     }
 
     std::shared_ptr<lbEntity> lbScene::GetEntity(entt::entity handle) const
@@ -123,12 +117,6 @@ namespace Lambix
         return nullptr;
     }
 
-    void lbScene::SetViewportSize(float width, float height)
-    {
-        viewportWidth = width;
-        viewportHeight = height;
-    }
-
     void lbScene::DrawEntity(lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags)
     {
         if (!flags.IsRenderable())
@@ -136,7 +124,8 @@ namespace Lambix
         meshRenderer.material->Bind();
         meshRenderer.material->UpdateUniforms();
         const auto &ModelMatrix = trans.m_Transform.GetWorldMatrix();
-        auto MVP = m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().GetViewProjection() * ModelMatrix;
+        auto cameraSystem = static_cast<lbCameraSystem *>(GetSystem("CameraSystem"));
+        auto MVP = cameraSystem->GetPrimaryCameraEntity()->GetComponent<lbCameraComponent>().GetViewProjection() * ModelMatrix;
         meshRenderer.material->GetShaderProgram()->UploadUniformMat4("u_ModelViewProjection", MVP);
         meshRenderer.material->GetShaderProgram()->UploadUniformMat4("u_ModelMatrix", ModelMatrix);
         auto vao = meshRenderer.geometry->GetVertexArray();
