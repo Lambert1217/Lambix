@@ -41,11 +41,6 @@ namespace Lambix
         // Projection * view， 其中 view 等于 WorldMatrix 的逆
         ViewProjectionMatrix = Projection * glm::inverse(m_Entity.lock()->GetComponent<lbTransformComponent>().m_Transform.GetWorldMatrix());
     }
-    void lbCameraComponent::OnEvent(Event &e)
-    {
-        // TODO: 实现摄像机操控
-        // LOG_TRACE("Camera OnEvent");
-    }
     void lbCameraComponent::SetPerspective(float Fov, float nearClip, float farClip)
     {
         ProjectionType = CameraProjectionType::Perspective;

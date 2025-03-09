@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include "Events/ApplicationEvent.h"
 #include "lbWindow.h"
 #include "lbLayerStack.h"
 #include "Imgui/lbImguiLayer.h"
+#include "Events/lbEvent.h"
 
 namespace Lambix
 {
@@ -30,7 +30,7 @@ namespace Lambix
 	{
 	public:
 		lbApplication(const lbAppSettings &appSettings = lbAppSettings());
-		virtual ~lbApplication() = default;
+		virtual ~lbApplication();
 
 		/**
 		 * @brief 程序初始化
@@ -54,12 +54,6 @@ namespace Lambix
 		inline static lbApplication &GetInstance() { return *s_lbApplication; }
 
 		/**
-		 * @brief 事件处理
-		 * @param e
-		 */
-		void OnEvent(Event &e);
-
-		/**
 		 * 普通层入栈
 		 * @param layer
 		 */
@@ -76,8 +70,8 @@ namespace Lambix
 		inline const lbAppSettings &GetAppSetting() const { return m_AppSettings; }
 
 	private:
-		bool OnWindowClose(WindowCloseEvent &e);   // 窗口关闭事件处理函数
-		bool OnWindowResize(WindowResizeEvent &e); // 窗口关闭事件处理函数
+		void OnWindowResize(const lbEvent::Ptr &event);
+		void OnWindowClose(const lbEvent::Ptr &event);
 
 	private:
 		static lbApplication *s_lbApplication; // 应用类单例

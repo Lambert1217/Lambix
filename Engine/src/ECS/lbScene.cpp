@@ -101,11 +101,6 @@ namespace Lambix
                   { DrawEntity(trans, meshRenderer, flags); });
     }
 
-    void lbScene::OnEvent(Event &e)
-    {
-        m_SystemManager->OnEvent(e);
-    }
-
     std::shared_ptr<lbEntity> lbScene::GetEntity(entt::entity handle) const
     {
         if (handle == entt::null)

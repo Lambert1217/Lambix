@@ -22,12 +22,6 @@ namespace Lambix
         m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().OnUpdate(ts);
     }
 
-    void lbCameraSystem::OnEvent(Event &event)
-    {
-        // 主摄像机更新
-        m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().OnEvent(event);
-    }
-
     void lbCameraSystem::SetViewportSize(float width, float height)
     {
         viewportWidth = width;

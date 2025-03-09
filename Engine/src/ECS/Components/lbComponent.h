@@ -11,7 +11,6 @@
 #pragma once
 
 #include "Utils/lbTimestep.h"
-#include "Events/Event.h"
 #include "Log/lbLog.h"
 
 namespace Lambix
@@ -25,7 +24,6 @@ namespace Lambix
         virtual ~lbComponent() = default;
 
         virtual void OnUpdate(lbTimestep ts) {}
-        virtual void OnEvent(Event &e) {}
 
         virtual void SetOwner(const std::shared_ptr<lbEntity> &entity)
         {

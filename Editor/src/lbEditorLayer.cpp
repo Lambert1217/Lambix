@@ -62,10 +62,6 @@ namespace Lambix
 		m_Scene->OnUpdate(ts);
 		m_FrameBuffer->Unbind();
 	}
-	void lbEditorLayer::OnEvent(Event &event)
-	{
-		m_Scene->OnEvent(event);
-	}
 	void lbEditorLayer::OnImGuiRender()
 	{
 		static bool dockSpaceEnabled = true;

@@ -23,7 +23,6 @@ namespace Lambix
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		virtual void OnUpdate(lbTimestep ts) override;
-		virtual void OnEvent(Event &event) override;
 		virtual void OnImGuiRender() override;
 
 	private:

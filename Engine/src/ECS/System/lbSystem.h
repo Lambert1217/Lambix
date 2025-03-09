@@ -17,7 +17,6 @@
 #pragma once
 
 #include "Utils/lbTimestep.h"
-#include "Events/Event.h"
 
 namespace Lambix
 {
@@ -31,7 +30,6 @@ namespace Lambix
 
         virtual void Init() {}
         virtual void OnUpdate(lbTimestep ts) {}
-        virtual void OnEvent(Event &event) {}
 
         const std::string &GetName() const { return m_Name; }
         uint32_t GetPriority() const { return m_Priority; }

@@ -25,7 +25,6 @@ namespace Lambix
 		lbGLFWWindow(uint32_t width, uint32_t height, const std::string &windowTitle);
 		virtual ~lbGLFWWindow();
 
-		void SetEventCallback(const EventCallbackFn &callback) override { m_Data.EventCallback = callback; }
 		void OnUpdate() override;
 		void SetVSync(bool enabled) override;
 		void SetMaximized() override;
@@ -48,8 +47,8 @@ namespace Lambix
 			std::string Title;
 			uint32_t Width, Height;
 			bool VSync;					   // 是否开启垂直同步
-			EventCallbackFn EventCallback; // 事件回调
 			bool Maximized;				   // 是否最大化
+			lbGLFWWindow *Self{nullptr};   // 存储自身的指针，派发事件时使用
 		} m_Data;
 	};
 }

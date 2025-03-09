@@ -37,7 +37,6 @@ namespace Lambix
 
         void Init();
         void OnUpdate(lbTimestep ts);
-        void OnEvent(Event &e);
 
         entt::registry &GetRegistry() { return m_Registry; }
         std::shared_ptr<lbEntity> GetEntity(entt::entity handle) const;

@@ -28,8 +28,6 @@ namespace Lambix
 
         void OnUpdate(lbTimestep ts) override;
 
-        void OnEvent(Event &e) override;
-
         void SetPerspective(float Fov = glm::radians(45.0f), float nearClip = 0.1f, float farClip = 1000.0f);
 
         void SetOrthographic(float size = 10.0f, float nearClip = -1.0f, float farClip = 1.0f);

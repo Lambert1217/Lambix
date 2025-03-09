@@ -22,7 +22,6 @@ namespace Lambix
 
         void Init() override;
         void OnUpdate(lbTimestep ts) override;
-        void OnEvent(Event &event) override;
 
         // 主摄像机管理
         std::shared_ptr<lbEntity> GetPrimaryCameraEntity() { return m_PrimaryCameraEntity; }

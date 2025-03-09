@@ -11,22 +11,12 @@
 
 #pragma once
 
-#include "Events/Event.h"
-
 namespace Lambix
 {
 	class lbWindow
 	{
 	public:
 		~lbWindow() = default;
-
-		using EventCallbackFn = std::function<void(Event &)>;
-
-		/**
-		 * @brief 设置事件回调
-		 * @param callback
-		 */
-		virtual void SetEventCallback(const EventCallbackFn &callback) = 0;
 
 		/**
 		 * @brief 窗口更新

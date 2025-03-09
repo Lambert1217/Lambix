@@ -28,14 +28,24 @@ namespace Lambix
 		Init(appSettings);
 	}
 
+	lbApplication::~lbApplication()
+	{
+		// 移除事件监听
+		lbEventDispatcher::Get()->removeEventListener<lbApplication>("WindowResize", this, &lbApplication::OnWindowResize);
+		lbEventDispatcher::Get()->removeEventListener<lbApplication>("WindowClose", this, &lbApplication::OnWindowClose);
+	}
+
 	void lbApplication::Init(const lbAppSettings &appSettings)
 	{
 		m_AppSettings = appSettings;
 		// 窗口初始化
 		m_Window = lbWindow::Create(m_AppSettings.WindowWidth, m_AppSettings.WindowHeight, m_AppSettings.WindowTitle);
 		m_Window->SetVSync(m_AppSettings.VSync);
-		m_Window->SetEventCallback(LB_BIND_EVENT_FN(lbApplication::OnEvent));
 		m_Window->SetMaximized();
+
+		// 注册事件监听
+		lbEventDispatcher::Get()->addEventListener<lbApplication>("WindowResize", this, &lbApplication::OnWindowResize);
+		lbEventDispatcher::Get()->addEventListener<lbApplication>("WindowClose", this, &lbApplication::OnWindowClose);
 
 		// 渲染初始
 		lbRendererCommand::Init();
@@ -77,35 +87,21 @@ namespace Lambix
 		isRunning = false;
 		LOG_INFO("Program Quit");
 	}
-
-	void lbApplication::OnEvent(Event &e)
+	void lbApplication::OnWindowResize(const lbEvent::Ptr &event)
 	{
-		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowCloseEvent>(LB_BIND_EVENT_FN(lbApplication::OnWindowClose));
-		dispatcher.Dispatch<WindowResizeEvent>(LB_BIND_EVENT_FN(lbApplication::OnWindowResize));
-
-		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
-		{
-			(*--it)->OnEvent(e);
-			if (e.GetHandled())
-				break;
-		}
-	}
-	bool lbApplication::OnWindowClose(WindowCloseEvent &e)
-	{
-		Quit();
-		return true;
-	}
-	bool lbApplication::OnWindowResize(WindowResizeEvent &e)
-	{
-		if (e.GetWidth() == 0 || e.GetHeight() == 0)
+		int *size = static_cast<int *>(event->m_UserData);
+		int width = size[0], height = size[1];
+		if (width == 0 || height == 0)
 		{
 			isMinsize = true;
-			return false;
+			return;
 		}
 		isMinsize = false;
-		lbRendererCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
-		return false;
+		lbRendererCommand::SetViewport(0, 0, width, height);
+	}
+	void lbApplication::OnWindowClose(const lbEvent::Ptr &event)
+	{
+		Quit();
 	}
 	void lbApplication::PushLayer(lbLayer *layer)
 	{

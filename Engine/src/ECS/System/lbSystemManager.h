@@ -53,7 +53,6 @@ namespace Lambix
         }
 
         void OnUpdate(lbTimestep ts);
-        void OnEvent(Event &event);
 
         // 按名称获取系统
         lbSystem *GetSystem(const std::string &name);

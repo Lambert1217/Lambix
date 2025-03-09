@@ -26,3 +26,5 @@
 #include <mutex>
 #include <assert.h>
 #include <set>
+#include <condition_variable>
+#include <atomic>

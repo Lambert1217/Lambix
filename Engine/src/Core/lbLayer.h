@@ -15,7 +15,6 @@
 #include <utility>
 
 #include "Utils/lbTimestep.h"
-#include "Events/Event.h"
 
 namespace Lambix
 {
@@ -65,13 +64,6 @@ namespace Lambix
 		 * 该方法可以被重写，以在 ImGui 界面上渲染层的内容。
 		 */
 		virtual void OnImGuiRender() {}
-
-		/**
-		 * @brief 处理事件时调用。
-		 * 该方法可以被重写，以响应各种事件。
-		 * @param event 事件对象，包含事件的信息。
-		 */
-		virtual void OnEvent(Event &event) {}
 
 		/**
 		 * @brief 获取层的名称。
