@@ -1,4 +1,4 @@
-#include "Renderer/lbFrameBuffer.h"
+#include "Renderer/Interfaces/lbFrameBuffer.h"
 
 #ifdef LAMBIX_USE_OPENGL
 #include "Backend/OpenGL/lbOpenGLFrameBuffer.h"

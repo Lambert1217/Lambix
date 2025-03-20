@@ -46,7 +46,8 @@ namespace Lambix
 		virtual void SetRenderState(const RenderState &state) = 0;
 
 		// Draw
-		virtual void DrawIndexed(DrawMode DrawMode, const std::shared_ptr<lbVertexArray> &vertexArray) = 0;
+		virtual void DrawIndexed(DrawMode DrawMode, uint32_t count) = 0;
+		virtual void DrawArray(DrawMode DrawMode, uint32_t count) = 0;
 	};
 
 } // Lambix

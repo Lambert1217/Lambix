@@ -9,7 +9,7 @@
  */
 //
 
-#include "Renderer/lbVertexArray.h"
+#include "lbVertexArray.h"
 
 #ifdef LAMBIX_USE_OPENGL
 #include "Backend/OpenGL/lbOpenGLVertexArray.h"

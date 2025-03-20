@@ -4,6 +4,7 @@
 #include "ECS/System/lbLightSystem.h"
 #include "ECS/System/lbTransformSystem.h"
 #include "ECS/System/lbCameraSystem.h"
+#include "ECS/System/lbRendererSystem.h"
 #include "lbScene.h"
 
 namespace Lambix
@@ -90,15 +91,14 @@ namespace Lambix
         // 光源系统 用于更新实体的LightComponent，收集光源上传到UBO  优先级 3
         auto lightSystem = m_SystemManager->CreateSystem<lbLightSystem>(this);
         lightSystem->Init();
+        // 渲染系统
+        auto rendererSystem = m_SystemManager->CreateSystem<lbRendererSystem>(this);
+        rendererSystem->Init();
     }
 
     void lbScene::OnUpdate(lbTimestep ts)
     {
         m_SystemManager->OnUpdate(ts);
-        // 实体渲染逻辑
-        auto view = m_Registry.view<lbTransformComponent, lbMeshRendererComponent, lbFlagComponent>();
-        view.each([this](auto entity, lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags)
-                  { DrawEntity(trans, meshRenderer, flags); });
     }
 
     std::shared_ptr<lbEntity> lbScene::GetEntity(entt::entity handle) const
@@ -110,22 +110,5 @@ namespace Lambix
             return it->second;
         }
         return nullptr;
-    }
-
-    void lbScene::DrawEntity(lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags)
-    {
-        if (!flags.IsRenderable())
-            return;
-        meshRenderer.material->Bind();
-        meshRenderer.material->UpdateUniforms();
-        const auto &ModelMatrix = trans.m_Transform.GetWorldMatrix();
-        auto cameraSystem = static_cast<lbCameraSystem *>(GetSystem("CameraSystem"));
-        auto MVP = cameraSystem->GetPrimaryCameraEntity()->GetComponent<lbCameraComponent>().GetViewProjection() * ModelMatrix;
-        meshRenderer.material->GetShaderProgram()->UploadUniformMat4("u_ModelViewProjection", MVP);
-        meshRenderer.material->GetShaderProgram()->UploadUniformMat4("u_ModelMatrix", ModelMatrix);
-        auto vao = meshRenderer.geometry->GetVertexArray();
-        vao->Bind();
-        lbRendererCommand::DrawIndexed(DrawMode::Triangles, vao);
-        meshRenderer.material->Unbind();
     }
 }

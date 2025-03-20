@@ -39,7 +39,8 @@ namespace Lambix
             Projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, NearClip, FarClip);
         }
         // Projection * view， 其中 view 等于 WorldMatrix 的逆
-        ViewProjectionMatrix = Projection * glm::inverse(m_Entity.lock()->GetComponent<lbTransformComponent>().m_Transform.GetWorldMatrix());
+        ViewMatrix = glm::inverse(m_Entity.lock()->GetComponent<lbTransformComponent>().m_Transform.GetWorldMatrix());
+        ProjectionMatrix = Projection;
     }
     void lbCameraComponent::SetPerspective(float Fov, float nearClip, float farClip)
     {
@@ -55,8 +56,12 @@ namespace Lambix
         NearClip = nearClip;
         FarClip = farClip;
     }
-    const glm::mat4 &lbCameraComponent::GetViewProjection() const
+    const glm::mat4 &lbCameraComponent::GetViewMatrix() const
     {
-        return ViewProjectionMatrix;
+        return ViewMatrix;
+    }
+    const glm::mat4 &lbCameraComponent::GetProjectionMatrix() const
+    {
+        return ProjectionMatrix;
     }
 }

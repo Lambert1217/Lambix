@@ -27,7 +27,7 @@ namespace Lambix
 	 */
 	class lbVertexArray
 	{
-	 public:
+	public:
 		virtual ~lbVertexArray() = default;
 
 		/**
@@ -45,36 +45,16 @@ namespace Lambix
 		virtual void Unbind() const = 0;
 
 		/**
-		 * @brief 添加一个顶点缓冲区到VAO
-		 * @param vertexBuffer 指向顶点缓冲区对象的智能指针
+		 * @brief
 		 *
-		 * 添加顶点缓冲区到当前的VAO中，VAO会存储顶点属性的配置信息。
+		 * @param binding 绑定槽位
+		 * @param itemSize 单个数据的大小 例如：position 就是3
+		 * @param type 数据类型
+		 * @param normalized 是否规范化
+		 * @param stride 指定连续通用顶点属性之间的字节偏移量。如果步幅 为 0，则通用顶点属性为 理解为紧密地包装在 数组
+		 * @param pointer 第一个泛型顶点属性的第一个组件的偏移量
 		 */
-		virtual void AddVertexBuffer(const std::shared_ptr<lbVertexBuffer>) = 0;
-
-		/**
-		 * @brief 设置VAO的索引缓冲区
-		 * @param indexBuffer 指向索引缓冲区对象的智能指针
-		 *
-		 * 设置索引缓冲区，通常用于绘制索引三角形、线条等。
-		 */
-		virtual void SetIndexBuffer(const std::shared_ptr<lbIndexBuffer>) = 0;
-
-		/**
-		 * @brief 获取当前VAO中所有的顶点缓冲区
-		 * @return 返回包含所有顶点缓冲区的const引用
-		 *
-		 * 这个方法用于获取VAO中存储的所有顶点缓冲区对象。
-		 */
-		[[nodiscard]] virtual const std::vector<std::shared_ptr<lbVertexBuffer>>& GetVertexBuffers() const = 0;
-
-		/**
-		 * @brief 获取VAO中的索引缓冲区
-		 * @return 返回指向索引缓冲区的智能指针的const引用
-		 *
-		 * 获取当前VAO中设置的索引缓冲区对象。
-		 */
-		[[nodiscard]] virtual const std::shared_ptr<lbIndexBuffer>& GetIndexBuffer() const = 0;
+		virtual void lbVertexAttribPointer(uint32_t binding, uint32_t itemSize, const lbDataType &type, bool normalized, uint32_t stride, const void *pointer) = 0;
 
 		/**
 		 * @brief 创建一个新的顶点数组对象
@@ -82,7 +62,8 @@ namespace Lambix
 		 *
 		 * 这个静态方法用于创建一个新的VAO实例。
 		 */
-		static std::shared_ptr<lbVertexArray> Create();
+		using Ptr = std::shared_ptr<lbVertexArray>;
+		static Ptr Create();
 	};
 
 } // Lambix

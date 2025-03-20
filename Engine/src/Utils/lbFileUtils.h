@@ -11,8 +11,10 @@
 
 namespace Lambix
 {
-    const std::string lbResRootDir = "../Assets";
+    const std::filesystem::path lbAssetsDir = "../Assets";
 
     // 写一个方法拼接两个字符串
-    std::string lbJoinPath(const std::string &path1, const std::string &path2);
+    std::filesystem::path lbJoinPath(const std::filesystem::path &path1, const std::filesystem::path &path2);
 }
+
+#define ASSETS(X) lbJoinPath(lbAssetsDir, X)

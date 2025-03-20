@@ -2,8 +2,8 @@
 
 namespace Lambix
 {
-    std::string lbJoinPath(const std::string &path1, const std::string &path2)
+    std::filesystem::path lbJoinPath(const std::filesystem::path &path1, const std::filesystem::path &path2)
     {
-        return path1 + "/" + path2;
+        return path1 / path2;
     }
 }

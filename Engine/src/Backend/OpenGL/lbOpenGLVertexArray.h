@@ -11,7 +11,8 @@
 
 #pragma once
 
-#include "Renderer/lbVertexArray.h"
+#include "Renderer/Interfaces/lbVertexArray.h"
+#include "glad/glad.h"
 
 namespace Lambix
 {
@@ -25,16 +26,12 @@ namespace Lambix
 		void Bind() const override;
 		void Unbind() const override;
 
-		void AddVertexBuffer(const std::shared_ptr<lbVertexBuffer> vertexBuffer) override;
-		void SetIndexBuffer(const std::shared_ptr<lbIndexBuffer> indexBuffer) override;
-
-		const std::vector<std::shared_ptr<lbVertexBuffer>> &GetVertexBuffers() const override { return m_VertexBuffers; }
-		const std::shared_ptr<lbIndexBuffer> &GetIndexBuffer() const override { return m_IndexBuffer; }
+		void lbVertexAttribPointer(uint32_t binding, uint32_t itemSize, const lbDataType &type, bool normalized, uint32_t stride, const void *pointer) override;
 
 	private:
-		std::vector<std::shared_ptr<lbVertexBuffer>> m_VertexBuffers;
-		std::shared_ptr<lbIndexBuffer> m_IndexBuffer;
 		uint32_t m_RendererID;
 	};
+
+	static GLenum toGL(const lbDataType &type);
 
 } // Lambix

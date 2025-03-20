@@ -11,6 +11,7 @@ namespace Lambix
     class lbBasicMaterial : public lbMaterial
     {
     public:
+        using Ptr = std::shared_ptr<lbBasicMaterial>;
         static Ptr Create()
         {
             auto mat = std::make_shared<lbBasicMaterial>();
@@ -18,18 +19,13 @@ namespace Lambix
             return mat;
         }
 
-        void UpdateUniforms() const override;
+        void UpdateUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const override;
         std::string GetMaterialType() const override { return "Basic"; }
 
         // 基础材质属性
         struct Properties
         {
-            glm::vec4 baseColor = glm::vec4(1.0f);
-            // pbr
-            glm::vec3 albedo = glm::vec3(0.8f);
-            float metallic = 0.0f;
-            float roughness = 0.5f;
-            float ao = 1.0f;
+            glm::vec4 baseColor = {1.0f, 1.0f, 1.0f, 1.0f};
         };
 
         Properties &GetProperties() { return m_properties; }

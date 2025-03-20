@@ -13,6 +13,7 @@
 #include "Log/lbLog.h"
 #include "glad/glad.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "Events/lbEventPool.h"
 
 namespace Lambix
 {
@@ -61,7 +62,7 @@ namespace Lambix
 			LOG_ASSERT(false, infoLog);
 		}
 	}
-	void lbOpenGLShader::CompileFromFile(const std::string& filepath)
+	void lbOpenGLShader::CompileFromFile(const std::filesystem::path &filepath)
 	{
 		// 从文件读取程序
 		std::string source;
@@ -92,7 +93,7 @@ namespace Lambix
 		return m_RendererID;
 	}
 	// lbOpenGLShaderProgram
-	lbOpenGLShaderProgram::lbOpenGLShaderProgram() : m_RendererID(0)
+	lbOpenGLShaderProgram::lbOpenGLShaderProgram()
 	{
 	}
 	lbOpenGLShaderProgram::~lbOpenGLShaderProgram()

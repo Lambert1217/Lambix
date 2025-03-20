@@ -9,233 +9,168 @@
  */
 //
 
-#include "Backend/OpenGL/lbOpenGLTexture.h"
 #include "Log/lbLog.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "Resource/lbCache.h"
+#include "Events/lbEventPool.h"
+#include "lbOpenGLTexture.h"
 
 namespace Lambix
 {
-	lbOpenGLTexture::lbOpenGLTexture(const std::string& path) : m_Path(path)
+	// OpenGL 格式转换
+	static GLenum ToGL(lbTextureWrapping wrap)
 	{
-		stbi_set_flip_vertically_on_load(true);
-
-		int width, height, channels;
-		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-		LOG_ASSERT(data, "Failed to load image!");
-		m_Width = width;
-		m_Height = height;
-
-		GLenum internalFormat = 0, dataFormat = 0;
-
-		if (channels == 4)
+		switch (wrap)
 		{
-			internalFormat = GL_RGBA8;
-			dataFormat = GL_RGBA;
-		}
-		else if (channels == 3)
-		{
-			internalFormat = GL_RGB8;
-			dataFormat = GL_RGB;
-		}
-
-		LOG_ASSERT(internalFormat & dataFormat, "Format is not supported!");
-
-		m_InternalFormat = internalFormat;
-		m_DataFormat = dataFormat;
-		m_Target = GL_TEXTURE_2D;
-
-		glCreateTextures(m_Target, 1, &m_RendererID);
-		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
-
-		// 设置默认参数
-		SetFilter(FilterMode::Linear, FilterMode::Nearest);
-		SetWrapMode(WrapMode::Repeat, WrapMode::Repeat);
-
-		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
-
-		stbi_image_free(data);
-	}
-	lbOpenGLTexture::lbOpenGLTexture(uint32_t width, uint32_t height)
-		: lbOpenGLTexture(lbTextureType::Texture2D, width, height, Format::RGBA) {}
-
-	lbOpenGLTexture::lbOpenGLTexture(lbTextureType type, uint32_t width, uint32_t height, Format format)
-		: m_Width(width), m_Height(height)
-	{
-		// 完整类型处理
-		switch (type)
-		{
-		case lbTextureType::Texture2D:
-			m_Target = GL_TEXTURE_2D;
-			break;
-		case lbTextureType::CubeMap:
-			m_Target = GL_TEXTURE_CUBE_MAP;
-			break;
-		case lbTextureType::Texture2DArray:
-			m_Target = GL_TEXTURE_2D_ARRAY;
-			break;
-		case lbTextureType::Texture3D:
-			m_Target = GL_TEXTURE_3D;
-			break;
-		default:
-			LOG_ERROR("Unsupported texture type: {}", static_cast<int>(type));
-			LOG_ASSERT(false, "See above for error details");
-		}
-
-		// 格式转换
-		m_InternalFormat = ConvertFormat(format);
-
-		// 创建纹理存储
-		glCreateTextures(m_Target, 1, &m_RendererID);
-
-		// 根据类型初始化存储
-		if (m_Target == GL_TEXTURE_3D)
-		{
-			glTextureStorage3D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height, 1); // 默认depth=1
-		}
-		else
-		{
-			glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
-		}
-
-		// 设置默认参数
-		SetFilter(FilterMode::Linear, FilterMode::Nearest);
-		SetWrapMode(WrapMode::Repeat, WrapMode::Repeat, WrapMode::Repeat);
-	}
-	lbOpenGLTexture::~lbOpenGLTexture()
-	{
-		glDeleteTextures(1, &m_RendererID);
-	}
-	void lbOpenGLTexture::Bind(uint32_t slot) const
-	{
-		glBindTextureUnit(slot, m_RendererID);
-	}
-	uint32_t lbOpenGLTexture::GetWidth() const
-	{
-		return m_Width;
-	}
-	uint32_t lbOpenGLTexture::GetHeight() const
-	{
-		return m_Height;
-	}
-	uint32_t lbOpenGLTexture::GetRendererID() const
-	{
-		return m_RendererID;
-	}
-
-	// 转换函数实现
-	GLenum lbOpenGLTexture::ConvertWrap(WrapMode mode) const
-	{
-		switch (mode)
-		{
-		case WrapMode::Repeat:
+		case lbTextureWrapping::RepeatWrapping:
 			return GL_REPEAT;
-		case WrapMode::ClampToEdge:
+		case lbTextureWrapping::ClampToEdgeWrapping:
 			return GL_CLAMP_TO_EDGE;
-		case WrapMode::MirroredRepeat:
+		case lbTextureWrapping::ClampToBorder:
+			return GL_CLAMP_TO_BORDER;
+		case lbTextureWrapping::MirroredRepeatWrapping:
 			return GL_MIRRORED_REPEAT;
 		default:
-			LOG_ASSERT(false, "Unknown wrap mode!");
+			return GL_REPEAT;
 		}
-		return GL_REPEAT;
 	}
 
-	GLenum lbOpenGLTexture::ConvertFilter(FilterMode mode) const
+	static GLenum ToGL(lbTextureFilter filter)
 	{
-		switch (mode)
+		switch (filter)
 		{
-		case FilterMode::Nearest:
-			return GL_NEAREST;
-		case FilterMode::Linear:
+		case lbTextureFilter::LinearFilter:
 			return GL_LINEAR;
-		case FilterMode::LinearMipmapLinear:
-			return GL_LINEAR_MIPMAP_LINEAR;
+		case lbTextureFilter::NearestFilter:
+			return GL_NEAREST;
 		default:
-			LOG_ASSERT(false, "Unknown filter mode!");
+			return GL_LINEAR;
 		}
-		return GL_LINEAR;
 	}
 
-	GLenum lbOpenGLTexture::ConvertFormat(Format format) const
+	static GLenum ToGLFormat(lbTextureFormat format)
 	{
 		switch (format)
 		{
-		case Format::RGB:
+		case lbTextureFormat::RGB:
+			return GL_RGB;
+		case lbTextureFormat::RGBA:
+			return GL_RGBA;
+		case lbTextureFormat::DepthFormat:
+			return GL_DEPTH_COMPONENT;
+		case lbTextureFormat::DepthStencilFormat:
+			return GL_DEPTH_STENCIL;
+		default:
+			return GL_RGBA;
+		}
+	}
+
+	static GLenum ToGLInternalFormat(lbTextureFormat format)
+	{
+		switch (format)
+		{
+		case lbTextureFormat::RGB:
 			return GL_RGB8;
-		case Format::RGBA:
+		case lbTextureFormat::RGBA:
 			return GL_RGBA8;
-		case Format::Depth24Stencil8:
+		case lbTextureFormat::DepthFormat:
+			return GL_DEPTH_COMPONENT24;
+		case lbTextureFormat::DepthStencilFormat:
 			return GL_DEPTH24_STENCIL8;
 		default:
-			LOG_ASSERT(false, "Unsupported texture format!");
+			return GL_RGBA8;
 		}
-		return GL_RGBA8;
 	}
 
-	// 包装模式设置
-	void lbOpenGLTexture::SetWrapMode(WrapMode s, WrapMode t, WrapMode r)
+	// 2D 纹理实现
+	lbOpenGLTexture2D::lbOpenGLTexture2D(const lbSource::Ptr &source, const lbTextureSpecification &spec)
+		: m_Source(source), m_Spec(spec)
 	{
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, ConvertWrap(s));
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, ConvertWrap(t));
-		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_R, ConvertWrap(r));
-		m_parametersDirty = false;
+		LOG_ASSERT(source->mWidth == spec.width && source->mHeight == spec.height, "Conflict between source and spec!");
+
+		// 纹理创建
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+		// 上传纹理数据
+		const GLenum format = ToGLFormat(m_Spec.format);
+		const GLenum internalFormat = ToGLInternalFormat(m_Spec.format);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Source->mWidth, m_Source->mHeight, 0, format, GL_UNSIGNED_BYTE, m_Source->mData.data());
+
+		// 设置纹理参数
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, ToGL(m_Spec.minFilter));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, ToGL(m_Spec.magFilter));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, ToGL(m_Spec.wrapS));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, ToGL(m_Spec.wrapT));
 	}
 
-	// 过滤模式设置
-	void lbOpenGLTexture::SetFilter(FilterMode minFilter, FilterMode magFilter)
+	lbOpenGLTexture2D::~lbOpenGLTexture2D()
 	{
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, ConvertFilter(minFilter));
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, ConvertFilter(magFilter));
-		m_parametersDirty = false;
+		glDeleteTextures(1, &m_RendererID);
+		// 发出事件
+		lbEvent::Ptr event = lbEventPool::Get()->Acquire();
+		event->Set("SourceRelease", m_Source.get(), nullptr);
+		lbEventDispatcher::Get()->dispatchEvent(event);
 	}
 
-	// Mipmap生成
-	void lbOpenGLTexture::GenerateMipmaps()
+	void lbOpenGLTexture2D::Bind(uint32_t slot) const
 	{
-		if (!m_MipmapsGenerated)
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+	}
+
+	void lbOpenGLTexture2D::Unbind() const
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	// 立方体贴图实现
+	lbOpenGLTextureCube::lbOpenGLTextureCube(const std::array<lbSource::Ptr, 6> &sources, const lbTextureSpecification &spec)
+		: m_Sources(sources), m_Spec(spec)
+	{
+		LOG_ASSERT(sources[0]->mWidth == spec.width && sources[0]->mHeight == spec.height, "Conflict between source and spec!");
+
+		// 创建纹理
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &m_RendererID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
+
+		// 上传数据
+		const GLenum format = ToGLFormat(m_Spec.format);
+		const GLenum internalFormat = ToGLInternalFormat(m_Spec.format);
+		for (GLuint i = 0; i < 6; ++i)
 		{
-			glGenerateTextureMipmap(m_RendererID);
-			m_MipmapsGenerated = true;
-			m_mipmapsDirty = false;
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat,
+						 m_Sources[i]->mWidth, m_Sources[i]->mHeight, 0,
+						 format, GL_UNSIGNED_BYTE, m_Sources[i]->mData.data());
+		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, ToGL(m_Spec.minFilter));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, ToGL(m_Spec.magFilter));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, ToGL(m_Spec.wrapS));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, ToGL(m_Spec.wrapT));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, ToGL(m_Spec.wrapR));
+	}
+
+	lbOpenGLTextureCube::~lbOpenGLTextureCube()
+	{
+		glDeleteTextures(1, &m_RendererID);
+		for (auto it : m_Sources)
+		{
+			// 发出事件
+			lbEvent::Ptr event = lbEventPool::Get()->Acquire();
+			event->Set("SourceRelease", it.get(), nullptr);
+			lbEventDispatcher::Get()->dispatchEvent(event);
 		}
 	}
 
-	// 局部数据更新
-	void lbOpenGLTexture::SetData(void *data, uint32_t width, uint32_t height,
-								  uint32_t xoffset, uint32_t yoffset, Format dataFormat)
+	void lbOpenGLTextureCube::Bind(uint32_t slot) const
 	{
-		switch (dataFormat)
-		{
-		case Format::RGB:
-			m_DataFormat = GL_RGB;
-			break;
-		case Format::RGBA:
-			m_DataFormat = GL_RGBA;
-			break;
-		default:
-			LOG_ASSERT(false, "Unsupported data format!");
-		}
-
-		glTextureSubImage2D(m_RendererID, 0, xoffset, yoffset,
-							width, height, m_DataFormat, GL_UNSIGNED_BYTE, data);
-		m_dataDirty = false;
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
 	}
 
-	// 其他必要实现
-	bool lbOpenGLTexture::IsMipmapped() const { return m_MipmapsGenerated; }
-	lbTexture::Format lbOpenGLTexture::GetInternalFormat() const
+	void lbOpenGLTextureCube::Unbind() const
 	{
-		switch (m_InternalFormat)
-		{
-		case GL_RGB8:
-			return Format::RGB;
-		case GL_RGBA8:
-			return Format::RGBA;
-		case GL_DEPTH24_STENCIL8:
-			return Format::Depth24Stencil8;
-		default:
-			return Format::RGBA;
-		}
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 }

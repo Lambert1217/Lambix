@@ -22,9 +22,10 @@ namespace Lambix
 	 * @enum lbShaderType
 	 * @brief 枚举着色器类型
 	 */
-	enum class lbShaderType{
-		Vertex = 0,   ///< 顶点着色器
-		Fragment      ///< 片段着色器
+	enum class lbShaderType
+	{
+		Vertex = 0, ///< 顶点着色器
+		Fragment	///< 片段着色器
 	};
 
 	/**
@@ -34,8 +35,9 @@ namespace Lambix
 	 * 这个类提供了一套方法来编译和管理单个着色器，包括从源代码或文件编译着色器，
 	 * 以及获取着色器的类型和ID。
 	 */
-	class lbShader {
-	 public:
+	class lbShader
+	{
+	public:
 		virtual ~lbShader() = default;
 
 		/**
@@ -48,7 +50,7 @@ namespace Lambix
 		 * @brief 从文件中编译着色器
 		 * @param filepath 着色器源文件的路径
 		 */
-		virtual void CompileFromFile(const std::string &filepath) = 0;
+		virtual void CompileFromFile(const std::filesystem::path &filepath) = 0;
 
 		/**
 		 * @brief 获取当前着色器的类型
@@ -67,9 +69,9 @@ namespace Lambix
 		 * @param type 要创建的着色器类型
 		 * @return 返回指向新创建的着色器的智能指针
 		 */
+		using Ptr = std::shared_ptr<lbShader>;
 		static std::shared_ptr<lbShader> Create(lbShaderType type);
 	};
-
 
 	/**
 	 * @class lbShaderProgram
@@ -80,7 +82,7 @@ namespace Lambix
 	 */
 	class lbShaderProgram
 	{
-	 public:
+	public:
 		virtual ~lbShaderProgram() = default;
 
 		/**
@@ -95,12 +97,12 @@ namespace Lambix
 
 		virtual void BindUniformBlock(const std::string &blockName, uint32_t bindingPoint) const = 0;
 
-		virtual void UploadUniformInt(const std::string& name, const int value) = 0;
-		virtual void UploadUniformFloat(const std::string& name, const float value) = 0;
-		virtual void UploadUniformFloat2(const std::string& name, const glm::vec2& value) = 0;
-		virtual void UploadUniformFloat3(const std::string& name, const glm::vec3& value) = 0;
-		virtual void UploadUniformFloat4(const std::string& name, const glm::vec4& value) = 0;
-		virtual void UploadUniformMat4(const std::string& name, const glm::mat4& matrix) = 0;
+		virtual void UploadUniformInt(const std::string &name, const int value) = 0;
+		virtual void UploadUniformFloat(const std::string &name, const float value) = 0;
+		virtual void UploadUniformFloat2(const std::string &name, const glm::vec2 &value) = 0;
+		virtual void UploadUniformFloat3(const std::string &name, const glm::vec3 &value) = 0;
+		virtual void UploadUniformFloat4(const std::string &name, const glm::vec4 &value) = 0;
+		virtual void UploadUniformMat4(const std::string &name, const glm::mat4 &matrix) = 0;
 
 		/**
 		 * @brief 链接顶点和片段着色器，创建一个着色器程序
@@ -111,13 +113,17 @@ namespace Lambix
 		 * 这个方法负责将提供的顶点和片段着色器链接到一个着色器程序中。
 		 * 它会检查链接是否成功，并在失败时可能输出错误信息。
 		 */
-		virtual bool Link(const std::shared_ptr<lbShader>& vertexShader, const std::shared_ptr<lbShader>& fragmentShader) = 0;
+		virtual bool Link(const std::shared_ptr<lbShader> &vertexShader, const std::shared_ptr<lbShader> &fragmentShader) = 0;
 
 		/**
 		 * @brief 创建一个新的着色器程序实例
 		 * @return 返回指向新创建的着色器程序的智能指针
 		 */
+		using Ptr = std::shared_ptr<lbShaderProgram>;
 		static std::shared_ptr<lbShaderProgram> Create();
+
+		virtual uint32_t &GetRefCount() = 0;
+		virtual size_t &GetHashCode() = 0;
 	};
 
 } // Lambix

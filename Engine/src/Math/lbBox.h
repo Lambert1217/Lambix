@@ -8,11 +8,13 @@
  *
  */
 
+#pragma once
+
 #include "glm/glm.hpp"
+#include "Renderer/lbAttribute.h"
 
 namespace Lambix
 {
-    class lbVertexBuffer;
     class lbBox
     {
     public:
@@ -25,12 +27,12 @@ namespace Lambix
 
         bool isEmpty();
 
-        void setFromBuffer(const std::shared_ptr<lbVertexBuffer> &buffer);
+        void SetFromAttribute(const lbAttributef::Ptr &attribute);
 
         glm::vec3 GetCenter();
 
     public:
-        glm::vec3 m_Min = glm::vec3(std::numeric_limits<float>::infinity());
-        glm::vec3 m_Max = glm::vec3(-std::numeric_limits<float>::infinity());
+        glm::vec3 mMin = glm::vec3(std::numeric_limits<float>::infinity());
+        glm::vec3 mMax = glm::vec3(-std::numeric_limits<float>::infinity());
     };
 }

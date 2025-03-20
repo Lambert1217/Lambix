@@ -32,7 +32,9 @@ namespace Lambix
 
         void SetOrthographic(float size = 10.0f, float nearClip = -1.0f, float farClip = 1.0f);
 
-        const glm::mat4 &GetViewProjection() const;
+        const glm::mat4 &GetViewMatrix() const;
+
+        const glm::mat4 &GetProjectionMatrix() const;
 
     private:
         CameraProjectionType ProjectionType;
@@ -43,6 +45,7 @@ namespace Lambix
         bool FixedAspectRatio = false; // 固定宽高比
 
         // 矩阵存储
-        glm::mat4 ViewProjectionMatrix = {1.0f};
+        glm::mat4 ViewMatrix = {1.0f};
+        glm::mat4 ProjectionMatrix = {1.0f};
     };
 }

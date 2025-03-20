@@ -12,7 +12,7 @@
 #pragma once
 
 #include "Core/lbWindow.h"
-#include "Renderer/lbGraphicsContext.h"
+#include "Renderer/Interfaces/lbGraphicsContext.h"
 
 class GLFWwindow;
 

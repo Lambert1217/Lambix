@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "Renderer/lbFrameBuffer.h"
+#include "Renderer/Interfaces/lbFrameBuffer.h"
 
 namespace Lambix
 {

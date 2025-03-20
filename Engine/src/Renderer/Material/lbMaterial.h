@@ -8,9 +8,10 @@
  *
  */
 #pragma once
-#include "Renderer/lbShader.h"
-#include "Renderer/lbTexture.h"
+#include "Renderer/Interfaces/lbShader.h"
+#include "Renderer/Interfaces/lbTexture.h"
 #include "Core/lbCore.h"
+#include "glm/glm.hpp"
 
 namespace Lambix
 {
@@ -26,29 +27,30 @@ namespace Lambix
         virtual void Unbind();
 
         // Shader管理
-        void SetShaderProgram(const std::shared_ptr<lbShaderProgram> &program) { m_shaderProgram = program; }
+        void SetShaderProgram(const lbShaderProgram::Ptr &program) { m_shaderProgram = program; }
         std::shared_ptr<lbShaderProgram> GetShaderProgram() const { return m_shaderProgram; }
 
+        // 渲染状态
         RenderState &GetRenderState() { return m_renderState; }
         const RenderState &GetRenderState() const { return m_renderState; }
 
         // 纹理插槽
-        void SetDiffuseMap(const std::shared_ptr<lbTexture> &texture) { m_diffuseMap = texture; }
-        void SetNormalMap(const std::shared_ptr<lbTexture> &texture) { m_normalMap = texture; }
-        void SetSpecularMap(const std::shared_ptr<lbTexture> &texture) { m_specularMap = texture; }
+        void SetDiffuseMap(const lbTexture2D::Ptr &texture) { m_diffuseMap = texture; }
+        void SetNormalMap(const lbTexture2D::Ptr &texture) { m_normalMap = texture; }
+        void SetSpecularMap(const lbTexture2D::Ptr &texture) { m_specularMap = texture; }
 
         // 虚函数接口
-        virtual void UpdateUniforms() const = 0;
+        virtual void UpdateUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const;
         virtual std::string GetMaterialType() const = 0;
 
     protected:
-        std::shared_ptr<lbShaderProgram> m_shaderProgram;
+        lbShaderProgram::Ptr m_shaderProgram;
         RenderState m_renderState;
 
         // 基础纹理
-        std::shared_ptr<lbTexture> m_diffuseMap{nullptr};
-        std::shared_ptr<lbTexture> m_normalMap{nullptr};
-        std::shared_ptr<lbTexture> m_specularMap{nullptr};
+        lbTexture2D::Ptr m_diffuseMap{nullptr};
+        lbTexture2D::Ptr m_normalMap{nullptr};
+        lbTexture2D::Ptr m_specularMap{nullptr};
     };
 
 }

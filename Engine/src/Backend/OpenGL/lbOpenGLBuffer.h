@@ -11,45 +11,29 @@
 
 #pragma once
 
-#include "Renderer/lbBuffer.h"
+#include "Renderer/Interfaces/lbBuffer.h"
+#include "glad/glad.h"
 
 namespace Lambix
 {
-
-	class lbOpenGLVertexBuffer : public lbVertexBuffer
+	class lbOpenGLBuffer : public lbBuffer
 	{
 	public:
-		lbOpenGLVertexBuffer(void *data, uint32_t size, const lbBufferElement &element);
-		~lbOpenGLVertexBuffer() override;
+		lbOpenGLBuffer(const lbBufferSpecification &spec);
+		~lbOpenGLBuffer() override;
 
 		void Bind() const override;
+
 		void Unbind() const override;
 
-		void *GetData() const override { return m_Data; }
-		uint32_t GetDataSize() const override { return m_Size; }
-
-		[[nodiscard]] const lbBufferElement &GetElement() const override { return m_Element; }
+		void SetSubData(const void *data, const lbRange &range = {}) override;
+		void SetData(const void *data, uint32_t size) override;
 
 	private:
-		uint32_t m_RendererID;
-		lbBufferElement m_Element;
-		void *m_Data;
-		uint32_t m_Size;
+		GLuint mRendererID;
+		lbBufferSpecification mBufferSpecification;
 	};
 
-	class lbOpenGLIndexBuffer : public lbIndexBuffer
-	{
-	public:
-		lbOpenGLIndexBuffer(uint32_t *indices, uint32_t count);
-		~lbOpenGLIndexBuffer() override;
-
-		void Bind() const override;
-		void Unbind() const override;
-		[[nodiscard]] uint32_t GetCount() const override { return m_Count; }
-
-	private:
-		uint32_t m_RendererID;
-		uint32_t m_Count;
-	};
-
+	static uint32_t toGL(const lbBufferAllocType &value);
+	static uint32_t toGL(const lbBufferType &value);
 } // Lambix

@@ -42,9 +42,9 @@ namespace Lambix
 		ImGui::StyleColorsLight();
 
 		// 添加字体
-		io.Fonts->AddFontFromFileTTF(lbJoinPath(lbResRootDir, "Fonts/Roboto/Roboto-Regular.ttf").c_str(), 16.0f);
-		io.Fonts->AddFontFromFileTTF(lbJoinPath(lbResRootDir, "Fonts/Roboto/Roboto-Bold.ttf").c_str(), 16.0f);
-		io.Fonts->AddFontFromFileTTF(lbJoinPath(lbResRootDir, "Fonts/Roboto/Roboto-Italic.ttf").c_str(), 16.0f);
+		io.Fonts->AddFontFromFileTTF(ASSETS("Fonts/Roboto/Roboto-Regular.ttf").string().c_str(), 16.0f);
+		io.Fonts->AddFontFromFileTTF(ASSETS("Fonts/Roboto/Roboto-Bold.ttf").string().c_str(), 16.0f);
+		io.Fonts->AddFontFromFileTTF(ASSETS("Fonts/Roboto/Roboto-Italic.ttf").string().c_str(), 16.0f);
 
 		// 当启用多视口时，我们调整 WindowRounding/WindowBg，以便平台窗口看起来与常规窗口相同。
 		ImGuiStyle &style = ImGui::GetStyle();

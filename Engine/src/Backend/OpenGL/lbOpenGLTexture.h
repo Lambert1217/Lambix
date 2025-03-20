@@ -10,48 +10,53 @@
 //
 
 #pragma once
-
-#include "Renderer/lbTexture.h"
+#include "Renderer/Interfaces/lbTexture.h"
 #include "glad/glad.h"
 
 namespace Lambix
 {
-	class lbOpenGLTexture : public lbTexture
+	static GLenum ToGL(lbTextureWrapping wrap);
+	static GLenum ToGL(lbTextureFilter filter);
+	static GLenum ToGLFormat(lbTextureFormat format);
+	static GLenum ToGLInternalFormat(lbTextureFormat format);
+
+	class lbOpenGLTexture2D : public lbTexture2D
 	{
 	public:
-		lbOpenGLTexture(const std::string &path);
-		lbOpenGLTexture(uint32_t width, uint32_t height);
-		lbOpenGLTexture(lbTextureType type, uint32_t width, uint32_t height, Format format);
+		lbOpenGLTexture2D(const lbSource::Ptr &source, const lbTextureSpecification &spec);
+		virtual ~lbOpenGLTexture2D() override;
 
-		~lbOpenGLTexture() override;
+		void Bind(uint32_t slot = 0) const override;
+		void Unbind() const override;
 
-		void Bind(uint32_t slot) const override;
-
-		uint32_t GetWidth() const override;
-		uint32_t GetHeight() const override;
-		uint32_t GetRendererID() const override;
-
-		void SetWrapMode(WrapMode s, WrapMode t, WrapMode r = WrapMode::Repeat) override;
-		void SetFilter(FilterMode minFilter, FilterMode magFilter) override;
-		void GenerateMipmaps() override;
-		bool IsMipmapped() const override;
-		Format GetInternalFormat() const override;
-
-		void SetData(void *data, uint32_t width, uint32_t height,
-					 uint32_t xoffset, uint32_t yoffset,
-					 Format dataFormat) override;
+		const lbTextureSpecification &GetSpecification() const override { return m_Spec; }
+		uint32_t GetWidth() const override { return m_Source->mWidth; }
+		uint32_t GetHeight() const override { return m_Source->mHeight; }
+		lbTextureType GetTextureType() const override { return lbTextureType::Texture2D; }
 
 	private:
-		uint32_t m_Width, m_Height;
-		uint32_t m_RendererID;
-		GLenum m_InternalFormat, m_DataFormat;
-		const std::string m_Path;
-		GLenum m_Target; // 纹理类型标识
-		bool m_MipmapsGenerated = false;
+		GLuint m_RendererID;
+		lbSource::Ptr m_Source{nullptr};
+		lbTextureSpecification m_Spec;
+	};
 
-		// 转换帮助函数
-		GLenum ConvertWrap(WrapMode mode) const;
-		GLenum ConvertFilter(FilterMode mode) const;
-		GLenum ConvertFormat(Format format) const;
+	class lbOpenGLTextureCube : public lbTextureCube
+	{
+	public:
+		lbOpenGLTextureCube(const std::array<lbSource::Ptr, 6> &sources, const lbTextureSpecification &spec);
+		virtual ~lbOpenGLTextureCube() override;
+
+		void Bind(uint32_t slot = 0) const override;
+		void Unbind() const override;
+
+		const lbTextureSpecification &GetSpecification() const override { return m_Spec; }
+		uint32_t GetWidth() const override { return m_Sources[0]->mWidth; }
+		uint32_t GetHeight() const override { return m_Sources[0]->mHeight; }
+		lbTextureType GetTextureType() const override { return lbTextureType::TextureCubeMap; }
+
+	private:
+		GLuint m_RendererID;
+		std::array<lbSource::Ptr, 6> m_Sources{nullptr};
+		lbTextureSpecification m_Spec;
 	};
 }

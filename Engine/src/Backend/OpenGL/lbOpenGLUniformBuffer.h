@@ -9,7 +9,7 @@
  */
 
 #pragma once
-#include "Renderer/lbUniformBuffer.h"
+#include "Renderer/Interfaces/lbUniformBuffer.h"
 
 namespace Lambix
 {

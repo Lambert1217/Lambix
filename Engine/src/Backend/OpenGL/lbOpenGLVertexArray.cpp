@@ -8,78 +8,55 @@
  ***************************************************************
  */
 //
-
-#include "Backend/OpenGL/lbOpenGLVertexArray.h"
-#include "glad/glad.h"
+#include "lbOpenGLVertexArray.h"
 #include "Log/lbLog.h"
+#include "Core/lbCore.h"
 
 namespace Lambix
 {
-	static GLenum ShaderDataTypeToOpenGLBaseType(lbShaderDataType type)
-	{
-		switch (type)
-		{
-		case lbShaderDataType::Float:
-			return GL_FLOAT;
-		case lbShaderDataType::Float2:
-			return GL_FLOAT;
-		case lbShaderDataType::Float3:
-			return GL_FLOAT;
-		case lbShaderDataType::Float4:
-			return GL_FLOAT;
-		case lbShaderDataType::Mat3:
-			return GL_FLOAT;
-		case lbShaderDataType::Mat4:
-			return GL_FLOAT;
-		case lbShaderDataType::Int:
-			return GL_INT;
-		case lbShaderDataType::Int2:
-			return GL_INT;
-		case lbShaderDataType::Int3:
-			return GL_INT;
-		case lbShaderDataType::Int4:
-			return GL_INT;
-		case lbShaderDataType::Bool:
-			return GL_BOOL;
-		}
-
-		LOG_ASSERT(false, "Unknown ShaderDataType!");
-		return 0;
-	}
 	lbOpenGLVertexArray::lbOpenGLVertexArray()
 	{
 		glCreateVertexArrays(1, &m_RendererID);
 	}
+
 	lbOpenGLVertexArray::~lbOpenGLVertexArray()
 	{
+		glDeleteVertexArrays(1, &m_RendererID);
 	}
+
 	void lbOpenGLVertexArray::Bind() const
 	{
 		glBindVertexArray(m_RendererID);
 	}
+
 	void lbOpenGLVertexArray::Unbind() const
 	{
 		glBindVertexArray(0);
 	}
-	void lbOpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<lbVertexBuffer> vertexBuffer)
+
+	void lbOpenGLVertexArray::lbVertexAttribPointer(uint32_t binding, uint32_t itemSize, const lbDataType &type, bool normalized, uint32_t stride, const void *pointer)
 	{
-		LOG_ASSERT(vertexBuffer->GetElement().GetComponentCount(), "Vertex Buffer has no element!");
-
-		glBindVertexArray(m_RendererID);
-		vertexBuffer->Bind();
-
-		auto &element = vertexBuffer->GetElement();
-		glEnableVertexAttribArray(element.Index);
-		glVertexAttribPointer(element.Index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
-							  element.Normalized ? GL_TRUE : GL_FALSE, vertexBuffer->GetElement().Size, (const void *)0);
-
-		m_VertexBuffers.push_back(vertexBuffer);
+		glEnableVertexAttribArray(binding);
+		glVertexAttribPointer(binding, itemSize, toGL(type), normalized, stride, pointer);
 	}
-	void lbOpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<lbIndexBuffer> indexBuffer)
-	{
-		glBindVertexArray(m_RendererID);
-		indexBuffer->Bind();
 
-		m_IndexBuffer = indexBuffer;
+	GLenum toGL(const lbDataType &type)
+	{
+		switch (type)
+		{
+		case lbDataType::UnsignedByteType:
+			return GL_UNSIGNED_BYTE;
+		case lbDataType::FloatType:
+			return GL_FLOAT;
+		case lbDataType::ByteType:
+			return GL_BYTE;
+		case lbDataType::Int32Type:
+			return GL_INT;
+		case lbDataType::UInt32Type:
+			return GL_UNSIGNED_INT;
+		default:
+			LOG_ERROR("Unknown lbDataType");
+			return 0;
+		}
 	}
 } // Lambix

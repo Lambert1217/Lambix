@@ -11,6 +11,7 @@
 
 #include "Backend/OpenGL/lbOpenGLBackend.h"
 #include "glad/glad.h"
+#include "lbOpenGLBackend.h"
 
 namespace Lambix
 {
@@ -227,11 +228,12 @@ namespace Lambix
 	}
 
 	// Draw
-	void lbOpenGLBackend::DrawIndexed(DrawMode mode, const std::shared_ptr<lbVertexArray> &vertexArray)
+	void lbOpenGLBackend::DrawIndexed(DrawMode DrawMode, uint32_t count)
 	{
-		vertexArray->Bind();
-		glDrawElements(ConvertDrawMode(mode),
-					   vertexArray->GetIndexBuffer()->GetCount(),
-					   GL_UNSIGNED_INT, nullptr);
+		glDrawElements(ConvertDrawMode(DrawMode), count, GL_UNSIGNED_INT, nullptr);
+	}
+	void lbOpenGLBackend::DrawArray(DrawMode DrawMode, uint32_t count)
+	{
+		glDrawArrays(ConvertDrawMode(DrawMode), 0, count);
 	}
 }

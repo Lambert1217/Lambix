@@ -24,36 +24,37 @@ namespace Lambix
 		auto dLightEntity = m_Scene->CreateEntity("dLight");
 		auto &dLight = dLightEntity->AddComponent<lbLightComponent>();
 		dLight.Create<lbDirectionalLight>(glm::vec3{0.0f, -1.0f, -1.0f});
-
-		// 实体创建
-		cube1 = m_Scene->CreateEntity("Cube1");
-		auto &meshRenderer1 = cube1->AddComponent<lbMeshRendererComponent>();
-		meshRenderer1.geometry = lbCubeGeometry::Create();
-		meshRenderer1.material = lbBasicMaterial::Create();
-		meshRenderer1.material->SetDiffuseMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall.jpg")));
-		meshRenderer1.material->SetNormalMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall_normal.jpg")));
-		cube1->GetComponent<lbFlagComponent>().SetRenderable(true);
-
-		auto cube2 = m_Scene->CreateEntity("Cube2");
-		cube2->SetParent(cube1);
-		cube2->GetComponent<lbTransformComponent>().m_Transform.Translate({2.f, 0.f, -1.f});
-		auto &meshRenderer2 = cube2->AddComponent<lbMeshRendererComponent>();
-		meshRenderer2.geometry = lbCubeGeometry::Create();
-		meshRenderer2.material = lbBasicMaterial::Create();
-		meshRenderer2.material->SetDiffuseMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall.jpg")));
-		meshRenderer2.material->SetNormalMap(lbResourceManager::GetInstance().GetTexture(lbJoinPath(lbResRootDir, "Textures/brickwall_normal.jpg")));
-		cube2->GetComponent<lbFlagComponent>().SetRenderable(true);
+		// 创建实体
+		auto square = m_Scene->CreateEntity("square");
+		std::vector<float> positionData = {
+			-1.0f, -1.0f, 0.0f,
+			1.0f, -1.0f, 0.0f,
+			-1.0f, 1.0f, 0.0f,
+			1.0f, 1.0f, 0.0f};
+		std::vector<float> uvData = {
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f};
+		std::vector<uint32_t> indexData = {0, 1, 2, 1, 3, 2};
+		lbAttributef::Ptr position = lbAttributef::Create(positionData, 3);
+		lbAttributef::Ptr uv = lbAttributef::Create(uvData, 2);
+		lbAttributei::Ptr index = lbAttributei::Create(indexData, 1);
+		lbGeometry::Ptr geometry = lbGeometry::Create();
+		geometry->SetAttribute("a_Position", position);
+		geometry->SetAttribute("a_UV", uv);
+		geometry->SetIndex(index);
+		lbBasicMaterial::Ptr material = lbBasicMaterial::Create();
+		material->SetDiffuseMap(lbTextureLoader::LoadFromFile(ASSETS("Textures/dog.png")));
+		auto &squareRendererComp = square->AddComponent<lbMeshRendererComponent>();
+		squareRendererComp.mGeometry = geometry;
+		squareRendererComp.mMaterial = material;
 	}
 	void lbEditorLayer::OnDetach()
 	{
 	}
 	void lbEditorLayer::OnUpdate(lbTimestep ts)
 	{
-		// temp
-		{
-			auto &trans = cube1->GetComponent<lbTransformComponent>();
-			trans.m_Transform.Rotate({ts * 15, ts * 10, ts * 10});
-		}
 		// 渲染到帧缓冲
 		m_FrameBuffer->Bind();
 		lbRendererCommand::SetClearColor({0.3f, 0.3f, 0.3f, 1.0f});

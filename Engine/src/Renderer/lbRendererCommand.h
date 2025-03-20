@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "lbRendererBackend.h"
+#include "Renderer/Interfaces/lbRendererBackend.h"
 
 namespace Lambix
 {
@@ -35,13 +35,13 @@ namespace Lambix
 		{
 			s_RendererBackend->SetViewport(x, y, width, height);
 		}
-		inline static void DrawIndexed(const std::shared_ptr<lbVertexArray>& vertexArray)
+		inline static void DrawIndexed(DrawMode DrawMode, uint32_t count)
 		{
-			s_RendererBackend->DrawIndexed(DrawMode::Triangles, vertexArray);
+			s_RendererBackend->DrawIndexed(DrawMode, count);
 		}
-		inline static void DrawIndexed(DrawMode mode, const std::shared_ptr<lbVertexArray> &vertexArray)
+		inline static void DrawArray(DrawMode DrawMode, uint32_t count)
 		{
-			s_RendererBackend->DrawIndexed(mode, vertexArray);
+			s_RendererBackend->DrawArray(DrawMode, count);
 		}
 		inline static void SetDepthTest(bool flag)
 		{

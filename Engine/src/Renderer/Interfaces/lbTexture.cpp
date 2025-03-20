@@ -10,6 +10,7 @@
 //
 
 #include "lbTexture.h"
+#include "Log/lbLog.h"
 
 #ifdef LAMBIX_USE_OPENGL
 #include "Backend/OpenGL/lbOpenGLTexture.h"
@@ -17,23 +18,18 @@
 
 namespace Lambix
 {
-
-	std::shared_ptr<lbTexture> lbTexture::Create(const std::string &path)
+	lbTexture2D::Ptr lbTexture2D::Create(const lbSource::Ptr &source, const lbTextureSpecification &spec)
 	{
 #ifdef LAMBIX_USE_OPENGL
-		return std::make_shared<lbOpenGLTexture>(path);
+		return std::make_shared<lbOpenGLTexture2D>(source, spec);
 #endif
+		return nullptr;
 	}
-	std::shared_ptr<lbTexture> lbTexture::Create(uint32_t width, uint32_t height)
+	lbTextureCube::Ptr lbTextureCube::Create(const std::array<lbSource::Ptr, 6> &sources, const lbTextureSpecification &spec)
 	{
 #ifdef LAMBIX_USE_OPENGL
-		return std::make_shared<lbOpenGLTexture>(width, height);
+		return std::make_shared<lbOpenGLTextureCube>(sources, spec);
 #endif
-	}
-	std::shared_ptr<lbTexture> lbTexture::Create(lbTextureType type, uint32_t width, uint32_t height, Format format)
-	{
-#ifdef LAMBIX_USE_OPENGL
-		return std::make_shared<lbOpenGLTexture>(type, width, height, format);
-#endif
+		return nullptr;
 	}
 }

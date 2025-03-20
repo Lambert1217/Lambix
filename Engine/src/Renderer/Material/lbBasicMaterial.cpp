@@ -1,27 +1,21 @@
 #include "Renderer/Material/lbBasicMaterial.h"
 #include "Utils/lbFileUtils.h"
-#include "Resource/lbResourceManager.h"
+#include "Resource/lbCache.h"
 
 namespace Lambix
 {
     void lbBasicMaterial::Initialize()
     {
-        std::string vertexShaderPath = lbJoinPath(lbResRootDir, "Shaders/Vertex/BasicMaterial.vert");
-        std::string fragmentShaderPath = lbJoinPath(lbResRootDir, "Shaders/Fragment/BasicMaterial.frag");
-        m_shaderProgram = lbResourceManager::GetInstance().GetShaderProgram(vertexShaderPath, fragmentShaderPath);
+        m_shaderProgram = lbCache::Get()->GetShaderProgram(ASSETS("Shaders/Vertex/BasicMaterial.vert"), ASSETS("Shaders/Fragment/BasicMaterial.frag"));
     }
 
-    void lbBasicMaterial::UpdateUniforms() const
+    void lbBasicMaterial::UpdateUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const
     {
+        lbMaterial::UpdateUniforms(model, view, projection);
         if (m_shaderProgram)
         {
+            // 额外
             m_shaderProgram->UploadUniformFloat4("u_BaseColor", m_properties.baseColor);
-
-            // 上传PBR参数
-            m_shaderProgram->UploadUniformFloat3("u_PBR.albedo", m_properties.albedo);
-            m_shaderProgram->UploadUniformFloat("u_PBR.Metallic", m_properties.metallic);
-            m_shaderProgram->UploadUniformFloat("u_PBR.Roughness", m_properties.roughness);
-            m_shaderProgram->UploadUniformFloat("u_PBR.ao", m_properties.ao);
         }
     }
 }

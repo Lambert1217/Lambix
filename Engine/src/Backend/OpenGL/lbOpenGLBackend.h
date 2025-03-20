@@ -45,7 +45,8 @@ namespace Lambix
 		void SetRenderState(const RenderState &state) override;
 
 		// 绘制命令（更新参数列表）
-		void DrawIndexed(DrawMode mode, const std::shared_ptr<lbVertexArray> &vertexArray) override;
+		void DrawIndexed(DrawMode DrawMode, uint32_t count) override;
+		void DrawArray(DrawMode DrawMode, uint32_t count) override;
 
 	private:
 		// 状态缓存（可选）

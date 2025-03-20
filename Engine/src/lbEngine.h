@@ -19,17 +19,17 @@
 
 // --Renderer
 #include "Renderer/lbRendererCommand.h"
-#include "Renderer/lbBuffer.h"
-#include "Renderer/lbVertexArray.h"
-#include "Renderer/lbShader.h"
-#include "Renderer/lbTexture.h"
-#include "Renderer/lbFrameBuffer.h"
+#include "Renderer/lbGeometry.h"
+#include "Renderer/lbAttribute.h"
+// ----Interfaces
+#include "Renderer/Interfaces/lbBuffer.h"
+#include "Renderer/Interfaces/lbVertexArray.h"
+#include "Renderer/Interfaces/lbShader.h"
+#include "Renderer/Interfaces/lbTexture.h"
+#include "Renderer/Interfaces/lbFrameBuffer.h"
 // ----Material
 #include "Renderer/Material/lbMaterial.h"
 #include "Renderer/Material/lbBasicMaterial.h"
-// ----Geometry
-#include "Renderer/Geometry/lbGeometry.h"
-#include "Renderer/Geometry/lbCubeGeometry.h"
 // ----Light
 #include "Renderer/Light/lbLight.h"
 
@@ -58,4 +58,5 @@
 #include "Utils/lbFileUtils.h"
 
 // --Resource
-#include "Resource/lbResourceManager.h"
+#include "Resource/lbCache.h"
+#include "Resource/lbTextureLoader.h"

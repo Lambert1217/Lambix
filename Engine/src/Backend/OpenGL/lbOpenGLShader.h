@@ -11,11 +11,10 @@
 
 #pragma once
 
-#include "Renderer/lbShader.h"
+#include "Renderer/Interfaces/lbShader.h"
 
 namespace Lambix
 {
-
 	class lbOpenGLShader : public lbShader
 	{
 	public:
@@ -23,7 +22,7 @@ namespace Lambix
 		~lbOpenGLShader() override;
 
 		void CompileFromSource(const std::string &source) override;
-		void CompileFromFile(const std::string &filepath) override;
+		void CompileFromFile(const std::filesystem::path &filepath) override;
 
 		lbShaderType GetType() const override;
 		uint32_t GetID() const override;
@@ -35,6 +34,8 @@ namespace Lambix
 
 	class lbOpenGLShaderProgram : public lbShaderProgram
 	{
+		friend class lbCache;
+
 	public:
 		lbOpenGLShaderProgram();
 		~lbOpenGLShaderProgram() override;
@@ -51,8 +52,13 @@ namespace Lambix
 		void UploadUniformFloat4(const std::string &name, const glm::vec4 &value) override;
 		void UploadUniformMat4(const std::string &name, const glm::mat4 &matrix) override;
 
+		uint32_t &GetRefCount() override { return m_RefCount; }
+		size_t &GetHashCode() override { return m_HashCode; }
+
 	private:
-		uint32_t m_RendererID;
+		uint32_t m_RendererID{0};
+		uint32_t m_RefCount{0};
+		size_t m_HashCode{0};
 	};
 
 } // Lambix

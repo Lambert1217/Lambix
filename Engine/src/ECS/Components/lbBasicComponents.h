@@ -11,7 +11,7 @@
 #pragma once
 #include "lbComponent.h"
 #include "lbTransformComponent.h"
-#include "Utils/lbUUID.h"
+#include "Core/lbCore.h"
 
 namespace Lambix
 {

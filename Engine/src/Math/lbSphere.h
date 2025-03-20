@@ -17,7 +17,7 @@ namespace Lambix
     {
     public:
         lbSphere() = default;
-        lbSphere(const glm::vec3 &center, float radius) : m_Center(center), m_Radius(radius) {}
+        lbSphere(const glm::vec3 &center, float radius) : mCenter(center), mRadius(radius) {}
         ~lbSphere() = default;
 
         using Ptr = std::shared_ptr<lbSphere>;
@@ -29,7 +29,7 @@ namespace Lambix
         void ApplyMatrix4(const glm::mat4 &matrix);
 
     public:
-        glm::vec3 m_Center = glm::vec3(0.0f);
-        float m_Radius{0.0f};
+        glm::vec3 mCenter = glm::vec3(0.0f);
+        float mRadius{0.0f};
     };
 }

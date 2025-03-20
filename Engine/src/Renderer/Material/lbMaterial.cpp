@@ -1,6 +1,7 @@
 #include "Renderer/Material/lbMaterial.h"
 #include "Renderer/lbRendererCommand.h"
-#include "Resource/lbResourceManager.h"
+#include "Resource/lbTextureLoader.h"
+#include "lbMaterial.h"
 
 namespace Lambix
 {
@@ -14,18 +15,10 @@ namespace Lambix
 
         lbRendererCommand::SetRenderState(m_renderState);
 
+        // 如果没有漫反射贴图，生成一张纯白色的
         if (!m_diffuseMap)
         {
-            m_diffuseMap = lbResourceManager::GetInstance().PureWhite1_1;
-        }
-
-        m_diffuseMap->Bind(0);
-        m_shaderProgram->UploadUniformInt("u_DiffuseMap", 0);
-
-        if (m_normalMap)
-        {
-            m_normalMap->Bind(1);
-            m_shaderProgram->UploadUniformInt("u_NormalMap", 1);
+            m_diffuseMap = lbTextureLoader::CreateSolidColor(0xFFFFFFFF);
         }
     }
 
@@ -33,5 +26,22 @@ namespace Lambix
     {
         if (m_shaderProgram)
             m_shaderProgram->Unbind();
+    }
+}
+
+void Lambix::lbMaterial::UpdateUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const
+{
+    if (m_shaderProgram)
+    {
+        // MVP
+        m_shaderProgram->UploadUniformMat4("u_Model", model);
+        m_shaderProgram->UploadUniformMat4("u_View", view);
+        m_shaderProgram->UploadUniformMat4("u_Projection", projection);
+        // DiffuseMap
+        if (m_diffuseMap)
+        {
+            m_diffuseMap->Bind(0);
+            m_shaderProgram->UploadUniformInt("u_DiffuseMap", 0);
+        }
     }
 }

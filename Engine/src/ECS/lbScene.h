@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "Utils/lbUUID.h"
+#include "Core/lbCore.h"
 #include "entt/entt.hpp"
 #include "Utils/lbTimestep.h"
 #include "ECS/Components/lbCameraComponent.h"
@@ -43,9 +43,6 @@ namespace Lambix
 
         // 根据名称获取系统
         lbSystem *GetSystem(const std::string &name) { return m_SystemManager->GetSystem(name); }
-
-    private:
-        void DrawEntity(lbTransformComponent &trans, lbMeshRendererComponent &meshRenderer, lbFlagComponent &flags);
 
     private:
         entt::registry m_Registry;

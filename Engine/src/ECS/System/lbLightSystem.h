@@ -10,7 +10,7 @@
 
 #pragma once
 #include "lbSystem.h"
-#include "Renderer/lbUniformBuffer.h"
+#include "Renderer/Interfaces/lbUniformBuffer.h"
 #include "ECS/Components/lbLightComponent.h"
 
 namespace Lambix
