@@ -35,6 +35,10 @@
     {
       "name": "entt",
       "version>=": "3.14.0#0"
+    },
+    {
+      "name": "assimp",
+      "version>=": "5.4.3#0"
     }
   ]
 }

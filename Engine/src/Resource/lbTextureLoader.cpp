@@ -63,7 +63,7 @@ namespace Lambix
             return nullptr;
         }
 
-        auto source = CreateSourceFromData(imgData, width, height, channels);
+        auto source = CreateSourceFromData(imgData, width, height, 4); // 默认RGBA 四通道
         stbi_image_free(imgData);
 
         // 缓存

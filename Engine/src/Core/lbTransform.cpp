@@ -31,6 +31,19 @@ namespace Lambix
             SetDirty();
         }
     }
+    void lbTransform::SetFromMatrix(const glm::mat4 &matrix)
+    {
+        m_WorldMatrix = matrix;
+        // decompose
+        {
+            glm::vec3 skew;
+            glm::vec4 perspective;
+            glm::quat rotation;
+            glm::decompose(m_WorldMatrix, m_Scale, rotation, m_Position, skew, perspective);
+            m_Rotation = glm::degrees(glm::eulerAngles(rotation));
+        }
+        SetDirty();
+    }
     glm::quat lbTransform::GetQuaternion() const
     {
         return glm::qua(glm::radians(m_Rotation));

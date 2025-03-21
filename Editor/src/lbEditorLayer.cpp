@@ -25,31 +25,8 @@ namespace Lambix
 		auto &dLight = dLightEntity->AddComponent<lbLightComponent>();
 		dLight.Create<lbDirectionalLight>(glm::vec3{0.0f, -1.0f, -1.0f});
 		// 创建实体
-		auto square = m_Scene->CreateEntity("square");
-		std::vector<float> positionData = {
-			-1.0f, -1.0f, 0.0f,
-			1.0f, -1.0f, 0.0f,
-			-1.0f, 1.0f, 0.0f,
-			1.0f, 1.0f, 0.0f};
-		std::vector<float> uvData = {
-			0.0f, 1.0f,
-			1.0f, 1.0f,
-			0.0f, 0.0f,
-			1.0f, 0.0f};
-		std::vector<uint32_t> indexData = {0, 1, 2, 1, 3, 2};
-		lbAttributef::Ptr position = lbAttributef::Create(positionData, 3);
-		lbAttributef::Ptr uv = lbAttributef::Create(uvData, 2);
-		lbAttributei::Ptr index = lbAttributei::Create(indexData, 1);
-		lbGeometry::Ptr geometry = lbGeometry::Create();
-		geometry->SetAttribute("a_Position", position);
-		geometry->SetAttribute("a_UV", uv);
-		geometry->SetIndex(index);
-		lbBasicMaterial::Ptr material = lbBasicMaterial::Create();
-		material->SetDiffuseMap(lbTextureLoader::LoadFromFile(ASSETS("Textures/dog.png")));
-		// material->SetDiffuseMap(lbTextureLoader::CreateSolidColor(0x654456FF));
-		auto &squareRendererComp = square->AddComponent<lbMeshRendererComponent>();
-		squareRendererComp.mGeometry = geometry;
-		squareRendererComp.mMaterial = material;
+		m_Scene->CreateEntityFromModel(lbModelLoader::LoadFromFile(ASSETS("Meshes/plane.obj")));
+		m_Scene->CreateEntityFromModel(lbModelLoader::LoadFromFile(ASSETS("Models/tian/tian.fbx")));
 	}
 	void lbEditorLayer::OnDetach()
 	{

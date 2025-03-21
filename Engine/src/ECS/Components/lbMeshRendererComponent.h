@@ -8,16 +8,14 @@
  *
  */
 #pragma once
-#include "Renderer/lbGeometry.h"
-#include "Renderer/Material/lbMaterial.h"
+#include "Renderer/lbMesh.h"
 #include "ECS/Components/lbComponent.h"
 
 namespace Lambix
 {
     struct lbMeshRendererComponent : public lbComponent
     {
-        lbGeometry::Ptr mGeometry;
-        lbMaterial::Ptr mMaterial;
+        lbMesh::Ptr mesh{nullptr};
 
         void OnUpdate(lbTimestep ts) override;
     };

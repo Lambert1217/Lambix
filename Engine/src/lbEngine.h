@@ -60,3 +60,4 @@
 // --Resource
 #include "Resource/lbCache.h"
 #include "Resource/lbTextureLoader.h"
+#include "Resource/lbModelLoader.h"

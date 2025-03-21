@@ -42,6 +42,11 @@ namespace Lambix
         return entity;
     }
 
+    std::shared_ptr<lbEntity> lbScene::CreateEntityFromModel(const lbModel::Ptr &model)
+    {
+        return CreateEntityFromModelHelper(model->GetRoot(), model->GetMeshes());
+    }
+
     void lbScene::DestroyEntity(std::shared_ptr<lbEntity> entity)
     {
         if (!entity || !m_EntityMap.count(entity->GetHandle()))
@@ -110,5 +115,32 @@ namespace Lambix
             return it->second;
         }
         return nullptr;
+    }
+    std::shared_ptr<lbEntity> lbScene::CreateEntityFromModelHelper(const lbModelNode::Ptr &parentNode, const std::vector<lbMesh::Ptr> &meshes)
+    {
+        auto parentNodeEntity = CreateEntity(parentNode->name);
+        // 设置变换
+        auto &transComp = parentNodeEntity->GetComponent<lbTransformComponent>();
+        transComp.m_Transform.SetFromMatrix(parentNode->mTransformMatrix);
+
+        // 递归处理子节点
+        for (const auto &childNode : parentNode->children)
+        {
+            auto childNodeEntity = CreateEntityFromModelHelper(childNode, meshes);
+            // 设置父实体
+            childNodeEntity->SetParent(parentNodeEntity);
+        }
+        // 处理当前节点的meshes
+        for (auto index : parentNode->meshIndices)
+        {
+            auto meshEntity = CreateEntity(meshes[index]->name.empty() ? "Entity" : meshes[index]->name);
+            // 设置渲染组件
+            auto &meshRendererComp = meshEntity->AddComponent<lbMeshRendererComponent>();
+            meshRendererComp.mesh = meshes[index];
+            // 设置父实体
+            meshEntity->SetParent(parentNodeEntity);
+        }
+
+        return parentNodeEntity;
     }
 }

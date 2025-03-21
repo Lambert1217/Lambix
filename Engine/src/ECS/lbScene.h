@@ -18,6 +18,7 @@
 #include "ECS/Components/lbTransformComponent.h"
 #include "ECS/Components/lbMeshRendererComponent.h"
 #include "ECS/System/lbSystemManager.h"
+#include "Renderer/lbModel.h"
 
 namespace Lambix
 {
@@ -33,6 +34,8 @@ namespace Lambix
         std::shared_ptr<lbEntity> CreateEntity(const std::string &name);
         std::shared_ptr<lbEntity> CreateEntityWithUUID(const std::string &name, lbUUID uuid);
 
+        std::shared_ptr<lbEntity> CreateEntityFromModel(const lbModel::Ptr &model);
+
         void DestroyEntity(std::shared_ptr<lbEntity> entity);
 
         void Init();
@@ -43,6 +46,9 @@ namespace Lambix
 
         // 根据名称获取系统
         lbSystem *GetSystem(const std::string &name) { return m_SystemManager->GetSystem(name); }
+
+    private:
+        std::shared_ptr<lbEntity> CreateEntityFromModelHelper(const lbModelNode::Ptr &parentNode, const std::vector<lbMesh::Ptr> &meshes);
 
     private:
         entt::registry m_Registry;

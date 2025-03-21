@@ -31,6 +31,8 @@ namespace Lambix
 
         void SetScale(const glm::vec3 &scale);
 
+        void SetFromMatrix(const glm::mat4 &matrix);
+
         const glm::vec3 &GetPosition() const { return m_Position; }
 
         const glm::vec3 &GetRotation() const { return m_Rotation; }
