@@ -44,7 +44,7 @@ namespace Lambix
 
     void lbCache::OnSourceRelease(const lbEvent::Ptr &event)
     {
-        auto source = static_cast<lbSource *>(event->m_Emitter);
+        auto source = static_cast<lbSource *>(event->m_UserData);
         auto hashCode = source->mHashCode;
 
         std::lock_guard<std::mutex> lock(mSourcesMutex);
@@ -107,7 +107,7 @@ namespace Lambix
 
     void lbCache::OnShaderProgramRelease(const lbEvent::Ptr &event)
     {
-        auto shaderProgram = static_cast<lbShaderProgram *>(event->m_Emitter);
+        auto shaderProgram = static_cast<lbShaderProgram *>(event->m_UserData);
         auto hashCode = shaderProgram->GetHashCode();
 
         std::lock_guard<std::mutex> lock(mShaderProgramsMutex);

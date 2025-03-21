@@ -46,6 +46,7 @@ namespace Lambix
 		geometry->SetIndex(index);
 		lbBasicMaterial::Ptr material = lbBasicMaterial::Create();
 		material->SetDiffuseMap(lbTextureLoader::LoadFromFile(ASSETS("Textures/dog.png")));
+		// material->SetDiffuseMap(lbTextureLoader::CreateSolidColor(0x654456FF));
 		auto &squareRendererComp = square->AddComponent<lbMeshRendererComponent>();
 		squareRendererComp.mGeometry = geometry;
 		squareRendererComp.mMaterial = material;

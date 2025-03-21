@@ -152,7 +152,7 @@ namespace Lambix
     lbSource::Ptr lbTextureLoader::LoadImageFile(const std::filesystem::path &path)
     {
         int width, height, channels;
-        stbi_set_flip_vertically_on_load(true);
+        // stbi_set_flip_vertically_on_load(true);
         stbi_uc *data = stbi_load(path.string().c_str(), &width, &height, &channels, toStbImageFormat(lbTextureFormat::RGBA));
 
         if (!data)

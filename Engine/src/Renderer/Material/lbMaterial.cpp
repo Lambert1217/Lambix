@@ -2,15 +2,26 @@
 #include "Renderer/lbRendererCommand.h"
 #include "Resource/lbTextureLoader.h"
 #include "lbMaterial.h"
+#include "Events/lbEventPool.h"
 
 namespace Lambix
 {
+    lbMaterial::~lbMaterial()
+    {
+        // ShaderProgramRelease event
+        if (m_shaderProgram)
+        {
+            auto event = lbEventPool::Get()->Acquire();
+            event->Set("ShaderProgramRelease", this, m_shaderProgram.get());
+            lbEventDispatcher::Get()->dispatchEvent(event);
+        }
+    }
+
     void lbMaterial::Bind()
     {
         if (m_shaderProgram)
         {
             m_shaderProgram->Bind();
-            m_shaderProgram->BindUniformBlock("LightingUBO", 1);
         }
 
         lbRendererCommand::SetRenderState(m_renderState);
@@ -43,5 +54,17 @@ void Lambix::lbMaterial::UpdateUniforms(const glm::mat4 &model, const glm::mat4 
             m_diffuseMap->Bind(0);
             m_shaderProgram->UploadUniformInt("u_DiffuseMap", 0);
         }
+        if (m_normalMap)
+        {
+            m_normalMap->Bind(1);
+            m_shaderProgram->UploadUniformInt("u_NormalMap", 1);
+        }
+        if (m_specularMap)
+        {
+            m_specularMap->Bind(2);
+            m_shaderProgram->UploadUniformInt("u_SpecularMap", 2);
+        }
+        // 光照UBO
+        m_shaderProgram->BindUniformBlock("LightingUBO", 1);
     }
 }

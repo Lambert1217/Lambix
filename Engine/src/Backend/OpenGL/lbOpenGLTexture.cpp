@@ -109,7 +109,7 @@ namespace Lambix
 		glDeleteTextures(1, &m_RendererID);
 		// 发出事件
 		lbEvent::Ptr event = lbEventPool::Get()->Acquire();
-		event->Set("SourceRelease", m_Source.get(), nullptr);
+		event->Set("SourceRelease", this, m_Source.get());
 		lbEventDispatcher::Get()->dispatchEvent(event);
 	}
 
@@ -158,7 +158,7 @@ namespace Lambix
 		{
 			// 发出事件
 			lbEvent::Ptr event = lbEventPool::Get()->Acquire();
-			event->Set("SourceRelease", it.get(), nullptr);
+			event->Set("SourceRelease", this, it.get());
 			lbEventDispatcher::Get()->dispatchEvent(event);
 		}
 	}

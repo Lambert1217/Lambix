@@ -20,7 +20,7 @@ namespace Lambix
     public:
         using Ptr = std::shared_ptr<lbMaterial>;
 
-        virtual ~lbMaterial() = default;
+        virtual ~lbMaterial();
 
         // 状态管理
         virtual void Bind();
