@@ -11,16 +11,15 @@
 
 #include "lbLog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
-#include "Imgui/lbLogUI.h"
 
 namespace Lambix
 {
 
 	std::shared_ptr<spdlog::logger> lbLog::s_Logger;
-	std::shared_ptr<lbImGuiSink> lbLog::s_ImGuiSink;
+	std::shared_ptr<lbImGuiSink> lbLog::s_ImGuiSink = nullptr;
 	std::mutex lbLog::s_Mutex;
 
-	void lbLog::Init(bool console_enable, bool imgui_enable)
+	void lbLog::Init(bool console_enable, bool imguiLog_enable)
 	{
 		std::vector<spdlog::sink_ptr> sinks;
 
@@ -31,12 +30,10 @@ namespace Lambix
 			console_sink->set_pattern("[%n][%T]%^[%l]%$: %v");
 			sinks.push_back(console_sink);
 		}
-
-		// ImGui日志
-		if (imgui_enable)
+		// ImGuiLog
+		if (imguiLog_enable)
 		{
 			s_ImGuiSink = std::make_shared<lbImGuiSink>();
-			lbLogUI::Init(s_ImGuiSink);
 			sinks.push_back(s_ImGuiSink);
 		}
 
@@ -45,7 +42,7 @@ namespace Lambix
 
 		LOG_INFO("Log System Initialized (Console: {}, ImGui: {})",
 				 console_enable ? "Enabled" : "Disabled",
-				 imgui_enable ? "Enabled" : "Disabled");
+				 imguiLog_enable ? "Enabled" : "Disabled");
 	}
 
 	void lbLog::EnableConsole(bool enable)
@@ -85,7 +82,6 @@ namespace Lambix
 		if (enable && !s_ImGuiSink)
 		{
 			s_ImGuiSink = std::make_shared<lbImGuiSink>();
-			lbLogUI::Init(s_ImGuiSink);
 			sinks.push_back(s_ImGuiSink);
 			LOG_INFO("ImGui Log Enabled");
 		}
@@ -97,4 +93,12 @@ namespace Lambix
 		}
 	}
 
+	std::shared_ptr<lbImGuiSink> &lbLog::GetImGuiSink()
+	{
+		if (!s_ImGuiSink)
+		{
+			EnableImGui(true);
+		}
+		return s_ImGuiSink;
+	}
 }

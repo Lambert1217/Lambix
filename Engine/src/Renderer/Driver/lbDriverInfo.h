@@ -25,6 +25,8 @@ namespace Lambix
             uint32_t mFrame{0};
             uint32_t mCalls{0};
             uint32_t mTriangels{0};
+            float mDurationTime{0};
+            uint32_t FPS{0};
         };
 
         lbDriverInfo() = default;

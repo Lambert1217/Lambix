@@ -6,11 +6,17 @@
 #include "ECS/System/lbCameraSystem.h"
 #include "ECS/System/lbRendererSystem.h"
 #include "lbScene.h"
+#include "Core/lbApplication.h"
 
 namespace Lambix
 {
     lbScene::lbScene() : m_SystemManager(std::make_unique<lbSystemManager>())
     {
+        Init();
+    }
+    lbScene::~lbScene()
+    {
+        lbEventDispatcher::Get()->removeEventListener<lbScene>("ViewportResize", this, &lbScene::OnViewportResize);
     }
     std::shared_ptr<lbEntity> lbScene::CreateEntity(const std::string &name)
     {
@@ -23,6 +29,10 @@ namespace Lambix
         // ID组件
         {
             entity->AddComponent<lbIdentityComponent>(uuid, name);
+        }
+        // Tag组件
+        {
+            entity->AddComponent<lbTagComponent>();
         }
         // 父子组件
         {
@@ -86,6 +96,14 @@ namespace Lambix
 
     void lbScene::Init()
     {
+        // 事件监听注册
+        lbEventDispatcher::Get()->addEventListener<lbScene>("ViewportResize", this, &lbScene::OnViewportResize);
+        // 场景帧缓冲创建
+        lbFrameBufferSpecification spec;
+        mSceneFrameBufferData.width = spec.width = lbApplication::GetInstance().GetAppSetting().WindowWidth;
+        mSceneFrameBufferData.height = spec.height = lbApplication::GetInstance().GetAppSetting().WindowHeight;
+        mSceneFrameBufferData.needUpdate = false;
+        m_FrameBuffer = lbFrameBuffer::Create(spec);
         // 创建各个系统
         // 变换系统 用于更新实体的TransformComponent  优先级 1
         auto transformSystem = m_SystemManager->CreateSystem<lbTransformSystem>(this);
@@ -103,6 +121,13 @@ namespace Lambix
 
     void lbScene::OnUpdate(lbTimestep ts)
     {
+        // 更新帧缓冲大小
+        if (mSceneFrameBufferData.needUpdate)
+        {
+            m_FrameBuffer->Resize(mSceneFrameBufferData.width, mSceneFrameBufferData.height);
+            mSceneFrameBufferData.needUpdate = false;
+        }
+        // 各个系统更新
         m_SystemManager->OnUpdate(ts);
     }
 
@@ -142,5 +167,13 @@ namespace Lambix
         }
 
         return parentNodeEntity;
+    }
+
+    void lbScene::OnViewportResize(const lbEvent::Ptr &event)
+    {
+        float *size = static_cast<float *>(event->m_UserData);
+        mSceneFrameBufferData.width = (uint32_t)size[0];
+        mSceneFrameBufferData.height = (uint32_t)size[1];
+        mSceneFrameBufferData.needUpdate = true;
     }
 }

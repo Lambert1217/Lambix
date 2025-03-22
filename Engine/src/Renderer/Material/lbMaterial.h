@@ -15,6 +15,12 @@
 
 namespace Lambix
 {
+    enum class lbMaterialType
+    {
+        None = 0,
+        Basic
+    };
+
     class lbMaterial
     {
     public:
@@ -41,7 +47,7 @@ namespace Lambix
 
         // 虚函数接口
         virtual void UpdateUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const;
-        virtual std::string GetMaterialType() const = 0;
+        virtual lbMaterialType GetMaterialType() const = 0;
 
     protected:
         lbShaderProgram::Ptr m_shaderProgram;

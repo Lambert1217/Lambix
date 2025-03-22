@@ -27,9 +27,12 @@ namespace Lambix
 
     private:
         friend class lbMeshRendererComponent;
+        friend class lbProfilePanel;
         lbDriverAttributes::Ptr mAttributes;
         lbDriverBindingStates::Ptr mBindingStates;
         lbDriverInfo::Ptr mInfo;
         lbDriverGeometries::Ptr mGeometries;
+
+        glm::vec4 clearColor{0.3f, 0.3f, 0.3f, 1.0f};
     };
 } // namespace Lambix

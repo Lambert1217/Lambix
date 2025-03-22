@@ -15,6 +15,7 @@
 #include "spdlog/spdlog.h"
 #include <memory>
 #include <mutex>
+#include "Imgui/lbImGuiLog.h"
 
 namespace Lambix
 {
@@ -22,8 +23,8 @@ namespace Lambix
 	class lbLog
 	{
 	public:
-		// 初始化日志系统 (控制台日志开关, ImGui日志开关)
-		static void Init(bool console_enable = true, bool imgui_enable = false);
+		// 初始化日志系统 (控制台日志开关)
+		static void Init(bool console_enable = true, bool imguiLog_enable = true);
 
 		// 动态控制日志输出目标
 		static void EnableConsole(bool enable);
@@ -31,9 +32,11 @@ namespace Lambix
 
 		static std::shared_ptr<spdlog::logger> &GetLogger() { return s_Logger; }
 
+		static std::shared_ptr<lbImGuiSink> &GetImGuiSink();
+
 	private:
 		static std::shared_ptr<spdlog::logger> s_Logger;
-		static std::shared_ptr<class lbImGuiSink> s_ImGuiSink; // 前向声明
+		static std::shared_ptr<lbImGuiSink> s_ImGuiSink; // 前向声明
 		static std::mutex s_Mutex;
 	};
 }

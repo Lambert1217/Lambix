@@ -11,6 +11,7 @@
 #pragma once
 
 #include "lbSystem.h"
+#include "Events/lbEvent.h"
 
 namespace Lambix
 {
@@ -19,6 +20,7 @@ namespace Lambix
     {
     public:
         explicit lbCameraSystem(lbScene *scene);
+        ~lbCameraSystem() override;
 
         void Init() override;
         void OnUpdate(lbTimestep ts) override;
@@ -31,6 +33,9 @@ namespace Lambix
         void SetViewportSize(float width, float height);
         float GetViewportWidth() const { return viewportWidth; }
         float GetViewportHeight() const { return viewportHeight; }
+
+    private:
+        void OnViewportResize(const lbEvent::Ptr &event);
 
     private:
         friend class lbCameraComponent;

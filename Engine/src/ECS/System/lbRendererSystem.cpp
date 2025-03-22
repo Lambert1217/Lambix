@@ -1,6 +1,7 @@
 #include "lbRendererSystem.h"
 #include "ECS/lbScene.h"
 #include "ECS/Components/lbMeshRendererComponent.h"
+#include "Renderer/lbRendererCommand.h"
 
 namespace Lambix
 {
@@ -19,11 +20,19 @@ namespace Lambix
 
     void lbRendererSystem::OnUpdate(lbTimestep ts)
     {
+        // 渲染前
+        m_Scene->GetFrameBuffer()->Bind();
+        lbRendererCommand::SetClearColor(clearColor);
+        lbRendererCommand::Clear();
+        // 渲染
         auto view = m_Scene->GetRegistry().view<lbMeshRendererComponent>();
         view.each([ts](auto entity, auto &meshRendererComp)
                   { meshRendererComp.OnUpdate(ts); });
 
+        mInfo->mRender.mDurationTime += ts;
         mInfo->reset();
+
+        m_Scene->GetFrameBuffer()->Unbind();
     }
 
 } // namespace Lambix

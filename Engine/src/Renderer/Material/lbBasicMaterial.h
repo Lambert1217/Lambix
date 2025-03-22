@@ -20,7 +20,7 @@ namespace Lambix
         }
 
         void UpdateUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const override;
-        std::string GetMaterialType() const override { return "Basic"; }
+        lbMaterialType GetMaterialType() const override { return lbMaterialType::Basic; }
 
         // 基础材质属性
         struct Properties

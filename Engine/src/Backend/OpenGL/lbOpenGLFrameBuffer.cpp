@@ -1,6 +1,7 @@
 #include "Backend/OpenGL/lbOpenGLFrameBuffer.h"
 #include "Log/lbLog.h"
 #include "glad/glad.h"
+#include "glm/glm.hpp"
 
 namespace Lambix
 {

@@ -41,7 +41,10 @@ namespace Lambix
 		// 窗口初始化
 		m_Window = lbWindow::Create(m_AppSettings.WindowWidth, m_AppSettings.WindowHeight, m_AppSettings.WindowTitle);
 		m_Window->SetVSync(m_AppSettings.VSync);
-		m_Window->SetMaximized();
+		if (m_AppSettings.Maximized)
+		{
+			m_Window->SetMaximized();
+		}
 
 		// 注册事件监听
 		lbEventDispatcher::Get()->addEventListener<lbApplication>("WindowResize", this, &lbApplication::OnWindowResize);

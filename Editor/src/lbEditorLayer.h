@@ -11,6 +11,7 @@
 #pragma once
 
 #include "lbEngine.h"
+#include "Panels/lbPanel.h"
 
 namespace Lambix
 {
@@ -26,7 +27,7 @@ namespace Lambix
 		virtual void OnImGuiRender() override;
 
 	private:
-		std::shared_ptr<lbFrameBuffer> m_FrameBuffer;
 		std::shared_ptr<lbScene> m_Scene;
+		std::vector<lbPanel::Ptr> m_Panels;
 	};
 }

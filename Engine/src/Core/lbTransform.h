@@ -73,6 +73,7 @@ namespace Lambix
         void BindDirtyCallback(std::function<void()> callback) { m_OnDirtyCallback = callback; }
 
     private:
+        friend class lbPropertyPanel;
         glm::vec3 m_Position{0.0f};
         glm::vec3 m_Rotation{0.0f};
         glm::vec3 m_Scale{1.0f};
