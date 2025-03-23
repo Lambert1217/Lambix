@@ -251,6 +251,7 @@ namespace Lambix
         // 从第二套纹理坐标开始，都叫做uv1 uv2.....
         std::string uvName;
 
+        // TODO: 实现多套UV
         // 循环每一套纹理坐标
         for (uint32_t uvId = 0; uvId < uvs.size(); ++uvId)
         {

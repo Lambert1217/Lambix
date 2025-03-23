@@ -44,6 +44,8 @@ namespace Lambix
         const lbModelNode::Ptr &GetRoot() const { return m_RootNode; }
         const std::vector<lbMesh::Ptr> &GetMeshes() const { return m_Meshes; }
 
+        // TODO：实现模型多余节点的去除
+
     private:
         friend class lbModelLoader;
         lbModelNode::Ptr m_RootNode{nullptr}; // 明确根节点

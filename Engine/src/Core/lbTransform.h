@@ -51,13 +51,13 @@ namespace Lambix
 
         void UpdateWorldMatrix(const glm::mat4 &parentWorldMatrix = glm::mat4(1.0f));
 
-        void Translate(const glm::vec3 &translation) { m_Position += translation; }
+        void Translate(const glm::vec3 &translation);
 
         void Rotate(const glm::vec3 &eulerAngles);
 
-        void Scale(const glm::vec3 &scale) { m_Scale *= scale; }
+        void Scale(const glm::vec3 &scale);
 
-        void Scale(float scale) { m_Scale *= scale; }
+        void Scale(float scale);
 
         void LookAt(const glm::vec3 &target);
 

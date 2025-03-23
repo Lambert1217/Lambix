@@ -12,6 +12,7 @@
 
 #include "lbSystem.h"
 #include "Events/lbEvent.h"
+#include "glm/glm.hpp"
 
 namespace Lambix
 {
@@ -34,12 +35,35 @@ namespace Lambix
         float GetViewportWidth() const { return viewportWidth; }
         float GetViewportHeight() const { return viewportHeight; }
 
+        struct lbCameraController
+        {
+            // 是否能操控
+            bool flag{false};
+            // 摄像机指针
+            std::shared_ptr<lbEntity> camera{nullptr};
+            // 位移
+            float speed{5.0f}; // 位移速度
+            // 旋转
+            float rotationSpeed{5.0f}; // 旋转灵敏度
+            float m_LastMouseX{-1.0f}; // 上一帧鼠标X坐标
+            float m_LastMouseY{-1.0f}; // 上一帧鼠标Y坐标
+
+            lbCameraController();
+            lbCameraController(const std::shared_ptr<lbEntity> &cameraEntity);
+            ~lbCameraController();
+
+            void OnUpdate(lbTimestep ts);
+        };
+
     private:
         void OnViewportResize(const lbEvent::Ptr &event);
+        void OnViewportReadyForCameraControl(const lbEvent::Ptr &event);
 
     private:
         friend class lbCameraComponent;
         std::shared_ptr<lbEntity> m_PrimaryCameraEntity;
         float viewportWidth{1}, viewportHeight{1};
+        // camera control
+        lbCameraController m_PrimaryCameraController{};
     };
 } // namespace Lambix

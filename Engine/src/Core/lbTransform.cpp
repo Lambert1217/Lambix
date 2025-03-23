@@ -85,11 +85,26 @@ namespace Lambix
             m_IsDirty = false;
         }
     }
+    void lbTransform::Translate(const glm::vec3 &translation)
+    {
+        m_Position += translation;
+        SetDirty();
+    }
     void lbTransform::Rotate(const glm::vec3 &eulerAngles)
     {
         glm::quat currentRotation = glm::quat(glm::radians(m_Rotation));
         glm::quat additionalRotation = glm::quat(glm::radians(eulerAngles));
         m_Rotation = glm::degrees(glm::eulerAngles(currentRotation * additionalRotation));
+        SetDirty();
+    }
+    void lbTransform::Scale(const glm::vec3 &scale)
+    {
+        m_Scale *= scale;
+        SetDirty();
+    }
+    void lbTransform::Scale(float scale)
+    {
+        m_Scale *= scale;
         SetDirty();
     }
     void lbTransform::LookAt(const glm::vec3 &target)

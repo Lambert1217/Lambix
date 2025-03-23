@@ -21,6 +21,7 @@ namespace Lambix
 			appSettings.WindowWidth = 1920;
 			appSettings.WindowHeight = 1080;
 			appSettings.WindowTitle = "Lambix Engine Editor";
+			appSettings.Maximized = true;
 		}
 		return new lbEditorApp(appSettings);
 	}
