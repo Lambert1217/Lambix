@@ -16,6 +16,7 @@ namespace Lambix
     struct lbMeshRendererComponent : public lbComponent
     {
         lbMesh::Ptr mesh{nullptr};
+        uint32_t lastFrame{0xffffffff};
 
         void OnUpdate(lbTimestep ts) override;
     };

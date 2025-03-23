@@ -141,6 +141,10 @@ namespace Lambix
         }
         return nullptr;
     }
+    std::shared_ptr<lbEntity> lbScene::GetPrimaryCameraEntity() const
+    {
+        return static_cast<lbCameraSystem *>(GetSystem("CameraSystem"))->GetPrimaryCameraEntity();
+    }
     std::shared_ptr<lbEntity> lbScene::CreateEntityFromModelHelper(const lbModelNode::Ptr &parentNode, const std::vector<lbMesh::Ptr> &meshes)
     {
         auto parentNodeEntity = CreateEntity(parentNode->name);

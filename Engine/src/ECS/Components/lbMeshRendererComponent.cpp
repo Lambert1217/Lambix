@@ -11,6 +11,12 @@ namespace Lambix
     void lbMeshRendererComponent::OnUpdate(lbTimestep ts)
     {
         auto rendererSystem = static_cast<lbRendererSystem *>(m_Entity.lock()->GetScene()->GetSystem("RendererSystem"));
+        // 判断在当前帧是否渲染过该实体，防止重复渲染
+        if (lastFrame == rendererSystem->mInfo->mRender.mFrame)
+            return;
+        else
+            lastFrame = rendererSystem->mInfo->mRender.mFrame;
+        // --------------------------------------------------------------------------------------------------------
         auto cameraSystem = static_cast<lbCameraSystem *>(m_Entity.lock()->GetScene()->GetSystem("CameraSystem"));
         auto cameraComp = cameraSystem->GetPrimaryCameraEntity()->GetComponent<lbCameraComponent>();
         // 获取到当前的geometry，get中可以做一些处理

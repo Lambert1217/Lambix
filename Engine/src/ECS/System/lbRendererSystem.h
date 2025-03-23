@@ -14,6 +14,7 @@
 #include "Renderer/Driver/lbDriverAttribute.h"
 #include "Renderer/Driver/lbDriverGeometry.h"
 #include "Renderer/Driver/lbDriverInfo.h"
+#include "Renderer/Driver/lbDriverBackground.h"
 
 namespace Lambix
 {
@@ -32,7 +33,6 @@ namespace Lambix
         lbDriverBindingStates::Ptr mBindingStates;
         lbDriverInfo::Ptr mInfo;
         lbDriverGeometries::Ptr mGeometries;
-
-        glm::vec4 clearColor{0.3f, 0.3f, 0.3f, 1.0f};
+        lbDriverBackground::Ptr mBackground;
     };
 } // namespace Lambix

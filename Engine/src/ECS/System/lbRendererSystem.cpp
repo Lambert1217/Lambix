@@ -16,14 +16,15 @@ namespace Lambix
         mInfo = lbDriverInfo::Create();
         mBindingStates = lbDriverBindingStates::Create(mAttributes);
         mGeometries = lbDriverGeometries::Create(mAttributes, mInfo, mBindingStates);
+        mBackground = lbDriverBackground::Create(m_Scene);
     }
 
     void lbRendererSystem::OnUpdate(lbTimestep ts)
     {
         // 渲染前
         m_Scene->GetFrameBuffer()->Bind();
-        lbRendererCommand::SetClearColor(clearColor);
-        lbRendererCommand::Clear();
+        // 先渲染背景
+        mBackground->OnUpdate(ts);
         // 渲染
         auto view = m_Scene->GetRegistry().view<lbMeshRendererComponent>();
         view.each([ts](auto entity, auto &meshRendererComp)

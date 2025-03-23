@@ -46,7 +46,10 @@ namespace Lambix
         std::shared_ptr<lbEntity> GetEntity(entt::entity handle) const;
 
         // 根据名称获取系统
-        lbSystem *GetSystem(const std::string &name) { return m_SystemManager->GetSystem(name); }
+        lbSystem *GetSystem(const std::string &name) const { return m_SystemManager->GetSystem(name); }
+
+        // 获取主摄像机
+        std::shared_ptr<lbEntity> GetPrimaryCameraEntity() const;
 
         // 获取帧缓冲
         std::shared_ptr<lbFrameBuffer> GetFrameBuffer() const { return m_FrameBuffer; }
