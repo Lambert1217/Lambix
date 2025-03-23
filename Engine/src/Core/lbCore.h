@@ -18,8 +18,17 @@ namespace Lambix
 
     static lbUUID GenUUID()
     {
-        static lbUUID s_UUID = 0;
-        return s_UUID++;
+        // 使用当前时间作为随机数生成器的种子
+        auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+        std::mt19937 gen(seed);
+
+        // 生成一个64位的随机数
+        std::uniform_int_distribution<lbUUID> dis(0, std::numeric_limits<lbUUID>::max());
+        lbUUID randomPart = dis(gen);
+
+        // 使用哈希函数处理时间种子和随机数部分
+        std::hash<lbUUID> hasher;
+        return hasher(seed) ^ hasher(randomPart);
     }
     // RenderState 相关
     enum class FrontFace
