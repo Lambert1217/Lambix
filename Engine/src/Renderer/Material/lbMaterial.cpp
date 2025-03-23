@@ -1,6 +1,5 @@
 #include "Renderer/Material/lbMaterial.h"
 #include "Renderer/lbRendererCommand.h"
-#include "Resource/lbTextureLoader.h"
 #include "lbMaterial.h"
 #include "Events/lbEventPool.h"
 
@@ -25,12 +24,6 @@ namespace Lambix
         }
 
         lbRendererCommand::SetRenderState(m_renderState);
-
-        // 如果没有漫反射贴图，生成一张纯白色的
-        if (!m_diffuseMap)
-        {
-            m_diffuseMap = lbTextureLoader::CreateSolidColor(0xFFFFFFFF);
-        }
     }
 
     void lbMaterial::Unbind()

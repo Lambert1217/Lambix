@@ -19,6 +19,8 @@ namespace Lambix
             return mat;
         }
 
+        void Bind() override;
+
         void UpdateUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const override;
         lbMaterialType GetMaterialType() const override { return lbMaterialType::Basic; }
 

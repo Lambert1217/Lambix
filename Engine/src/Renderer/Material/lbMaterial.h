@@ -18,7 +18,8 @@ namespace Lambix
     enum class lbMaterialType
     {
         None = 0,
-        Basic
+        Basic,
+        Cube
     };
 
     class lbMaterial
