@@ -22,7 +22,7 @@ namespace Lambix
         m_PrimaryCameraEntity = m_Scene->CreateEntity("PrimaryCamera");
         m_PrimaryCameraEntity->AddComponent<lbCameraComponent>();
         auto &trans = m_PrimaryCameraEntity->GetComponent<lbTransformComponent>();
-        trans.m_Transform.SetPosition({0.0f, 3.0f, 5.f});
+        trans.m_Transform.SetPosition({0.0f, 5.0f, 20.0f});
         trans.m_Transform.LookAt({0.0f, 0.0f, 0.0f});
         // 摄像机控制
         m_PrimaryCameraController.camera = m_PrimaryCameraEntity;

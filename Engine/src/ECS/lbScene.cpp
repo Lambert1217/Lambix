@@ -54,7 +54,14 @@ namespace Lambix
 
     std::shared_ptr<lbEntity> lbScene::CreateEntityFromModel(const lbModel::Ptr &model)
     {
-        return CreateEntityFromModelHelper(model->GetRoot(), model->GetMeshes());
+        auto rootName = model->GetRoot()->name;
+        auto rootEntity = CreateEntityFromModelHelper(model->GetRoot(), model->GetMeshes());
+        if (rootName != rootEntity->GetName())
+        {
+            auto &ic = rootEntity->GetComponent<lbIdentityComponent>();
+            ic.m_Name = rootName;
+        }
+        return rootEntity;
     }
 
     void lbScene::DestroyEntity(std::shared_ptr<lbEntity> entity)
@@ -145,32 +152,90 @@ namespace Lambix
     {
         return static_cast<lbCameraSystem *>(GetSystem("CameraSystem"))->GetPrimaryCameraEntity();
     }
+
     std::shared_ptr<lbEntity> lbScene::CreateEntityFromModelHelper(const lbModelNode::Ptr &parentNode, const std::vector<lbMesh::Ptr> &meshes)
     {
-        auto parentNodeEntity = CreateEntity(parentNode->name);
-        // 设置变换
-        auto &transComp = parentNodeEntity->GetComponent<lbTransformComponent>();
-        transComp.m_Transform.SetFromMatrix(parentNode->mTransformMatrix);
-
-        // 递归处理子节点
-        for (const auto &childNode : parentNode->children)
+        // 如果节点的mesh加子节点的数目不超过1
+        if ((parentNode->meshIndices.size() + parentNode->children.size()) <= 1)
         {
-            auto childNodeEntity = CreateEntityFromModelHelper(childNode, meshes);
-            // 设置父实体
-            childNodeEntity->SetParent(parentNodeEntity);
+            // 如果有子节点
+            if (!parentNode->children.empty())
+            {
+                auto childNode = parentNode->children.front();
+                // 递归处理子节点
+                auto childNodeEntity = CreateEntityFromModelHelper(childNode, meshes);
+                // 如果子节点生成了实体，更新其transform
+                if (childNodeEntity)
+                {
+                    auto &transComp = childNodeEntity->GetComponent<lbTransformComponent>();
+                    transComp.m_Transform.SetFromMatrix(parentNode->mTransformMatrix * transComp.m_Transform.GetWorldMatrix());
+                }
+                return childNodeEntity;
+            }
+            // 如果有mesh
+            else if (!parentNode->meshIndices.empty())
+            {
+                auto index = parentNode->meshIndices.front();
+                auto meshName = meshes[index]->name;
+                if (meshName.empty() || meshName == "defaultobject")
+                {
+                    meshName = "Entity";
+                }
+                auto meshEntity = CreateEntity(meshName);
+                auto &meshRendererComp = meshEntity->AddComponent<lbMeshRendererComponent>();
+                meshRendererComp.mesh = meshes[index];
+                // 设置transform
+                auto &transComp = meshEntity->GetComponent<lbTransformComponent>();
+                transComp.m_Transform.SetFromMatrix(parentNode->mTransformMatrix);
+                return meshEntity;
+            }
+            // 没有mesh和子节点，不创建实体
+            else
+            {
+                return nullptr;
+            }
         }
-        // 处理当前节点的meshes
-        for (auto index : parentNode->meshIndices)
+        else
         {
-            auto meshEntity = CreateEntity(meshes[index]->name.empty() ? "Entity" : meshes[index]->name);
-            // 设置渲染组件
-            auto &meshRendererComp = meshEntity->AddComponent<lbMeshRendererComponent>();
-            meshRendererComp.mesh = meshes[index];
-            // 设置父实体
-            meshEntity->SetParent(parentNodeEntity);
-        }
+            std::string nodeName = parentNode->name;
+            if (nodeName.empty() || nodeName == "defaultobject")
+            {
+                nodeName = "Entity";
+            }
+            // 创建实体并设置名称和变换
+            auto parentNodeEntity = CreateEntity(nodeName);
+            auto &transComp = parentNodeEntity->GetComponent<lbTransformComponent>();
+            transComp.m_Transform.SetFromMatrix(parentNode->mTransformMatrix);
 
-        return parentNodeEntity;
+            // 递归处理子节点
+            for (const auto &childNode : parentNode->children)
+            {
+                auto childNodeEntity = CreateEntityFromModelHelper(childNode, meshes);
+                if (childNodeEntity)
+                {
+                    // 设置父实体
+                    childNodeEntity->SetParent(parentNodeEntity);
+                }
+            }
+
+            // 处理当前节点的meshes
+            for (auto index : parentNode->meshIndices)
+            {
+                auto meshName = meshes[index]->name;
+                if (meshName.empty() || meshName == "defaultobject")
+                {
+                    meshName = "Entity";
+                }
+                auto meshEntity = CreateEntity(meshName);
+                // 设置渲染组件
+                auto &meshRendererComp = meshEntity->AddComponent<lbMeshRendererComponent>();
+                meshRendererComp.mesh = meshes[index];
+                // 设置父实体
+                meshEntity->SetParent(parentNodeEntity);
+            }
+
+            return parentNodeEntity;
+        }
     }
 
     void lbScene::OnViewportResize(const lbEvent::Ptr &event)
