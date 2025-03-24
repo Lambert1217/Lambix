@@ -96,6 +96,11 @@ namespace Lambix
 			auto &tc_s = sphere->GetComponent<lbTransformComponent>();
 			tc_s.m_Transform.Translate({-2.0f, 0.0f, 0.0f});
 			tc_s.m_Transform.Scale(2);
+			if (sphere->HasComponent<lbMeshRendererComponent>())
+			{
+				auto &rc = sphere->GetComponent<lbMeshRendererComponent>();
+				rc.mesh->mMaterial->SetDiffuseMap(lbTextureLoader::CreateSolidColor(0x888888ff));
+			}
 		}
 
 		// Panels

@@ -126,7 +126,7 @@ void main()
     vec3 normal = normalize(v_Normal);
 
     // 表面颜色
-    vec4 SurfaceColor = texture(u_DiffuseMap, v_UV) * u_BaseColor;
+    vec3 SurfaceColor = texture(u_DiffuseMap, v_UV).rgb * u_BaseColor.rgb;
 
     // 光源颜色
     vec3 LightColor = header.ambient * header.ambientIntensity;
@@ -150,7 +150,7 @@ void main()
     }
 
     // 直接叠加环境光和其他光源的贡献
-    vec3 finalColor = LightColor * SurfaceColor.rgb;
+    vec3 finalColor = LightColor * SurfaceColor;
 
-    FragColor = vec4(finalColor, SurfaceColor.a);
+    FragColor = vec4(finalColor, u_BaseColor.a);
 }
