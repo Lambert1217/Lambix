@@ -45,6 +45,7 @@ namespace Lambix
         void SetDiffuseMap(const lbTexture2D::Ptr &texture) { m_diffuseMap = texture; }
         void SetNormalMap(const lbTexture2D::Ptr &texture) { m_normalMap = texture; }
         void SetSpecularMap(const lbTexture2D::Ptr &texture) { m_specularMap = texture; }
+        void SetCubeMap(const lbTextureCube::Ptr &texture) { m_CubeMap = texture; }
 
         // 虚函数接口
         virtual void UpdateUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &projection) const;
@@ -58,6 +59,9 @@ namespace Lambix
         lbTexture2D::Ptr m_diffuseMap{nullptr};
         lbTexture2D::Ptr m_normalMap{nullptr};
         lbTexture2D::Ptr m_specularMap{nullptr};
+
+        // 立方体纹理
+        lbTextureCube::Ptr m_CubeMap{nullptr};
     };
 
 }

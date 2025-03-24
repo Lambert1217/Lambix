@@ -31,7 +31,6 @@ namespace Lambix
         // 基础材质属性
         struct Properties
         {
-            lbTextureCube::Ptr mCubeMap{nullptr};
         };
 
         Properties &GetProperties() { return m_properties; }

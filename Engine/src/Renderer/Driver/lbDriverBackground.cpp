@@ -61,7 +61,6 @@ namespace Lambix
         rc.mesh->mGeometry->SetAttribute("a_Position", lbAttributef::Create(skyboxVertices, 3));
         // Material
         rc.mesh->mMaterial = lbCubeMaterial::Create();
-        auto &properties = std::static_pointer_cast<lbCubeMaterial>(rc.mesh->mMaterial)->GetProperties();
         std::array<std::filesystem::path, 6> skyboxTexturePath = {
             ASSETS("Textures/skybox/right.jpg"),
             ASSETS("Textures/skybox/left.jpg"),
@@ -69,7 +68,7 @@ namespace Lambix
             ASSETS("Textures/skybox/bottom.jpg"),
             ASSETS("Textures/skybox/front.jpg"),
             ASSETS("Textures/skybox/back.jpg")};
-        properties.mCubeMap = lbTextureLoader::LoadCubeMap(skyboxTexturePath);
+        rc.mesh->mMaterial->SetCubeMap(lbTextureLoader::LoadCubeMap(skyboxTexturePath));
     }
 
     lbDriverBackground::~lbDriverBackground()
