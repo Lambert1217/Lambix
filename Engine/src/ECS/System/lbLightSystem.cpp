@@ -20,7 +20,7 @@ namespace Lambix
         // 先刷新 m_LightsData
         m_LightsData = {};
         m_LightsData.header.ambient = glm::vec3(1.0f);
-        m_LightsData.header.ambientIntensity = 1.0f;
+        m_LightsData.header.ambientIntensity = 0.3f;
         m_LightsData.header.lightCounts = glm::ivec4(0);
         // 逐一更新光源组件
         auto &registry = m_Scene->GetRegistry();

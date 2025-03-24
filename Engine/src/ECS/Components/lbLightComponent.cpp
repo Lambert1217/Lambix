@@ -55,9 +55,10 @@ namespace Lambix
             return;
         }
         auto &LightData = lightsData.PointLights[lightsData.header.lightCounts.y++];
+        auto &tc = m_Entity.lock()->GetComponent<lbTransformComponent>();
         LightData.color = light->color;
         LightData.intensity = light->intensity;
-        LightData.position = m_Entity.lock()->GetComponent<lbTransformComponent>().m_Transform.GetPosition();
+        LightData.position = tc.m_Transform.GetPosition();
         LightData.MinRange = light->MinRange;
         LightData.Range = light->Range;
     }
@@ -73,10 +74,11 @@ namespace Lambix
             return;
         }
         auto &LightData = lightsData.SpotLights[lightsData.header.lightCounts.z++];
+        auto &tc = m_Entity.lock()->GetComponent<lbTransformComponent>();
         LightData.color = light->color;
         LightData.intensity = light->intensity;
-        LightData.direction = light->direction;
-        LightData.position = m_Entity.lock()->GetComponent<lbTransformComponent>().m_Transform.GetPosition();
+        LightData.direction = tc.m_Transform.GetFront();
+        LightData.position = tc.m_Transform.GetPosition();
         LightData.MinRange = light->MinRange;
         LightData.Range = light->Range;
         LightData.MinAngle = light->MinAngle;

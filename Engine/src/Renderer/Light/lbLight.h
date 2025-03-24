@@ -102,8 +102,8 @@ namespace Lambix
         float intensity;    // 强度  16B
         glm::vec3 position; // 位置  16+12
         float MinRange;     // 衰减起始距离 32
-        float Range;        // 最大作用距离 32+4
-        glm::vec3 padding;  // 填充 48B
+        glm::vec3 padding;  // 44B
+        float Range;        // 最大作用距离 44+4B
     };
 
     static_assert(sizeof(lbPointLightData) == 48);

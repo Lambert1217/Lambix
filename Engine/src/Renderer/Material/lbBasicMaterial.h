@@ -28,7 +28,7 @@ namespace Lambix
         struct Properties
         {
             glm::vec4 baseColor = {1.0f, 1.0f, 1.0f, 1.0f};
-        };
+                };
 
         Properties &GetProperties() { return m_properties; }
 
