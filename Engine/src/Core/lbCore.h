@@ -15,6 +15,7 @@ namespace Lambix
 {
     // UUID
     using lbUUID = uint64_t;
+    using lbHashType = size_t;
 
     static lbUUID GenUUID()
     {

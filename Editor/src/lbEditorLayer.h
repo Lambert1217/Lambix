@@ -29,5 +29,8 @@ namespace Lambix
 	private:
 		std::shared_ptr<lbScene> m_Scene;
 		std::vector<lbPanel::Ptr> m_Panels;
+
+		// TODO: temp
+		lbAssetManager::Ptr m_AssetManager;
 	};
 }

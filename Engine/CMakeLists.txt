@@ -19,6 +19,7 @@ file(GLOB_RECURSE SOURCE_FILES
     "src/Renderer/**.cpp"
     "src/Resource/**.cpp"
     "src/Utils/**.cpp"
+    "src/Assets/**.cpp"
 )
 # 头文件
 file(GLOB_RECURSE HEADER_FILES 
@@ -31,6 +32,7 @@ file(GLOB_RECURSE HEADER_FILES
     "src/Renderer/**.h"
     "src/Resource/**.h"
     "src/Utils/**.h"
+    "src/Assets/**.h"
 )
 
 # 查找并配置第三方库
@@ -41,6 +43,7 @@ find_package(imgui CONFIG REQUIRED) # 配置并查找Imgui
 find_package(Stb REQUIRED) # 配置并查找Stb
 find_package(EnTT CONFIG REQUIRED) # 配置并查找EnTT
 find_package(assimp CONFIG REQUIRED) # 配置并查找assimp
+find_package(yaml-cpp CONFIG REQUIRED) #配置并查找yaml-cpp
 
 # 创建一个名为lbx的库
 add_library(lbx "")
@@ -120,4 +123,5 @@ target_link_libraries(lbx
         glad::glad
         EnTT::EnTT
         assimp::assimp
+        yaml-cpp::yaml-cpp
 )

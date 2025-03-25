@@ -60,3 +60,10 @@
 #include "Resource/lbCache.h"
 #include "Resource/lbTextureLoader.h"
 #include "Resource/lbModelLoader.h"
+
+// --Assets
+#include "Assets/lbAsset.h"
+#include "Assets/lbAssetImport.h"
+#include "Assets/lbAssetManager.h"
+#include "Assets/lbTextureSourceAsset.h"
+#include "Assets/lbTextureAsset.h"

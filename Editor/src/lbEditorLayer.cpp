@@ -15,6 +15,7 @@ namespace Lambix
 {
 	lbEditorLayer::lbEditorLayer() : lbLayer("Lambix Editor")
 	{
+		m_AssetManager = lbAssetManager::Create("D:\\dev\\Lambix\\Assets");
 	}
 	void lbEditorLayer::OnAttach()
 	{
@@ -128,5 +129,20 @@ namespace Lambix
 		{
 			panel->OnImGuiRender();
 		}
+
+		// TODO: temp 测试资产管理器
+		ImGui::Begin("Assets Test");
+		if (ImGui::Button("Import"))
+		{
+			auto it = std::static_pointer_cast<lbTexture2DAsset>(m_AssetManager->Load("Textures\\dog.ltex"));
+			LOG_INFO(666);
+		}
+		if (ImGui::Button("Create"))
+		{
+			auto source = std::static_pointer_cast<lbTextureSourceAsset>(m_AssetManager->Load("Textures\\dog.png"));
+			auto it = lbTexture2DAsset::Create(source);
+			it->Serialize("D:\\dev\\Lambix\\Assets\\Textures\\dog.ltex", lbSerializationFormat::Yaml);
+		}
+		ImGui::End();
 	}
 }

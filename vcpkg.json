@@ -4,6 +4,14 @@
   "builtin-baseline": "898b728edc5e0d12b50015f9cd18247c4257a3eb",
   "dependencies": [
     {
+      "name": "assimp",
+      "version>=": "5.4.3"
+    },
+    {
+      "name": "entt",
+      "version>=": "3.14.0"
+    },
+    {
       "name": "glad",
       "version>=": "0.1.36"
     },
@@ -33,12 +41,8 @@
       "version>=": "2024-07-29#1"
     },
     {
-      "name": "entt",
-      "version>=": "3.14.0#0"
-    },
-    {
-      "name": "assimp",
-      "version>=": "5.4.3#0"
+      "name": "yaml-cpp",
+      "version>=": "0.8.0#1"
     }
   ]
 }
