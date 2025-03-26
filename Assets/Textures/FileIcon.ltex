@@ -1,0 +1,12 @@
+SourcePath: ..\Assets\Textures\Icons\AssetBrowser\FileIcon.png
+Spec:
+  width: 512
+  height: 512
+  dataType: UnsignedByteType
+  wrapS: RepeatWrapping
+  wrapT: RepeatWrapping
+  wrapR: RepeatWrapping
+  magFilter: LinearFilter
+  minFilter: NearestFilter
+  format: RGBA
+  internalFormat: RGBA

@@ -104,13 +104,37 @@ namespace Lambix
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, ToGL(m_Spec.wrapT));
 	}
 
+	lbOpenGLTexture2D::lbOpenGLTexture2D(const std::vector<std::byte> &source, const lbTextureSpecification &spec)
+	{
+		LOG_ASSERT(source.size() == spec.width * spec.height * 4, "Conflict between source and spec!");
+
+		// 纹理创建
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+		// 上传纹理数据
+		const GLenum format = ToGLFormat(m_Spec.format);
+		const GLenum internalFormat = ToGLInternalFormat(m_Spec.format);
+
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, spec.width, spec.height, 0, format, GL_UNSIGNED_BYTE, source.data());
+
+		// 设置纹理参数
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, ToGL(m_Spec.minFilter));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, ToGL(m_Spec.magFilter));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, ToGL(m_Spec.wrapS));
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, ToGL(m_Spec.wrapT));
+	}
+
 	lbOpenGLTexture2D::~lbOpenGLTexture2D()
 	{
 		glDeleteTextures(1, &m_RendererID);
 		// 发出事件
-		lbEvent::Ptr event = lbEventPool::Get()->Acquire();
-		event->Set("SourceRelease", this, m_Source.get());
-		lbEventDispatcher::Get()->dispatchEvent(event);
+		if (m_Source)
+		{
+			lbEvent::Ptr event = lbEventPool::Get()->Acquire();
+			event->Set("SourceRelease", this, m_Source.get());
+			lbEventDispatcher::Get()->dispatchEvent(event);
+		}
 	}
 
 	void lbOpenGLTexture2D::Bind(uint32_t slot) const

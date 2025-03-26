@@ -33,8 +33,10 @@ namespace Lambix
     void lbMenuBarPanel::NewPorject()
     {
         std::filesystem::path p = lbFileDiologs::SaveFile("Lambix Project(*.lproj)\0*.lproj\0");
+        if (p.string().empty())
+            return;
         lbProjectSpecification spec;
-        spec.mName = p.stem().string();
+        spec.mName = p.filename().string();
         spec.mPath = p.parent_path();
         lbProject::Create(spec)->Serialize();
     }

@@ -9,6 +9,7 @@ namespace Lambix
     {
         mSpec.width = mSource->GetWidth();
         mSpec.height = mSource->GetHeight();
+        // 仅为了转化ltex，就不生成纹理了
     }
 
     bool lbTexture2DAsset::Serialize(const std::filesystem::path &path, lbSerializationFormat fmt)
@@ -36,6 +37,7 @@ namespace Lambix
         mSource = std::static_pointer_cast<lbTextureSourceAsset>(manager->Load(sourcePathStr, true));
         const YAML::Node specNode = node["Spec"];
         mSpec = DeserializeTextureSpecification(specNode);
+        mTexture = lbTexture2D::Create(mSource->GetData(), mSpec);
         return true;
     }
 

@@ -20,7 +20,7 @@ namespace Lambix
     {
         None,
         TextureSource,
-        Texture
+        Texture2D
     };
 
     /// @brief 序列化类型

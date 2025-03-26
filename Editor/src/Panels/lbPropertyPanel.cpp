@@ -1,16 +1,19 @@
 #include "lbPropertyPanel.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "lbAssetsBrowserPanel.h"
 
 namespace Lambix
 {
     lbPropertyPanel::lbPropertyPanel()
     {
         lbEventDispatcher::Get()->addEventListener<lbPropertyPanel>("EntitySeleted", this, &lbPropertyPanel::OnEntitySeleted);
+        lbEventDispatcher::Get()->addEventListener<lbPropertyPanel>("AssetSeleted", this, &lbPropertyPanel::OnAssetSeleted);
     }
 
     lbPropertyPanel::~lbPropertyPanel()
     {
         lbEventDispatcher::Get()->removeEventListener<lbPropertyPanel>("EntitySeleted", this, &lbPropertyPanel::OnEntitySeleted);
+        lbEventDispatcher::Get()->removeEventListener<lbPropertyPanel>("AssetSeleted", this, &lbPropertyPanel::OnAssetSeleted);
     }
 
     void lbPropertyPanel::OnImGuiRender()
@@ -22,6 +25,9 @@ namespace Lambix
             break;
         case PropertyType::Entity:
             DrawProperty(static_cast<lbEntity *>(any));
+            break;
+        case PropertyType::Asset:
+            DrawAssetProperty();
             break;
         default:
             break;
@@ -159,6 +165,27 @@ namespace Lambix
         }
     }
 
+    void lbPropertyPanel::DrawAssetProperty()
+    {
+        ImGui::Text(mAssetPath.string().c_str());
+
+        auto asset = mAssetManager->Load(mAssetPath);
+        switch (asset->GetType())
+        {
+        case lbAssetType::Texture2D:
+            DrawTexture2DAsset(std::static_pointer_cast<lbTexture2DAsset>(asset));
+            break;
+        default:
+            break;
+        }
+    }
+
+    void lbPropertyPanel::DrawTexture2DAsset(const lbTexture2DAsset::Ptr &texture)
+    {
+        ImGui::Text("Texture2D");
+        ImGui::Image((ImTextureID)(uintptr_t)texture->GetRendererID(), ImVec2(200, 200));
+    }
+
     void lbPropertyPanel::DrawBasicMaterial(const lbBasicMaterial::Ptr &material)
     {
         if (material)
@@ -179,5 +206,13 @@ namespace Lambix
     {
         any = event->m_UserData;
         mType = PropertyType::Entity;
+    }
+
+    void lbPropertyPanel::OnAssetSeleted(const lbEvent::Ptr &event)
+    {
+        any = nullptr;
+        mAssetManager = static_cast<lbAssetsBrowserPanel *>(event->m_Emitter)->GetAssetManager();
+        mAssetPath = std::filesystem::path(*(std::filesystem::path *)event->m_UserData);
+        mType = PropertyType::Asset;
     }
 } // namespace Lambix

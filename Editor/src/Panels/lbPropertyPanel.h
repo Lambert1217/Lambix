@@ -29,7 +29,8 @@ namespace Lambix
         enum class PropertyType
         {
             None = 0,
-            Entity
+            Entity,
+            Asset
         };
 
         void OnImGuiRender() override;
@@ -37,12 +38,22 @@ namespace Lambix
     private:
         void DrawProperty(lbEntity *entity);
 
+        void DrawAssetProperty();
+
+        void DrawTexture2DAsset(const lbTexture2DAsset::Ptr &texture);
+
         void DrawBasicMaterial(const lbBasicMaterial::Ptr &material);
 
         void OnEntitySeleted(const lbEvent::Ptr &event);
 
+        void OnAssetSeleted(const lbEvent::Ptr &event);
+
     private:
         void *any{nullptr};
         PropertyType mType{PropertyType::None};
+
+        // 资产属性编辑相关
+        std::filesystem::path mAssetPath;
+        lbAssetManager::Ptr mAssetManager{nullptr};
     };
 } // namespace Lambix

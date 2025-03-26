@@ -81,6 +81,13 @@ namespace Lambix
 		 * @return lbTextureType
 		 */
 		virtual lbTextureType GetTextureType() const = 0;
+
+		/**
+		 * @brief Get the Renderer ID object
+		 *
+		 * @return uint32_t
+		 */
+		virtual uint32_t GetRendererID() const = 0;
 	};
 
 	class lbTexture2D : public lbTexture
@@ -88,6 +95,7 @@ namespace Lambix
 	public:
 		using Ptr = std::shared_ptr<lbTexture2D>;
 		static Ptr Create(const lbSource::Ptr &source, const lbTextureSpecification &spec = {});
+		static Ptr Create(const std::vector<std::byte> &source, const lbTextureSpecification &spec = {});
 	};
 
 	class lbTextureCube : public lbTexture
@@ -95,5 +103,6 @@ namespace Lambix
 	public:
 		using Ptr = std::shared_ptr<lbTextureCube>;
 		static Ptr Create(const std::array<lbSource::Ptr, 6> &sources, const lbTextureSpecification &spec = {});
+		// static Ptr Create(const std::array<std::vector<std::byte>, 6> &source, const lbTextureSpecification &spec = {});
 	};
 }

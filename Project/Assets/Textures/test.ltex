@@ -1,0 +1,12 @@
+SourcePath: ..\Assets\Textures\1_1White.png
+Spec:
+  width: 1
+  height: 1
+  dataType: UnsignedByteType
+  wrapS: RepeatWrapping
+  wrapT: RepeatWrapping
+  wrapR: RepeatWrapping
+  magFilter: LinearFilter
+  minFilter: NearestFilter
+  format: RGBA
+  internalFormat: RGBA

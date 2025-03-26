@@ -39,13 +39,15 @@ namespace Lambix
             return std::make_shared<lbTexture2DAsset>(source, spec);
         }
 
-        lbAssetType GetType() const override { return lbAssetType::Texture; }
+        lbAssetType GetType() const override { return lbAssetType::Texture2D; }
 
         bool Serialize(const std::filesystem::path &path, lbSerializationFormat fmt) override;
 
         bool Deserialize(const std::filesystem::path &path, lbAssetManager *manager) override;
 
         bool Import(const std::filesystem::path &path) override;
+
+        uint32_t GetRendererID() const { return mTexture->GetRendererID(); }
 
     private:
         lbTextureSpecification mSpec;

@@ -34,6 +34,11 @@ namespace Lambix
 
         void SetContext(const lbAssetManager::Ptr &manager);
 
+        lbAssetManager::Ptr GetAssetManager() const { return mAssetManager; }
+
+    private:
+        void CreateAsset(const std::filesystem::path &p);
+
     private:
         lbAssetManager::Ptr mAssetManager{nullptr};
         std::filesystem::path mCurrentPath;

@@ -24,6 +24,7 @@ namespace Lambix
 	{
 	public:
 		lbOpenGLTexture2D(const lbSource::Ptr &source, const lbTextureSpecification &spec);
+		lbOpenGLTexture2D(const std::vector<std::byte> &source, const lbTextureSpecification &spec);
 		virtual ~lbOpenGLTexture2D() override;
 
 		void Bind(uint32_t slot = 0) const override;
@@ -33,6 +34,8 @@ namespace Lambix
 		uint32_t GetWidth() const override { return m_Source->mWidth; }
 		uint32_t GetHeight() const override { return m_Source->mHeight; }
 		lbTextureType GetTextureType() const override { return lbTextureType::Texture2D; }
+
+		uint32_t GetRendererID() const { return m_RendererID; }
 
 	private:
 		GLuint m_RendererID;
@@ -53,6 +56,8 @@ namespace Lambix
 		uint32_t GetWidth() const override { return m_Sources[0]->mWidth; }
 		uint32_t GetHeight() const override { return m_Sources[0]->mHeight; }
 		lbTextureType GetTextureType() const override { return lbTextureType::TextureCubeMap; }
+
+		uint32_t GetRendererID() const { return m_RendererID; }
 
 	private:
 		GLuint m_RendererID;

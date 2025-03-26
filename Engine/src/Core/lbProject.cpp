@@ -112,7 +112,7 @@ namespace Lambix
         out << YAML::EndMap;
         out << YAML::EndMap;
 
-        auto outPath = mSpec.mPath / (mSpec.mName + ".lproj");
+        auto outPath = mSpec.mPath / mSpec.mName;
         std::ofstream file(outPath);
         file << out.c_str();
         return true;
