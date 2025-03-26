@@ -17,7 +17,7 @@ namespace Lambix
     class lbViewportPanel : public lbPanel
     {
     public:
-        lbViewportPanel() = delete;
+        lbViewportPanel() = default;
         lbViewportPanel(const std::shared_ptr<lbScene> &scene);
         ~lbViewportPanel() = default;
 
@@ -26,6 +26,12 @@ namespace Lambix
         {
             return std::make_shared<lbViewportPanel>(scene);
         }
+        static Ptr Create()
+        {
+            return std::make_shared<lbViewportPanel>();
+        }
+
+        void SetContext(const std::shared_ptr<lbScene> &scene) { mScene = scene; }
 
         void OnImGuiRender() override;
 

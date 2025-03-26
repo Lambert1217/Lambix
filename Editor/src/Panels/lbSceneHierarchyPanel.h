@@ -17,7 +17,7 @@ namespace Lambix
     class lbSceneHierarchyPanel : public lbPanel
     {
     public:
-        lbSceneHierarchyPanel() = delete;
+        lbSceneHierarchyPanel() = default;
         lbSceneHierarchyPanel(const std::shared_ptr<lbScene> &scene) : mContext(scene) {}
         ~lbSceneHierarchyPanel() override = default;
 
@@ -25,6 +25,10 @@ namespace Lambix
         static Ptr Create(const std::shared_ptr<lbScene> &scene)
         {
             return std::make_shared<lbSceneHierarchyPanel>(scene);
+        }
+        static Ptr Create()
+        {
+            return std::make_shared<lbSceneHierarchyPanel>();
         }
 
         void SetContext(const std::shared_ptr<lbScene> &scene) { mContext = scene; }

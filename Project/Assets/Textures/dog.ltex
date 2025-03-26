@@ -1,0 +1,12 @@
+SourcePath: D:\dev\Lambix\Assets\Textures\dog.png
+Spec:
+  width: 2000
+  height: 2000
+  dataType: UnsignedByteType
+  wrapS: RepeatWrapping
+  wrapT: RepeatWrapping
+  wrapR: RepeatWrapping
+  magFilter: LinearFilter
+  minFilter: NearestFilter
+  format: RGBA
+  internalFormat: RGBA

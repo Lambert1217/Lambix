@@ -33,7 +33,7 @@ namespace Lambix
 
         bool Deserialize(const std::filesystem::path &path, lbAssetManager *manager) override { return false; }
 
-        bool Import(const std::filesystem::path &path, lbAssetManager *manager) override;
+        bool Import(const std::filesystem::path &path) override;
 
         uint16_t GetWidth() const { return mWidth; }
 

@@ -39,9 +39,9 @@ namespace Lambix
         return true;
     }
 
-    bool lbTexture2DAsset::Import(const std::filesystem::path &path, lbAssetManager *manager)
+    bool lbTexture2DAsset::Import(const std::filesystem::path &path)
     {
-        return Deserialize(path, manager);
+        return false;
     }
 
     void SerializeTextureSpecification(YAML::Emitter &out, const lbTextureSpecification &spec)

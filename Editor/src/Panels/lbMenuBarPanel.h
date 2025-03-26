@@ -27,5 +27,13 @@ namespace Lambix
         }
 
         void OnImGuiRender() override;
+
+    private:
+        void NewPorject();
+        void OpenProject(const std::filesystem::path &path);
+        void SaveProject();
+
+    private:
+        lbProject::Ptr mCurrentProject{nullptr};
     };
 } // namespace Lambix

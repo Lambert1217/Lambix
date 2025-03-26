@@ -32,6 +32,12 @@ namespace Lambix
         lbScene();
         ~lbScene();
 
+        using Ptr = std::shared_ptr<lbScene>;
+        static Ptr Create()
+        {
+            return std::make_shared<lbScene>();
+        }
+
         std::shared_ptr<lbEntity> CreateEntity(const std::string &name);
         std::shared_ptr<lbEntity> CreateEntityWithUUID(const std::string &name, lbUUID uuid);
 

@@ -71,15 +71,14 @@ namespace Lambix
          * @brief 资源导入
          *
          * @param path
-         * @param manager
          * @return true
          * @return false
          */
-        virtual bool Import(const std::filesystem::path &path, lbAssetManager *manager) = 0;
+        virtual bool Import(const std::filesystem::path &path) = 0;
 
         using Ptr = std::shared_ptr<lbAsset>;
 
-        lbHashType hash;                  // 由资产的路径hash得来，全局唯一，资产导入时生成确定
+        lbHashType hash;                  // 由资产的路径hash得来，全局唯一
         std::filesystem::path sourcePath; // 资源原始路径
     };
 } // namespace Lambix

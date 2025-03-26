@@ -19,7 +19,7 @@ namespace Lambix
 	{
 	public:
 		lbEditorLayer();
-		~lbEditorLayer() = default;
+		~lbEditorLayer();
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
@@ -27,10 +27,10 @@ namespace Lambix
 		virtual void OnImGuiRender() override;
 
 	private:
-		std::shared_ptr<lbScene> m_Scene;
-		std::vector<lbPanel::Ptr> m_Panels;
+		void OnOpenProject(const lbEvent::Ptr &event);
 
-		// TODO: temp
-		lbAssetManager::Ptr m_AssetManager;
+	private:
+		lbProject *mCurrentProject{nullptr};
+		std::unordered_map<std::string, lbPanel::Ptr> m_Panels;
 	};
 }

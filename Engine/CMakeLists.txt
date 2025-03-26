@@ -59,7 +59,7 @@ target_compile_definitions(lbx PUBLIC
 # 根据操作系统定义平台相关的宏，并收集平台相关的源文件
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     target_compile_definitions(lbx PUBLIC LAMBIX_OS_WINDOWS)
-    file(GLOB_RECURSE PLATFORM_SOURCE_FILES "src/Platform/Window/**.cpp")
+    file(GLOB_RECURSE PLATFORM_SOURCE_FILES "src/Platform/Window/**.cpp" "src/Platform/Windows/**.cpp")
     file(GLOB_RECURSE PLATFORM_HEADER_FILES "src/Platform/Window/**.h")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_definitions(lbx PUBLIC LAMBIX_OS_APPLE)

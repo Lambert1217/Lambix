@@ -18,7 +18,7 @@ namespace Lambix
     class lbProfilePanel : public lbPanel
     {
     public:
-        lbProfilePanel() = delete;
+        lbProfilePanel() = default;
         lbProfilePanel(lbRendererSystem *rendererSystem) : mRendererSystem(rendererSystem) {}
         ~lbProfilePanel() override = default;
 
@@ -27,6 +27,12 @@ namespace Lambix
         {
             return std::make_shared<lbProfilePanel>(rendererSystem);
         }
+        static Ptr Create()
+        {
+            return std::make_shared<lbProfilePanel>();
+        }
+
+        void SetContext(lbRendererSystem *rendererSystem) { mRendererSystem = rendererSystem; }
 
         void OnImGuiRender() override;
 

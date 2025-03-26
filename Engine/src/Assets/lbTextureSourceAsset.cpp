@@ -4,7 +4,7 @@
 
 namespace Lambix
 {
-    bool lbTextureSourceAsset::Import(const std::filesystem::path &path, lbAssetManager *manager)
+    bool lbTextureSourceAsset::Import(const std::filesystem::path &path)
     {
         int width, height, channels;
         // 引擎默认全部转成 RGBA

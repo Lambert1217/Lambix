@@ -21,7 +21,7 @@ namespace Lambix
         lbTexture2DAsset() = default;
 
         /**
-         * @brief 注意：这里构造不能生成hash，sourcePath，用于创建新的纹理时，序列化完成，通过管理器导入
+         * @brief 注意：这里构造不能生成hash，sourcePath，用于创建新的纹理时，创建完成立即序列化为文件，通过管理器加载使用并生成hash
          *
          * @param source
          * @param spec
@@ -45,7 +45,7 @@ namespace Lambix
 
         bool Deserialize(const std::filesystem::path &path, lbAssetManager *manager) override;
 
-        bool Import(const std::filesystem::path &path, lbAssetManager *manager) override;
+        bool Import(const std::filesystem::path &path) override;
 
     private:
         lbTextureSpecification mSpec;

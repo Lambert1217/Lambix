@@ -4,16 +4,17 @@ namespace Lambix
 {
     void lbSceneHierarchyPanel::OnImGuiRender()
     {
-        if (!mContext)
-            return;
         ImGui::Begin("Scene Hierarchy");
-        for (auto &it : mContext->m_EntityMap)
+        if (mContext)
         {
-            if (it.second->GetParent())
+            for (auto &it : mContext->m_EntityMap)
             {
-                continue;
+                if (it.second->GetParent())
+                {
+                    continue;
+                }
+                DrawEntityNode(it.second);
             }
-            DrawEntityNode(it.second);
         }
         ImGui::End();
     }
