@@ -151,6 +151,9 @@ namespace Lambix
                 case lbMaterialType::Basic:
                     DrawBasicMaterial(std::static_pointer_cast<lbBasicMaterial>(meshRendererComp.mesh->mMaterial));
                     break;
+                case lbMaterialType::Phong:
+                    DrawPhongMaterial(std::static_pointer_cast<lbPhongMaterial>(meshRendererComp.mesh->mMaterial));
+                    break;
                 default:
                     break;
                 }
@@ -171,6 +174,54 @@ namespace Lambix
             ImGui::Text("BaseColor: ");
             ImGui::NextColumn();
             ImGui::ColorEdit4("##BasicMaterial_BaseColor", glm::value_ptr(properties.baseColor));
+            ImGui::Columns(1);
+        }
+    }
+
+    void lbPropertyPanel::DrawPhongMaterial(const lbPhongMaterial::Ptr &material)
+    {
+        if (material)
+        {
+            float ColumnWidth0 = ImGui::GetContentRegionAvail().x * 0.35f;
+            auto &properties = material->GetProperties();
+            // baseColor
+            ImGui::Columns(2, "base_color", false);
+            ImGui::SetColumnWidth(0, ColumnWidth0);
+            ImGui::Text("BaseColor: ");
+            ImGui::NextColumn();
+            ImGui::ColorEdit4("##BasicMaterial_BaseColor", glm::value_ptr(properties.baseColor));
+            ImGui::Columns(1);
+
+            // 环境光系数
+            ImGui::Columns(2, "AmbientStrength", false);
+            ImGui::SetColumnWidth(0, ColumnWidth0);
+            ImGui::Text("AmbientStrength: ");
+            ImGui::NextColumn();
+            ImGui::DragFloat("##AmbientStrength", &properties.ambientStrength, 0.01f, 0.0f, 1.0f);
+            ImGui::Columns(1);
+
+            // 漫反射系数
+            ImGui::Columns(2, "DiffuseStrength", false);
+            ImGui::SetColumnWidth(0, ColumnWidth0);
+            ImGui::Text("AmbientStrength: ");
+            ImGui::NextColumn();
+            ImGui::DragFloat("##DiffuseStrength", &properties.diffuseStrength, 0.01f, 0.0f, 1.0f);
+            ImGui::Columns(1);
+
+            // 镜面反射系数
+            ImGui::Columns(2, "SpecularStrength", false);
+            ImGui::SetColumnWidth(0, ColumnWidth0);
+            ImGui::Text("SpecularStrength: ");
+            ImGui::NextColumn();
+            ImGui::DragFloat("##specularStrength", &properties.specularStrength, 0.01f, 0.0f, 1.0f);
+            ImGui::Columns(1);
+
+            // 环境光系数
+            ImGui::Columns(2, "Shininess", false);
+            ImGui::SetColumnWidth(0, ColumnWidth0);
+            ImGui::Text("Shininess: ");
+            ImGui::NextColumn();
+            ImGui::DragInt("##Shininess", &properties.shininess, 1, 10, 100);
             ImGui::Columns(1);
         }
     }

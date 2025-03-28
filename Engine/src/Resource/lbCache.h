@@ -14,6 +14,7 @@
 #include "Utils/lbSource.h"
 #include "Renderer/Interfaces/lbShader.h"
 #include "Events/lbEventPool.h"
+#include "Renderer/lbModel.h"
 
 namespace Lambix
 {
@@ -66,6 +67,18 @@ namespace Lambix
          */
         void OnShaderProgramRelease(const lbEvent::Ptr &event);
 
+        //-------Model-----------------------------------------------------
+
+        /**
+         * @brief Get the Model object
+         *
+         * @param path 模型路径
+         * @return lbModel::Ptr
+         */
+        lbModel::Ptr GetModel(const std::filesystem::path &path);
+
+        // TODO: 模型释放逻辑
+
     private:
         // sources
         std::unordered_map<size_t, lbSource::Ptr> mSources;
@@ -73,5 +86,8 @@ namespace Lambix
         // shader
         std::unordered_map<size_t, lbShaderProgram::Ptr> mShaderPrograms;
         std::mutex mShaderProgramsMutex;
+        // model
+        std::unordered_map<size_t, lbModel::Ptr> mModels;
+        std::mutex mModelsMutex;
     };
 } // namespace Lambix

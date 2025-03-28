@@ -30,6 +30,7 @@
 // ----Material
 #include "Renderer/Material/lbMaterial.h"
 #include "Renderer/Material/lbBasicMaterial.h"
+#include "Renderer/Material/lbPhongMaterial.h"
 // ----Light
 #include "Renderer/Light/lbLight.h"
 

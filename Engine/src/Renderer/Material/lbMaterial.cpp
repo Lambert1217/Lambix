@@ -62,6 +62,8 @@ void Lambix::lbMaterial::UpdateUniforms(const glm::mat4 &model, const glm::mat4 
             m_CubeMap->Bind(3);
             m_shaderProgram->UploadUniformInt("u_CubeMap", 3);
         }
+        // 场景UBO
+        m_shaderProgram->BindUniformBlock("u_SceneData", 0);
         // 光照UBO
         m_shaderProgram->BindUniformBlock("u_LightingUBO", 1);
     }

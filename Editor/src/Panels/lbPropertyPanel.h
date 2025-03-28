@@ -38,6 +38,7 @@ namespace Lambix
         void DrawProperty(lbEntity *entity);
 
         void DrawBasicMaterial(const lbBasicMaterial::Ptr &material);
+        void DrawPhongMaterial(const lbPhongMaterial::Ptr &material);
 
         void OnEntitySeleted(const lbEvent::Ptr &event);
 

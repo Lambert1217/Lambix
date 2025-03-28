@@ -19,7 +19,8 @@ namespace Lambix
     {
         None = 0,
         Basic,
-        Cube
+        Cube,
+        Phong
     };
 
     class lbMaterial

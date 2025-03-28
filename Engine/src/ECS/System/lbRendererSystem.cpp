@@ -23,6 +23,8 @@ namespace Lambix
     {
         // 渲染前
         m_Scene->GetFrameBuffer()->Bind();
+        m_Scene->m_SceneDataUBO->SetData(&m_Scene->m_SceneData, sizeof(lbScene::lbSceneData));
+        m_Scene->m_SceneDataUBO->Bind();
         // 先渲染背景
         mBackground->OnUpdate(ts);
         // 渲染

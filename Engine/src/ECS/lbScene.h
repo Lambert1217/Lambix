@@ -20,6 +20,7 @@
 #include "ECS/System/lbSystemManager.h"
 #include "Renderer/lbModel.h"
 #include "Renderer/Interfaces/lbFrameBuffer.h"
+#include "Renderer/Interfaces/lbUniformBuffer.h"
 
 namespace Lambix
 {
@@ -53,6 +54,15 @@ namespace Lambix
 
         // 获取帧缓冲
         std::shared_ptr<lbFrameBuffer> GetFrameBuffer() const { return m_FrameBuffer; }
+
+        struct lbSceneData
+        {
+            glm::vec3 cameraPos;
+            float padding;
+        };
+
+        lbSceneData m_SceneData;
+        std::shared_ptr<lbUniformBuffer> m_SceneDataUBO;
 
     private:
         std::shared_ptr<lbEntity> CreateEntityFromModelHelper(const lbModelNode::Ptr &parentNode, const std::vector<lbMesh::Ptr> &meshes);

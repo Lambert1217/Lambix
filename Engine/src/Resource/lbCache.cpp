@@ -1,5 +1,6 @@
 #include "lbCache.h"
 #include "Log/lbLog.h"
+#include "lbModelLoader.h"
 
 namespace Lambix
 {
@@ -126,5 +127,32 @@ namespace Lambix
         {
             mShaderPrograms.erase(iter);
         }
+    }
+
+    lbModel::Ptr lbCache::GetModel(const std::filesystem::path &path)
+    {
+        const auto hash = std::hash<std::filesystem::path>{}(path);
+        std::lock_guard<std::mutex> lock(mModelsMutex);
+
+        // 查找缓存
+        if (auto it = mModels.find(hash); it != mModels.end())
+        {
+            // it->second->mRefCount++;
+            return it->second;
+        }
+
+        // 缓存未命中，加载模型
+        auto model = lbModelLoader::LoadFromFile(path);
+        if (!model)
+        {
+            LOG_ERROR("Failed to load model: {}", path.string());
+            return nullptr;
+        }
+
+        // 初始化引用计数并记录哈希
+        // model->mRefCount = 1;
+        // model->mHashCode = hash;
+        mModels.emplace(hash, model);
+        return model;
     }
 } // namespace Lambix

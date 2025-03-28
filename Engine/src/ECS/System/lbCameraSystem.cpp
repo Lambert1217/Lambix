@@ -34,6 +34,8 @@ namespace Lambix
         m_PrimaryCameraController.OnUpdate(ts);
         // 主摄像机更新
         m_PrimaryCameraEntity->GetComponent<lbCameraComponent>().OnUpdate(ts);
+        // 更新场景数据
+        m_Scene->m_SceneData.cameraPos = m_PrimaryCameraEntity->GetComponent<lbTransformComponent>().m_Transform.GetPosition();
     }
 
     void lbCameraSystem::SetViewportSize(float width, float height)

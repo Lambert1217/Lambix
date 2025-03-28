@@ -20,8 +20,6 @@ out vec2 v_UV;
 out vec3 v_WorldPos;
 // 传递给片段着色器的世界空间下的顶点法线
 out vec3 v_Normal;
-// 传递给片段着色器的顶点颜色
-out vec4 v_Color;
 
 void main()
 {

@@ -124,6 +124,8 @@ namespace Lambix
         // 渲染系统
         auto rendererSystem = m_SystemManager->CreateSystem<lbRendererSystem>(this);
         rendererSystem->Init();
+        // 场景数据UBO
+        m_SceneDataUBO = lbUniformBuffer::Create({sizeof(lbSceneData), 0, true});
     }
 
     void lbScene::OnUpdate(lbTimestep ts)
