@@ -45,6 +45,9 @@ namespace Lambix
 		io.Fonts->AddFontFromFileTTF(ASSETS("Fonts/Roboto/Roboto-Bold.ttf").string().c_str(), 18.0f);
 		io.Fonts->AddFontFromFileTTF(ASSETS("Fonts/Roboto/Roboto-Italic.ttf").string().c_str(), 17.0f);
 
+		// 布局配置文件
+		io.IniFilename = "../imgui.ini";
+
 		// 当启用多视口时，我们调整 WindowRounding/WindowBg，以便平台窗口看起来与常规窗口相同。
 		ImGuiStyle &style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
